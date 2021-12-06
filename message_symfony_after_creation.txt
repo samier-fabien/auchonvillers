@@ -1,0 +1,52 @@
+ What's next? 
+              
+
+Some files have been created and/or updated to configure your new packages.
+Please review, edit and commit them: these files are yours.
+
+ symfony/framework-bundle  instructions:
+
+  * Run your application:
+    1. Go to the project directory
+    2. Create your code repository with the git init command
+    3. Download the Symfony CLI at https://symfony.com/download to install a development web server
+
+  * Read the documentation at https://symfony.com/doc
+
+ symfony/mailer  instructions:
+
+  * You're ready to send emails.
+
+  * If you want to send emails via a supported email provider, install
+    the corresponding bridge.
+    For instance, composer require mailgun-mailer for Mailgun.
+
+  * If you want to send emails asynchronously:
+
+    1. Install the messenger component by running composer require messenger;
+    2. Add 'Symfony\Component\Mailer\Messenger\SendEmailMessage': amqp to the
+       config/packages/messenger.yaml file under framework.messenger.routing
+       and replace amqp with your transport name of choice.
+
+  * Read the documentation at https://symfony.com/doc/master/mailer.html
+
+ doctrine/doctrine-bundle  instructions:
+
+  * Modify your DATABASE_URL config in .env
+
+  * Configure the driver (postgresql) and
+    server_version (13) in config/packages/doctrine.yaml
+
+ symfony/phpunit-bridge  instructions:
+
+  * Write test cases in the tests/ folder
+  * Use MakerBundle's make:test command as a shortcut!
+  * Run the tests with php bin/phpunit
+
+              
+ What's next? 
+              
+
+Some files have been created and/or updated to configure your new packages.
+Please review, edit and commit them: these files are yours.
+
