@@ -292,7 +292,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->newsletter;
     }
 
-    public function setNewsletter(bool $newsletter): self
+    public function setNewsletter(bool $newsletter = false): self
     {
         $this->newsletter = $newsletter;
 
@@ -304,7 +304,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->vote;
     }
 
-    public function setVote(bool $vote): self
+    public function setVote(bool $vote = false): self
     {
         $this->vote = $vote;
 
@@ -316,7 +316,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->event;
     }
 
-    public function setEvent(bool $event): self
+    public function setEvent(bool $event = false): self
     {
         $this->event = $event;
 
@@ -328,7 +328,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->survey;
     }
 
-    public function setSurvey(bool $survey): self
+    public function setSurvey(bool $survey = false): self
     {
         $this->survey = $survey;
 
@@ -340,7 +340,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->rgpd;
     }
 
-    public function setRgpd(bool $rgpd): self
+    public function setRgpd(bool $rgpd = false): self
     {
         $this->rgpd = $rgpd;
 
@@ -352,7 +352,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->user_terms_of_use;
     }
 
-    public function setUserTermsOfUse(bool $user_terms_of_use): self
+    public function setUserTermsOfUse(bool $user_terms_of_use = false): self
     {
         $this->user_terms_of_use = $user_terms_of_use;
 
@@ -364,7 +364,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->employee_terms_of_use;
     }
 
-    public function setEmployeeTermsOfUse(bool $employee_terms_of_use): self
+    public function setEmployeeTermsOfUse(bool $employee_terms_of_use = false): self
     {
         $this->employee_terms_of_use = $employee_terms_of_use;
 

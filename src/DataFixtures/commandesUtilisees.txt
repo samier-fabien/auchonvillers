@@ -1,0 +1,23 @@
+// Crée la table User
+php bin/console make:user
+
+// Crée une entité
+php bin/console make:entity
+
+// Crée une migration
+php bin/console make:migration
+
+// Applique les migrations à la bdd
+php bin/console doctrine:migrations:migrate
+
+// Retourne à l'état de la base lors de la migration Version20211206131255
+php bin/console doctrine:migrations:migrate 'DoctrineMigrations\Version20211206131255'
+
+// Ajoute au projet le système de fixtures
+composer require --dev orm-fixtures
+
+// Purge la bdd et y applique les données contenues dans les fixtures
+php bin/console doctrine:fixtures:load
+
+// Ajoute au projet un faker qui crée des données types pour les fixtures -projet abandonné ?
+composer require fzaninotto/faker
