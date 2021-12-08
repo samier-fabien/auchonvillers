@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+<section>
+    <h1>Dernières actualités</h1>
+    <div>
+        {% for newsletter in newsletters %}
+            <h2>Le {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
+            <p>{{ newsletter.newContentFr|length > 25 ? newsletter.newContentFr|slice(0,25) ~ '...' : newsletter.newContentFr }}</p>
+        {% endfor %}
+    </div>
+</section>
+<section>
+    <h1></h1>
+    <p></p>
+</section>
+{% endblock %}

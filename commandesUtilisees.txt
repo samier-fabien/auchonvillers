@@ -1,3 +1,6 @@
+// Lancer le projet
+symfony serve -D
+
 // Crée la table User
 php bin/console make:user
 
@@ -21,3 +24,9 @@ php bin/console doctrine:fixtures:load
 
 // Ajoute au projet un faker qui crée des données types pour les fixtures -projet abandonné ?
 composer require fzaninotto/faker
+
+// Ajouter un controleur
+php bin/console make:controller
+
+// Ajout de fonctions spéciales twig sur les strings
+composer require twig/extra-bundle
