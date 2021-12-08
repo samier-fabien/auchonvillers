@@ -16,12 +16,14 @@ class NewsletterFixtures extends Fixture implements DependentFixtureInterface
             1 => [
                 "created_at" => new DateTime(),
                 "content_fr" => "Contenu de la première newsletter",
-                "content_en" => "First newsletter's content"
+                "content_en" => "First newsletter's content",
+                "user" => "1"
             ],
             2 => [
                 "created_at" => new DateTime(),
-                "content_fr" => "Contenu de la première newsletter",
-                "content_en" => "First newsletter's content"
+                "content_fr" => "Contenu de la deuxième newsletter",
+                "content_en" => "Second newsletter's content",
+                "user" => "1"
             ]
         ];
 
@@ -30,7 +32,7 @@ class NewsletterFixtures extends Fixture implements DependentFixtureInterface
             $newsletter->setNewCreatedAt($value["created_at"]);
             $newsletter->setNewContentFr($value["content_fr"]);
             $newsletter->setNewContentEn($value["content_en"]);
-            $newsletter->setUser($this->getReference("user_1"));
+            $newsletter->setUser($this->getReference("user_" . $value["user"]));
 
             $manager->persist($newsletter);
         }

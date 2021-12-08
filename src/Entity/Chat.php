@@ -40,6 +40,11 @@ class Chat
      */
     private $messages;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $cha_last_message;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
@@ -112,6 +117,18 @@ class Chat
                 $message->setChat(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getChaLastMessage(): ?\DateTimeInterface
+    {
+        return $this->cha_last_message;
+    }
+
+    public function setChaLastMessage(\DateTimeInterface $cha_last_message): self
+    {
+        $this->cha_last_message = $cha_last_message;
 
         return $this;
     }

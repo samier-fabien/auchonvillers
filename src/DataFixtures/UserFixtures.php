@@ -74,6 +74,20 @@ class UserFixtures extends Fixture
                 'rgpd' => true,
                 'user_terms_of_use' => true,
                 'employee_terms_of_use' => false,
+            ],
+            3 => [
+                'email' => 'truc@gmail.com',
+                'roles' => ['ROLE_USER'],
+                'password' => 'azer',
+                'first_name' => '',
+                'last_name' => '',
+                'newsletter' => false,
+                'vote' => false,
+                'event' => false,
+                'survey' => false,
+                'rgpd' => true,
+                'user_terms_of_use' => true,
+                'employee_terms_of_use' => false,
             ]
         ];
 

@@ -47,6 +47,11 @@ class Article
      */
     private $user;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $art_order_of_appearance;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -120,6 +125,18 @@ class Article
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getArtOrderOfAppearance(): ?int
+    {
+        return $this->art_order_of_appearance;
+    }
+
+    public function setArtOrderOfAppearance(?int $art_order_of_appearance): self
+    {
+        $this->art_order_of_appearance = $art_order_of_appearance;
 
         return $this;
     }
