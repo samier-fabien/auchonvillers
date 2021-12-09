@@ -19,6 +19,20 @@ class ActionRepository extends ServiceEntityRepository
         parent::__construct($registry, Action::class);
     }
 
+
+    /**
+     * @return Action[] Returns an array of Action objects
+     */
+    public function findLast(int $value)
+    {
+        return $this->createQueryBuilder('n')
+            ->orderBy('n.act_created_at', 'DESC')
+            ->setMaxResults($value)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // /**
     //  * @return Action[] Returns an array of Action objects
     //  */

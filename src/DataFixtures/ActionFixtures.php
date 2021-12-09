@@ -14,9 +14,9 @@ class ActionFixtures extends Fixture implements DependentFixtureInterface
     {
         $actions = [
             1 => [
-                "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-28-11 09:00:00"),
-                "begining" => Datetime::createFromFormat("Y-m-d H:i:s", "2022-28-11 18:00:00"),
-                "end" => Datetime::createFromFormat("Y-m-d H:i:s", "2022-28-11 22:00:00"),
+                "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-28 09:00:00"),
+                "begining" => Datetime::createFromFormat("Y-m-d H:i:s", "2022-11-28 18:00:00"),
+                "end" => Datetime::createFromFormat("Y-m-d H:i:s", "2022-11-28 22:00:00"),
                 "title_fr" => "Premier événement",
                 "title_en" => "First event",
                 "body_fr" => "Petite réunion entre voisins pour fêter l'anniversaire de Fabien",
@@ -24,9 +24,9 @@ class ActionFixtures extends Fixture implements DependentFixtureInterface
                 "user" => "1",
             ],
             2 => [
-                "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-28-11 10:00:00"),
-                "begining" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-28-11 10:00:00"),
-                "end" => Datetime::createFromFormat("Y-m-d H:i:s", "2022-28-11 10:00:00"),
+                "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-28 10:00:00"),
+                "begining" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-28 10:00:00"),
+                "end" => Datetime::createFromFormat("Y-m-d H:i:s", "2022-11-28 10:00:00"),
                 "title_fr" => "Premier vote",
                 "title_en" => "First vote",
                 "body_fr" => "Nous voudrions savoir votre opinion sur le site internet.",
@@ -34,16 +34,45 @@ class ActionFixtures extends Fixture implements DependentFixtureInterface
                 "user" => "1",
             ],
             3 => [
-                "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-28-11 10:00:00"),
-                "begining" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-28-11 10:00:00"),
-                "end" => Datetime::createFromFormat("Y-m-d H:i:s", "2022-28-11 10:00:00"),
+                "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-28 11:00:00"),
+                "begining" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-28 11:00:00"),
+                "end" => Datetime::createFromFormat("Y-m-d H:i:s", "2022-11-28 11:00:00"),
                 "title_fr" => "Première enquête",
                 "title_en" => "First survey",
                 "body_fr" => "Nous avons récemment réalisé le site web de la commune, c'est dans ce cadre que nous voudrions votre opinion.",
                 "body_en" => "We have recently made the city's website, we would like to have your opinion about it.",
                 "user" => "1",
             ],
-            
+            4 => [
+                "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-29 09:00:00"),
+                "begining" => Datetime::createFromFormat("Y-m-d H:i:s", "2022-11-29 18:00:00"),
+                "end" => Datetime::createFromFormat("Y-m-d H:i:s", "2022-11-29 22:00:00"),
+                "title_fr" => "Premier événement",
+                "title_en" => "First event",
+                "body_fr" => "Petite réunion entre voisins pour fêter l'anniversaire de Fabien",
+                "body_en" => "Little meeting with neighborhood for Fabien's birthday",
+                "user" => "1",
+            ],
+            5 => [
+                "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-29 10:00:00"),
+                "begining" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-29 10:00:00"),
+                "end" => Datetime::createFromFormat("Y-m-d H:i:s", "2022-11-28 10:00:00"),
+                "title_fr" => "Premier vote",
+                "title_en" => "First vote",
+                "body_fr" => "Nous voudrions savoir votre opinion sur le site internet.",
+                "body_en" => "We would like to get your opinion about the website.",
+                "user" => "1",
+            ],
+            6 => [
+                "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-29 11:00:00"),
+                "begining" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-29 11:00:00"),
+                "end" => Datetime::createFromFormat("Y-m-d H:i:s", "2022-11-28 11:00:00"),
+                "title_fr" => "Première enquête",
+                "title_en" => "First survey",
+                "body_fr" => "Nous avons récemment réalisé le site web de la commune, c'est dans ce cadre que nous voudrions votre opinion.",
+                "body_en" => "We have recently made the city's website, we would like to have your opinion about it.",
+                "user" => "1",
+            ],
         ];
 
         foreach ($actions as $key => $value) {

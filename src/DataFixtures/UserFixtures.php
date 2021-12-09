@@ -21,15 +21,13 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $date = new DateTime();
-
         // Profil du maire, unique obligatoire
         $mayor = new User();
         $mayor->setEmail('samierfabien@gmail.com');
         $mayor->setRoles(['ROLE_MAYOR']);
         $mayor->setPassword($this->passwordHasher->hashPassword($mayor, 'azer'));
-        $mayor->setCreatedAt($date);
-        $mayor->setLastModification($date);
+        $mayor->setCreatedAt(Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-28 08:00:00"));
+        $mayor->setLastModification(Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-28 08:00:00"));
         $mayor->setFirstName('Fabien');
         $mayor->setLastName('Samier');
         $mayor->setNewsletter(true);
@@ -98,7 +96,7 @@ class UserFixtures extends Fixture
             $user->setEmail($value['email']);
             $user->setRoles($value['roles']);
             $user->setPassword($this->passwordHasher->hashPassword($user, $value['password']));
-            $user->setCreatedAt($date);
+            $user->setCreatedAt(Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-28 08:00:00"));
             $user->setLastModification($date);
             $user->setFirstName($value['first_name']);
             $user->setLastName($value['last_name']);

@@ -17,6 +17,11 @@ class SurveyFixtures extends Fixture implements DependentFixtureInterface
                 "question_fr" => "Quelle fonctionnalité voudriez-vous voir ajoutée sur le site internet ?",
                 "question_en" => "what feature would you like to be added to the website ?",
             ],
+            1 => [
+                "action" => "6",
+                "question_fr" => "Quelle fonctionnalité voudriez-vous voir ajoutée sur le site internet ?",
+                "question_en" => "what feature would you like to be added to the website ?",
+            ],
         ];
 
         foreach ($surveys as $key => $value) {

@@ -16,6 +16,10 @@ class EventFixtures extends Fixture implements DependentFixtureInterface
                 "location" => "48.852969 2.349903",
                 "action" => "1",
             ],
+            2 => [
+                "location" => "48.852969 2.349903",
+                "action" => "4",
+            ],
         ];
 
         foreach ($events as $key => $value) {

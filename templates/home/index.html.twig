@@ -4,16 +4,21 @@
 
 {% block body %}
 <section>
-    <h1>Dernières actualités</h1>
+    <h1>Actualités</h1>
     <div>
         {% for newsletter in newsletters %}
-            <h2>Le {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
-            <p>{{ newsletter.newContentFr|length > 25 ? newsletter.newContentFr|slice(0,25) ~ '...' : newsletter.newContentFr }}</p>
+        <h2>Le {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
+        <p>{{ newsletter.newContentFr|length > 25 ? newsletter.newContentFr|slice(0,25) ~ '...' : newsletter.newContentFr }}</p>
         {% endfor %}
     </div>
 </section>
 <section>
-    <h1></h1>
-    <p></p>
+    <h1>Agenda</h1>
+    <div>
+        {% for action in actions %}
+        <h2>{{ action.actTitleFr }}</h2>
+        <p>Du {{ action.actBegining|date('Y-m-d') }} au {{ action.actEnd|date('Y-m-d') }}</p>
+        {% endfor %}
+    </div>
 </section>
 {% endblock %}

@@ -15,15 +15,15 @@ class ChatFixtures extends Fixture implements DependentFixtureInterface
         $chats = [
             1 => [
                 "user" => "user_2",
-                "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-28-11 09:00:00"),
+                "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-28 09:00:00"),
                 "resolved" => false,
-                "last_message" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-28-11 09:02:00")
+                "last_message" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-28 09:02:00")
             ],
             2 => [
                 "user" => "user_3",
-                "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-28-11 10:00:00"),
+                "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-28 10:00:00"),
                 "resolved" => false,
-                "last_message" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-28-11 10:02:00")
+                "last_message" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-28 10:02:00")
             ],
         ];
 

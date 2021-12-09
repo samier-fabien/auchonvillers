@@ -21,6 +21,15 @@ class VoteFixtures extends Fixture implements DependentFixtureInterface
                 "second_choice_fr" => "non",
                 "second_choice_en" => "no",
             ],
+            1 => [
+                "action" => "5",
+                "question_fr" => "Est-ce que vous le trouvez utile ?",
+                "question_en" => "Do you find it useful ?",
+                "first_choice_fr" => "oui",
+                "first_choice_en" => "yes",
+                "second_choice_fr" => "non",
+                "second_choice_en" => "no",
+            ],
         ];
 
         foreach ($votes as $key => $value) {
