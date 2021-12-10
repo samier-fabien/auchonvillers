@@ -3,13 +3,20 @@
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
+<header>
+    {{ userEmail }}
+</header>
 <section>
     <h1>Actualités</h1>
+    {% for newsletter in newsletters %}
     <div>
-        {% for newsletter in newsletters %}
         <h2>Le {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
         <p>{{ newsletter.newContentFr|length > 25 ? newsletter.newContentFr|slice(0,25) ~ '...' : newsletter.newContentFr }}</p>
-        {% endfor %}
+        <a href="/actualite/{{ newsletter.id }}">Voir</a>
+    </div>
+    {% endfor %}
+    <div>
+        <a href="/actualites">Tout voir</a>
     </div>
 </section>
 <section>
@@ -19,6 +26,10 @@
         <h2>{{ action.actTitleFr }}</h2>
         <p>Du {{ action.actBegining|date('Y-m-d') }} au {{ action.actEnd|date('Y-m-d') }}</p>
         {% endfor %}
+        <a href="#">Voir</a>
+    </div>
+    <div>
+        <a href="#">Tout voir</a>
     </div>
 </section>
 {% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Actualités{% endblock %}
+
+{% block body %}
+<header>
+    {{ userEmail }}
+</header>
+<section>
+    <h1>Actualités</h1>
+    <div>
+        <h2>Le {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
+        <p>{{ newsletter.newContentFr }}</p>
+        <a href="/actualites">Actualités</a>
+    </div>
+</section>
+{% endblock %}

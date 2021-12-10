@@ -24,12 +24,14 @@ class HomeController extends AbstractController
      */
     public function index(): Response
     {
+        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : "";
         $newsletters = $this->newsletterRepo->findLast(4);
         $actions = $this->actionRepo->findLast(4);
 
-        return $this->render('home/index.html.twig', [
+        return $this->render('home/home.html.twig', [
             'newsletters' => $newsletters,
             'actions' => $actions,
+            'userEmail' => $userEmail,
         ]);
     }
 }
