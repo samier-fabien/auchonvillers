@@ -42,7 +42,7 @@ class NewsletterFixtures extends Fixture implements DependentFixtureInterface
                 "content_fr" => "Ut eu tellus justo. Maecenas diam ex, pulvinar et fringilla vel, vulputate at dui. Ut posuere justo ipsum, in tristique mi posuere et. Fusce pharetra est nunc, sit amet volutpat eros cursus quis. Nunc iaculis ipsum at ex bibendum, at semper risus placerat. Donec nec euismod purus. Ut congue eros odio, sit amet varius purus euismod sit amet. Phasellus justo arcu, lobortis eu dui eu, posuere accumsan est. Praesent ut tempor orci. Mauris eget tortor velit. Vivamus vitae odio a sem ullamcorper consequat in ut ante. ",
                 "content_en" => "Ut eu tellus justo. Maecenas diam ex, pulvinar et fringilla vel, vulputate at dui. Ut posuere justo ipsum, in tristique mi posuere et. Fusce pharetra est nunc, sit amet volutpat eros cursus quis. Nunc iaculis ipsum at ex bibendum, at semper risus placerat. Donec nec euismod purus. Ut congue eros odio, sit amet varius purus euismod sit amet. Phasellus justo arcu, lobortis eu dui eu, posuere accumsan est. Praesent ut tempor orci. Mauris eget tortor velit. Vivamus vitae odio a sem ullamcorper consequat in ut ante. ",
                 "user" => "1"
-            ]
+            ],
         ];
 
         foreach ($newsletters as $key => $value) {

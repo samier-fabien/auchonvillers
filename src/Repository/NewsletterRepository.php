@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Controller\NewsletterController;
 use App\Entity\Newsletter;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -22,13 +24,36 @@ class NewsletterRepository extends ServiceEntityRepository
     /**
      * @return Newsletter[] Returns an array of Newsletter objects
      */
-    public function findLast(int $value)
+    public function findLast(int $max)
     {
         return $this->createQueryBuilder('n')
             ->orderBy('n.new_created_at', 'DESC')
-            ->setMaxResults($value)
+            ->setMaxResults($max)
             ->getQuery()
             ->getResult()
+        ;
+    }
+
+    /**
+     * @return Newsletter[] Returns an array of Newsletter objects
+     */
+    public function findByPage(int $page = 1)
+    {
+        return $this->createQueryBuilder('n')
+            ->orderBy('n.new_created_at', 'DESC')
+            ->setFirstResult(($page * NewsletterController::NEWSLETTERS_PER_PAGE) - NewsletterController::NEWSLETTERS_PER_PAGE)
+            ->setMaxResults(NewsletterController::NEWSLETTERS_PER_PAGE)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function getnumber()
+    {
+        return $this->createQueryBuilder('n')
+            ->select('count(n.id)')
+            ->getQuery()
+            ->getSingleScalarResult()
         ;
     }
 
