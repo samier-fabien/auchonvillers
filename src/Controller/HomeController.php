@@ -10,6 +10,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
+    public const NUMBER_OF_NEWSLETTERS = 4;
+    public const NUMBER_OF_ACTIONS = 4;
     private $newsletterRepo;
     private $actionRepo;
 
@@ -25,8 +27,8 @@ class HomeController extends AbstractController
     public function index(): Response
     {
         $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : "";
-        $newsletters = $this->newsletterRepo->findLast(4);
-        $actions = $this->actionRepo->findLast(4);
+        $newsletters = $this->newsletterRepo->findLast(self::NUMBER_OF_NEWSLETTERS);
+        $actions = $this->actionRepo->findLast(self::NUMBER_OF_ACTIONS);
 
         return $this->render('home/home.html.twig', [
             'newsletters' => $newsletters,

@@ -16,4 +16,54 @@
     </div>
     {% endfor %}
 </section>
+
+    <div>
+        {% if pages == 1 %}
+            <a href="/actualites/1"><strong>1</strong></a>
+        {% else %}
+            {% if page == 1 %}
+                Début 
+                | Précédente 
+                | 
+                {% for i in 1..pages %}
+                    {% if i == page %}
+                        <strong><a href="/actualites/{{ i }}">{{ i }}</a></strong>
+                    {% else %}
+                        <a href="/actualites/{{ i }}">{{ i }}</a>
+                    {% endif %}
+                {% endfor %} 
+                | <a href="/actualites/{{ page + 1 }}">Suivante</a> | <a href="/actualites/{{ pages }}">Fin</a>
+
+            {% elseif page == pages %}
+                <a href="/actualites/1">Début</a> 
+                | <a href="/actualites/{{ page-1 }}">Précédente</a> 
+                | 
+                {% for i in 1..pages %}
+                    {% if i == page %}
+                        <strong><a href="/actualites/{{ i }}">{{ i }}</a></strong>
+                    {% else %}
+                        <a href="/actualites/{{ i }}">{{ i }}</a>
+                    {% endif %}
+                {% endfor %} 
+                | Suivante 
+                | Fin
+            
+            {% else %}
+                <a href="/actualites/1">Début</a> 
+                | <a href="/actualites/{{ page-1 }}">Précédente</a> 
+                | 
+                {% for i in 1..pages %}
+                    {% if i == page %}
+                        <strong><a href="/actualites/{{ i }}">{{ i }}</a></strong>
+                    {% else %}
+                        <a href="/actualites/{{ i }}">{{ i }}</a>
+                    {% endif %}
+                {% endfor %} 
+                | <a href="/actualites/{{ page + 1 }}">Suivante</a> 
+                | <a href="/actualites/{{ pages }}">Fin</a>
+            {% endif %}
+            
+        {% endif %}
+    </div>
+
 {% endblock %}
