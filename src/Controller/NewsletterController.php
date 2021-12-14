@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class NewsletterController extends AbstractController
 {
-    public const NEWSLETTERS_PER_PAGE = 4;
+    public const NEWSLETTERS_PER_PAGE = 3;
     private $newsletterRepo;
 
     public function __construct(NewsletterRepository $newsletterRepo)
