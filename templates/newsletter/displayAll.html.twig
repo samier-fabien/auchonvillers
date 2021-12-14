@@ -9,111 +9,56 @@
 <section>
     <h1>Actualités</h1>
     {% for newsletter in newsletters %}
-    <div>
+    <article>
         <h2>Le {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
         <p>{{ newsletter.newContentFr|length > 25 ? newsletter.newContentFr|slice(0,25) ~ '...' : newsletter.newContentFr }}</p>
         <a href="/actualite/{{ newsletter.id }}">Voir</a>
-    </div>
+    </article>
     {% endfor %}
-
-    <div>
-        {% if pages == 1 %}
-            <a href="/actualites/1"><strong>1</strong></a>
-        {% else %}
-            {% if page == 1 %}
-                Début 
-                | Précédente 
-                | 
-                {% for i in 1..pages %}
-                    {% if i == page %}
-                        <strong><a href="/actualites/{{ i }}">{{ i }}</a></strong>
-                    {% else %}
-                        <a href="/actualites/{{ i }}">{{ i }}</a>
-                    {% endif %}
-                {% endfor %} 
-                | <a href="/actualites/{{ page + 1 }}">Suivante</a> | <a href="/actualites/{{ pages }}">Fin</a>
-
-            {% elseif page == pages %}
-                <a href="/actualites/1">Début</a> 
-                | <a href="/actualites/{{ page-1 }}">Précédente</a> 
-                | 
-                {% for i in 1..pages %}
-                    {% if i == page %}
-                        <strong><a href="/actualites/{{ i }}">{{ i }}</a></strong>
-                    {% else %}
-                        <a href="/actualites/{{ i }}">{{ i }}</a>
-                    {% endif %}
-                {% endfor %} 
-                | Suivante 
-                | Fin
-            
-            {% else %}
-                <a href="/actualites/1">Début</a> 
-                | <a href="/actualites/{{ page-1 }}">Précédente</a> 
-                | 
-                {% for i in 1..pages %}
-                    {% if i == page %}
-                        <strong><a href="/actualites/{{ i }}">{{ i }}</a></strong>
-                    {% else %}
-                        <a href="/actualites/{{ i }}">{{ i }}</a>
-                    {% endif %}
-                {% endfor %} 
-                | <a href="/actualites/{{ page + 1 }}">Suivante</a> 
-                | <a href="/actualites/{{ pages }}">Fin</a>
-            {% endif %}
-            
-        {% endif %}
-    </div>
-
 </section>
+<div>
+    {% set url = '/actualites/' %}
+    {% set page = page %}
+    {% set pages = pages %}
+    {% set nearby = 4 %}
 
-    <div>
-        {% if pages == 1 %}
-            <a href="/actualites/1"><strong>1</strong></a>
-        {% else %}
-            {% if page == 1 %}
-                Début 
-                | Précédente 
-                | 
-                {% for i in 1..pages %}
-                    {% if i == page %}
-                        <strong><a href="/actualites/{{ i }}">{{ i }}</a></strong>
-                    {% else %}
-                        <a href="/actualites/{{ i }}">{{ i }}</a>
-                    {% endif %}
-                {% endfor %} 
-                | <a href="/actualites/{{ page + 1 }}">Suivante</a> | <a href="/actualites/{{ pages }}">Fin</a>
-
-            {% elseif page == pages %}
-                <a href="/actualites/1">Début</a> 
-                | <a href="/actualites/{{ page-1 }}">Précédente</a> 
-                | 
-                {% for i in 1..pages %}
-                    {% if i == page %}
-                        <strong><a href="/actualites/{{ i }}">{{ i }}</a></strong>
-                    {% else %}
-                        <a href="/actualites/{{ i }}">{{ i }}</a>
-                    {% endif %}
-                {% endfor %} 
-                | Suivante 
-                | Fin
-            
-            {% else %}
-                <a href="/actualites/1">Début</a> 
-                | <a href="/actualites/{{ page-1 }}">Précédente</a> 
-                | 
-                {% for i in 1..pages %}
-                    {% if i == page %}
-                        <strong><a href="/actualites/{{ i }}">{{ i }}</a></strong>
-                    {% else %}
-                        <a href="/actualites/{{ i }}">{{ i }}</a>
-                    {% endif %}
-                {% endfor %} 
-                | <a href="/actualites/{{ page + 1 }}">Suivante</a> 
-                | <a href="/actualites/{{ pages }}">Fin</a>
+    {% apply spaceless %}
+        {% if pages > 1 %}
+            {% if page > 1 %}
+                <a href="{{ (url ~ (page-1))|e }}/">&laquo;</a>
             {% endif %}
-            
-        {% endif %}
-    </div>
 
+            {% for i in 1..pages %}
+                {% if 0 == (page - nearby) - loop.index %}
+                    <a href="{{ (url ~ 1)|e }}/">1</a>
+                    {% if 1 != loop.index %}
+                        <a href="#">...</a>
+                    {% endif %}
+                {% elseif 0 == (page + nearby) - loop.index  and (page + nearby) < pages %}
+                    <a href="#">...</a>
+                {% elseif 0 < (page - nearby) - loop.index %}
+                    <!-- #1 -->
+                {% elseif 0 > (page + nearby) - loop.index %}
+                    <!-- #2 -->
+                {% else %}
+                        {% if page == loop.index  %}
+                            <strong><a href="#">{{ loop.index }}</a></strong>
+                        {% else %}
+                            {% if loop.index == 1 %}
+                                <a href="{{ (url ~ 1)|e }}">{{ loop.index }}</a>
+                            {% else %}
+                                <a href="{{ url ~ loop.index }}/">{{ loop.index }}</a>
+                            {% endif %}
+                        {% endif %}
+                {% endif %}
+            {% endfor %}
+            {% if page != pages  and (page + nearby) < pages %}
+                <a href="{{ (url ~ pages)|e }}/">{{ pages }}</a>
+            {% endif %}
+            {% if page < pages %}
+                <a href="{{ (url ~ (page+1))|e }}/">&raquo;</a>
+            {% endif %}
+        {% endif %}
+    {% endapply %}
+</div>
 {% endblock %}

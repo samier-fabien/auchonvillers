@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class NewsletterController extends AbstractController
 {
-    public const NEWSLETTERS_PER_PAGE = 3;
+    public const NEWSLETTERS_PER_PAGE = 4;
     private $newsletterRepo;
 
     public function __construct(NewsletterRepository $newsletterRepo)
@@ -27,7 +27,7 @@ class NewsletterController extends AbstractController
     public function displayAll(int $page = 1): Response
     {
         $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : "";
-        $newsletters = $this->newsletterRepo->findByPage($page);
+        $newsletters = $this->newsletterRepo->findByPage($page, self::NEWSLETTERS_PER_PAGE);
         $pages = (int) ceil($this->newsletterRepo->getnumber() / self::NEWSLETTERS_PER_PAGE);
 
         return $this->render('newsletter/displayAll.html.twig', [

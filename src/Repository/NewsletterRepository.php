@@ -37,12 +37,12 @@ class NewsletterRepository extends ServiceEntityRepository
     /**
      * @return Newsletter[] Returns an array of Newsletter objects
      */
-    public function findByPage(int $page = 1)
+    public function findByPage(int $page = 1, int $numberPerPage)
     {
         return $this->createQueryBuilder('n')
             ->orderBy('n.new_created_at', 'DESC')
-            ->setFirstResult(($page * NewsletterController::NEWSLETTERS_PER_PAGE) - NewsletterController::NEWSLETTERS_PER_PAGE)
-            ->setMaxResults(NewsletterController::NEWSLETTERS_PER_PAGE)
+            ->setFirstResult(($page * $numberPerPage) - $numberPerPage)
+            ->setMaxResults($numberPerPage)
             ->getQuery()
             ->getResult()
         ;
