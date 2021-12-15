@@ -23,7 +23,7 @@
             {% if userEmail is null %}
                 <a href="/connexion">{% trans %}Connexion{% endtrans %}</a>
             {% else %}
-                {{ userEmail }}
+                {{ userEmail }} <a href="/deconnexion">{% trans %}Déconnexion{% endtrans %}</a>
             {% endif %}
             
         {% endblock %}

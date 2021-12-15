@@ -9,7 +9,7 @@
     <article>
         <h2>{% trans %}Publié le{% endtrans %} {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
         <p>{{ newsletter.newContentFr|length > 25 ? newsletter.newContentFr|slice(0,25) ~ '...' : newsletter.newContentFr }}</p>
-        <a href="/actualite/{{ newsletter.id }}">Voir</a>
+        <a href="/actualite/{{ newsletter.id }}">{% trans %}Voir{% endtrans %}</a>
     </article>
     {% endfor %}
 </section>
