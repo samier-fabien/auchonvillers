@@ -1,35 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
+{% block title %}{% trans %}Accueil{% endtrans %}{% endblock %}
 
 {% block body %}
-<header>
-    {{ userEmail }}
-</header>
 <section>
-    <h1>Actualités</h1>
+    <h1>{% trans %}Actualités{% endtrans %}</h1>
     {% for newsletter in newsletters %}
     <div>
-        <h2>Le {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
+        <h2>{% trans %}Publié le{% endtrans %} {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
         <p>{{ newsletter.newContentFr|length > 25 ? newsletter.newContentFr|slice(0,25) ~ '...' : newsletter.newContentFr }}</p>
-        <a href="/actualite/{{ newsletter.id }}">Voir</a>
+        <a href="/actualite/{{ newsletter.id }}">{% trans %}Voir{% endtrans %}</a>
     </div>
     {% endfor %}
     <div>
-        <a href="/actualites/{{ 1 }}">Tout voir</a>
+        <a href="/actualites/{{ 1 }}">{% trans %}Tout voir{% endtrans %}</a>
     </div>
 </section>
 <section>
-    <h1>Agenda</h1>
+    <h1>{% trans %}Agenda{% endtrans %}</h1>
     <div>
         {% for action in actions %}
         <h2>{{ action.actTitleFr }}</h2>
         <p>Du {{ action.actBegining|date('Y-m-d') }} au {{ action.actEnd|date('Y-m-d') }}</p>
         {% endfor %}
-        <a href="#">Voir</a>
+        <a href="#">{% trans %}Voir{% endtrans %}</a>
     </div>
     <div>
-        <a href="#">Tout voir</a>
+        <a href="#">{% trans %}Tout voir{% endtrans %}</a>
     </div>
 </section>
 {% endblock %}

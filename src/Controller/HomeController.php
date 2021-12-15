@@ -26,7 +26,7 @@ class HomeController extends AbstractController
      */
     public function index(): Response
     {
-        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : "";
+        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : null;
         $newsletters = $this->newsletterRepo->findLast(self::NUMBER_OF_NEWSLETTERS);
         $actions = $this->actionRepo->findLast(self::NUMBER_OF_ACTIONS);
 

@@ -26,7 +26,7 @@ class NewsletterController extends AbstractController
      */
     public function displayAll(int $page = 1): Response
     {
-        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : "";
+        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : null;
         $newsletters = $this->newsletterRepo->findByPage($page, self::NEWSLETTERS_PER_PAGE);
         $pages = (int) ceil($this->newsletterRepo->getnumber() / self::NEWSLETTERS_PER_PAGE);
 
@@ -45,7 +45,7 @@ class NewsletterController extends AbstractController
      */
     public function display(Request $request, $id): Response
     {
-        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : "";
+        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : null;
         $newsletter = $this->newsletterRepo->findOneBy(["id" => $id]);
 
         return $this->render('newsletter/display.html.twig', [
@@ -60,7 +60,7 @@ class NewsletterController extends AbstractController
      */
     public function create(): Response
     {
-        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : "";
+        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : null;
 
         return $this->render('newsletter/create.html.twig', [
             'userEmail' => $userEmail,
@@ -73,7 +73,7 @@ class NewsletterController extends AbstractController
      */
     public function update(): Response
     {
-        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : "";
+        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : null;
 
         return $this->render('newsletter/update.html.twig', [
             'userEmail' => $userEmail,
@@ -86,7 +86,7 @@ class NewsletterController extends AbstractController
      */
     public function delete(): Response
     {
-        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : "";
+        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : null;
 
         return $this->render('newsletter/creation.html.twig', [
             'userEmail' => $userEmail,

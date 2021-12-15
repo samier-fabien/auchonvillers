@@ -30,3 +30,16 @@ php bin/console make:controller
 
 // Ajout de fonctions spéciales twig sur les strings
 composer require twig/extra-bundle
+
+// Montre tous les messages qui pourraient être traduits en francais
+// translation:extract = translation:update dans les version précédentes
+php bin/console translation:extract --dump-messages en
+
+// Mets à jour les fichiers de traduction francaise avec tous les éléments pas encore traduits
+php bin/console translation:extract --force en
+
+// Montre les options de la ligne de commande
+php bin/console translation:extract --help
+
+
+composer require symfony/apache-pack

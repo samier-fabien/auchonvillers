@@ -1,16 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Actualités{% endblock %}
+{% block title %}{% trans %}Actualités{% endtrans %}{% endblock %}
 
 {% block body %}
-<header>
-    {{ userEmail }}
-</header>
 <section>
-    <h1>Actualités</h1>
+    <h1>{% trans %}Actualités{% endtrans %}</h1>
     {% for newsletter in newsletters %}
     <article>
-        <h2>Le {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
+        <h2>{% trans %}Publié le{% endtrans %} {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
         <p>{{ newsletter.newContentFr|length > 25 ? newsletter.newContentFr|slice(0,25) ~ '...' : newsletter.newContentFr }}</p>
         <a href="/actualite/{{ newsletter.id }}">Voir</a>
     </article>

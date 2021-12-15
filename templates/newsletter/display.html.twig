@@ -1,15 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Actualités{% endblock %}
+{% block title %}{% trans %}Actualités{% endtrans %}{% endblock %}
 
 {% block body %}
-<header>
-    {{ userEmail }}
-</header>
 <section>
-    <h1>Actualités</h1>
+    <h1>{% trans %}Actualités{% endtrans %}</h1>
     <div>
-        <h2>Le {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
+        <h2>{% trans %}Publié le{% endtrans %} {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
         <p>{{ newsletter.newContentFr }}</p>
     </div>
 </section>

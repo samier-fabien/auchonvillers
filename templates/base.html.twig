@@ -17,6 +17,16 @@
         {% endblock %}
     </head>
     <body>
+        {% block nav %}
+            <a href="/">{% trans %}Accueil{% endtrans %}</a>
+            <a href="/actualites/1">{% trans %}Actualités{% endtrans %}</a>
+            {% if userEmail is null %}
+                <a href="/connexion">{% trans %}Connexion{% endtrans %}</a>
+            {% else %}
+                {{ userEmail }}
+            {% endif %}
+            
+        {% endblock %}
         {% block body %}{% endblock %}
     </body>
 </html>
