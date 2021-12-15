@@ -10,3 +10,5 @@ Connexion: Login
 'Mot de passe': 'Password'
 Déconnexion: Logout
 Accueil: Home
+Du: 'From'
+au: to

@@ -7,7 +7,7 @@
     <h1>{% trans %}Actualités{% endtrans %}</h1>
     <div>
         <h2>{% trans %}Publié le{% endtrans %} {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
-        <p>{{ newsletter.newContentFr }}</p>
+        <p>{{ attribute(newsletter, 'newContent'~app.request.locale|capitalize) }}</p>
     </div>
 </section>
 {% endblock %}

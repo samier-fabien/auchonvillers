@@ -8,7 +8,7 @@
     {% for newsletter in newsletters %}
     <article>
         <h2>{% trans %}Publié le{% endtrans %} {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
-        <p>{{ newsletter.newContentFr|length > 25 ? newsletter.newContentFr|slice(0,25) ~ '...' : newsletter.newContentFr }}</p>
+        <p>{{ attribute(newsletter, 'newContent'~app.request.locale|capitalize)|length > 25 ? attribute(newsletter, 'newContent'~app.request.locale|capitalize)|slice(0,25) ~ '...' : attribute(newsletter, 'newContent'~app.request.locale|capitalize) }}</p>
         <a href="/actualite/{{ newsletter.id }}">{% trans %}Voir{% endtrans %}</a>
     </article>
     {% endfor %}
