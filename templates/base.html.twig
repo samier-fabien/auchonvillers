@@ -27,7 +27,7 @@
             {% endif %}
             {# Liste dans la variable globale définie dans services.yaml et envoyée dans la vue par twig.yaml celles qui ne sont pas la langue active #}
             {% for locale in locales|filter(locale => locale != app.request.locale) -%}
-                <a href="#">{{ locale }}</a>
+                <a href="/langue/{{ locale }}">{{ locale }}</a>
             {% endfor %}
         {% endblock %}
         {% block body %}{% endblock %}
