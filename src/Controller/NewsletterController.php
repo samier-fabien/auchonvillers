@@ -59,7 +59,7 @@ class NewsletterController extends AbstractController
 
     /**
      * @IsGranted("ROLE_AGENT")
-     * @Route("/{locale}/actualites/agent/creer", name="newsletterCreate")
+     * @Route("/{locale}/actualite/agent/creer", name="newsletterCreate")
      */
     public function create(Request $request, ManagerRegistry $doctrine): Response
     {
@@ -75,6 +75,7 @@ class NewsletterController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $doctrine->getManager()->persist($newsletter);
             $doctrine->getManager()->flush();
+            $this->addFlash('success', 'Votre nouvelle a été créée et ajoutée dans le fil d\'actualités');
             return $this->redirectToRoute('newsletter', [
                 'locale'=> $request->getSession()->get('_locale'),
                 'id' => $newsletter->getId(),

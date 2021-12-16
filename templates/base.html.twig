@@ -30,6 +30,16 @@
                 <a href="/langue/{{ locale }}">{{ locale }}</a>
             {% endfor %}
         {% endblock %}
+        {% block flashMessages %}
+            {# Affiche les messages flash #}
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="flash-{{ label }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        {% endblock %}
         {% block body %}{% endblock %}
     </body>
 </html>
