@@ -22,7 +22,7 @@ class NewsletterController extends AbstractController
     }
 
     /**
-     * @Route("/actualites/{page}", name="newsletters")
+     * @Route("/{locale}/actualites/{page}", name="actualites")
      */
     public function displayAll(int $page = 1): Response
     {
@@ -41,7 +41,7 @@ class NewsletterController extends AbstractController
     }
 
     /**
-     * @Route("/actualite/{id}", name="newsletter")
+     * @Route("/{locale}/actualite/{id}", name="newsletter")
      */
     public function display(Request $request, $id): Response
     {
@@ -56,7 +56,7 @@ class NewsletterController extends AbstractController
 
     /**
      * @IsGranted("ROLE_AGENT")
-     * @Route("/actualites/agent/creer", name="newsletterCreate")
+     * @Route("/{locale}/actualites/agent/creer", name="newsletterCreate")
      */
     public function create(): Response
     {
@@ -69,7 +69,7 @@ class NewsletterController extends AbstractController
 
     /**
      * @IsGranted("ROLE_AGENT")
-     * @Route("/actualites/agent/editer", name="newsletterUpdate")
+     * @Route("/{locale}/actualites/agent/editer", name="newsletterUpdate")
      */
     public function update(): Response
     {
@@ -82,7 +82,7 @@ class NewsletterController extends AbstractController
 
     /**
      * @IsGranted("ROLE_AGENT")
-     * @Route("/actualites/agent/supprimer", name="newsletterDelete")
+     * @Route("/{locale}/actualites/agent/supprimer", name="newsletterDelete")
      */
     public function delete(): Response
     {

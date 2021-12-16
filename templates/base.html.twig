@@ -18,12 +18,12 @@
     </head>
     <body>
         {% block nav %}
-            <a href="/">{% trans %}Accueil{% endtrans %}</a>
-            <a href="/actualites/1">{% trans %}Actualités{% endtrans %}</a>
+            <a href="/{{ app.request.locale }}/">{% trans %}Accueil{% endtrans %}</a>
+            <a href="/{{ app.request.locale }}/actualites/1">{% trans %}Actualités{% endtrans %}</a>
             {% if userEmail is null %}
-                <a href="/connexion">{% trans %}Connexion{% endtrans %}</a>
+                <a href="/{{ app.request.locale }}/connexion">{% trans %}Connexion{% endtrans %}</a>
             {% else %}
-                {{ userEmail }} <a href="/deconnexion">{% trans %}Déconnexion{% endtrans %}</a>
+                {{ userEmail }} <a href="/{{ app.request.locale }}/deconnexion">{% trans %}Déconnexion{% endtrans %}</a>
             {% endif %}
             {# Liste dans la variable globale définie dans services.yaml et envoyée dans la vue par twig.yaml celles qui ne sont pas la langue active #}
             {% for locale in locales|filter(locale => locale != app.request.locale) -%}
