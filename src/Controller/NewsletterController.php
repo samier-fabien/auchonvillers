@@ -2,14 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\Newsletter;
-use App\Repository\NewsletterRepository;
 use DateTime;
+use App\Entity\Newsletter;
+use App\Form\NewsletterType;
+use PhpParser\Node\Expr\New_;
+use App\Repository\NewsletterRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 
 class NewsletterController extends AbstractController
 {
@@ -22,7 +25,7 @@ class NewsletterController extends AbstractController
     }
 
     /**
-     * @Route("/{locale}/actualites/{page}", name="actualites")
+     * @Route("/{locale}/actualites/{page}", name="newsletters")
      */
     public function displayAll(int $page = 1): Response
     {
@@ -58,12 +61,30 @@ class NewsletterController extends AbstractController
      * @IsGranted("ROLE_AGENT")
      * @Route("/{locale}/actualites/agent/creer", name="newsletterCreate")
      */
-    public function create(): Response
+    public function create(Request $request, ManagerRegistry $doctrine): Response
     {
         $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : null;
 
+        $newsletter = new Newsletter();
+        $newsletter->setNewCreatedAt(new DateTime());
+        $newsletter->setUser($this->getUser());
+
+        $form = $this->createForm(NewsletterType::class, $newsletter);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $doctrine->getManager()->persist($newsletter);
+            $doctrine->getManager()->flush();
+            return $this->redirectToRoute('newsletter', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $newsletter->getId(),
+            ]);
+        }
+
+
         return $this->render('newsletter/create.html.twig', [
             'userEmail' => $userEmail,
+            'form' => $form->createView(),
         ]);
     }
 
