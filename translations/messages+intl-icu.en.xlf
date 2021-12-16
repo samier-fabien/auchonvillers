@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="fr" target-language="en" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="acVpEs4" resname="You are logged in as">
+        <source>You are logged in as</source>
+        <target>__You are logged in as</target>
+      </trans-unit>
+      <trans-unit id="0FJ_Sz1" resname="Logout">
+        <source>Logout</source>
+        <target>Logout</target>
+      </trans-unit>
+      <trans-unit id="dDUw20Q" resname="Please sign in">
+        <source>Please sign in</source>
+        <target>Please sign in</target>
+      </trans-unit>
+      <trans-unit id="588_9PF" resname="Password">
+        <source>Password</source>
+        <target>Password</target>
+      </trans-unit>
+      <trans-unit id="v9QCsvb" resname="Sign in">
+        <source>Sign in</source>
+        <target>Sign in</target>
+      </trans-unit>
+      <trans-unit id="UzFhc1Y" resname="Accueil">
+        <source>Accueil</source>
+        <target>Home</target>
+      </trans-unit>
+      <trans-unit id="2iiN0qP" resname="Actualités">
+        <source>Actualités</source>
+        <target>News</target>
+      </trans-unit>
+      <trans-unit id="e1pHRc_" resname="Publié le">
+        <source>Publié le</source>
+        <target>Published on</target>
+      </trans-unit>
+      <trans-unit id="Sh6EfsR" resname="Voir">
+        <source>Voir</source>
+        <target>See</target>
+      </trans-unit>
+      <trans-unit id="7MpfRes" resname="Tout voir">
+        <source>Tout voir</source>
+        <target>See all</target>
+      </trans-unit>
+      <trans-unit id="D99IX1v" resname="Agenda">
+        <source>Agenda</source>
+        <target>Agenda</target>
+      </trans-unit>
+      <trans-unit id="C2ciqK3" resname="Du">
+        <source>Du</source>
+        <target>From</target>
+      </trans-unit>
+      <trans-unit id="YyzS.qc" resname="au">
+        <source>au</source>
+        <target>to</target>
+      </trans-unit>
+      <trans-unit id="YdaVBBA" resname="Connexion">
+        <source>Connexion</source>
+        <target>Log in</target>
+      </trans-unit>
+      <trans-unit id="_1_eksG" resname="Déconnexion">
+        <source>Déconnexion</source>
+        <target>Log out</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
