@@ -14,7 +14,8 @@
     {% endfor %}
 </section>
 <div>
-    {% set url = '/{{ app.request.locale }}/actualites/' %}
+    {% set url = '/'~app.request.locale~'/actualites/' %}
+    {{url}}
     {% set page = page %}
     {% set pages = pages %}
     {% set nearby = 4 %}
