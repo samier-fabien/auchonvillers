@@ -46,8 +46,6 @@ class HomeController extends AbstractController
      */
     public function home(Request $request): Response
     {        
-        // Envoi de l'email de l'utilisateur dans template ou null s'il n'existe pas
-        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : null;
         // Envoi des "x" dernieres newsletters dans le template
         $newsletters = $this->newsletterRepo->findLast(self::NUMBER_OF_NEWSLETTERS);
         // Envoi des "x" dernieres actions dans le template
@@ -56,7 +54,6 @@ class HomeController extends AbstractController
         return $this->render('home/home.html.twig', [
             'newsletters' => $newsletters,
             'actions' => $actions,
-            'userEmail' => $userEmail,
         ]);
     }
 

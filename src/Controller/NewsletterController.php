@@ -25,16 +25,14 @@ class NewsletterController extends AbstractController
     }
 
     /**
-     * @Route("/{locale}/actualites/{page}", name="newsletters")
+     * @Route("/{locale}/actualites/{page<\d+>}", name="newsletters")
      */
     public function displayAll(int $page = 1): Response
     {
-        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : null;
         $newsletters = $this->newsletterRepo->findByPage($page, self::NEWSLETTERS_PER_PAGE);
         $pages = (int) ceil($this->newsletterRepo->getnumber() / self::NEWSLETTERS_PER_PAGE);
 
         return $this->render('newsletter/displayAll.html.twig', [
-            'userEmail' => $userEmail,
             'newsletters' => $newsletters,
             'page' => $page,
             'pages' => $pages,
@@ -44,15 +42,13 @@ class NewsletterController extends AbstractController
     }
 
     /**
-     * @Route("/{locale}/actualite/{id}", name="newsletter")
+     * @Route("/{locale}/actualite/{id<\d+>}", name="newsletter")
      */
     public function display(Request $request, $id): Response
     {
-        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : null;
         $newsletter = $this->newsletterRepo->findOneBy(["id" => $id]);
 
         return $this->render('newsletter/display.html.twig', [
-            'userEmail' => $userEmail,
             'newsletter' => $newsletter,
         ]);
     }
@@ -63,8 +59,6 @@ class NewsletterController extends AbstractController
      */
     public function create(Request $request, ManagerRegistry $doctrine): Response
     {
-        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : null;
-
         $newsletter = new Newsletter();
         $newsletter->setNewCreatedAt(new DateTime());
         $newsletter->setUser($this->getUser());
@@ -84,18 +78,19 @@ class NewsletterController extends AbstractController
 
 
         return $this->render('newsletter/create.html.twig', [
-            'userEmail' => $userEmail,
             'form' => $form->createView(),
         ]);
     }
 
     /**
      * @IsGranted("ROLE_AGENT")
-     * @Route("/{locale}/actualites/agent/editer", name="newsletterUpdate")
+     * @Route("/{locale}/actualites/{id<\d+>}/agent/editer", name="newsletterUpdate")
      */
     public function update(): Response
     {
         $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : null;
+
+        
 
         return $this->render('newsletter/update.html.twig', [
             'userEmail' => $userEmail,

@@ -20,16 +20,22 @@
         {% block nav %}
             <a href="/{{ app.request.locale }}/">{% trans %}Accueil{% endtrans %}</a>
             <a href="/{{ app.request.locale }}/actualites/1">{% trans %}Actualités{% endtrans %}</a>
-            {% if userEmail is null %}
-                <a href="/{{ app.request.locale }}/connexion">{% trans %}Connexion{% endtrans %}</a>
-            {% else %}
-                {{ userEmail }} <a href="/{{ app.request.locale }}/deconnexion">{% trans %}Déconnexion{% endtrans %}</a>
+            {% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
+                <a href="/{{ app.request.locale }}/gestion">{% trans %}Actualités{% endtrans %}</a>
             {% endif %}
-            {# Liste dans la variable globale définie dans services.yaml et envoyée dans la vue par twig.yaml celles qui ne sont pas la langue active #}
+            {# Si l'utilisateur est connecté on afficher son email et le lien vers deconnexion sinon le lien vers connexion #}
+            {% if is_granted('ROLE_USER') or is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
+                {{ app.user.email }}
+                <a href="/{{ app.request.locale }}/deconnexion">{% trans %}Deconnexion{% endtrans %}</a>
+            {% else %}
+                <a href="/{{ app.request.locale }}/connexion">{% trans %}Connexion{% endtrans %}</a>
+            {% endif %}
+            {# Liste dans la variable globale - définie dans services.yaml et envoyée dans la vue par twig.yaml - celles qui ne sont pas la langue active #}
             {% for locale in locales|filter(locale => locale != app.request.locale) -%}
                 <a href="/langue/{{ locale }}">{{ locale }}</a>
             {% endfor %}
         {% endblock %}
+
         {% block flashMessages %}
             {# Affiche les messages flash #}
             {% for label, messages in app.flashes %}
@@ -40,6 +46,7 @@
                 {% endfor %}
             {% endfor %}
         {% endblock %}
+        
         {% block body %}{% endblock %}
     </body>
 </html>
