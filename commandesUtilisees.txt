@@ -46,3 +46,6 @@ php bin/console debug:translation en --only-missing
 
 // Composer installe apache pack utile pour faire de l'url rewriting et configurer le serveur apache
 composer require symfony/apache-pack
+
+// Montre la liste des services
+php bin/console debug:container

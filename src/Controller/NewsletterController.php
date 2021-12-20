@@ -5,14 +5,16 @@ namespace App\Controller;
 use DateTime;
 use App\Entity\Newsletter;
 use App\Form\NewsletterType;
-use PhpParser\Node\Expr\New_;
+use App\Service\LocaleCheck;
 use App\Repository\NewsletterRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class NewsletterController extends AbstractController
 {
@@ -27,8 +29,15 @@ class NewsletterController extends AbstractController
     /**
      * @Route("/{locale}/actualites/{page<\d+>}", name="newsletters")
      */
-    public function displayAll(int $page = 1): Response
+    public function displayAll(string $locale, int $page = 1, Request $request): Response
     {
+        // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
+        if (!in_array($locale, $this->getParameter('app.locales'), true)) {
+            $request->getSession()->set('_locale', 'fr'); 
+            $request->getSession()->set('locale', 'fr');
+            return $this->redirect("/");
+        }
+
         $newsletters = $this->newsletterRepo->findByPage($page, self::NEWSLETTERS_PER_PAGE);
         $pages = (int) ceil($this->newsletterRepo->getnumber() / self::NEWSLETTERS_PER_PAGE);
 
@@ -44,21 +53,46 @@ class NewsletterController extends AbstractController
     /**
      * @Route("/{locale}/actualite/{id<\d+>}", name="newsletter")
      */
-    public function display(Request $request, $id): Response
+    public function display(string $locale, int $id, Request $request, TranslatorInterface $translator): Response
     {
+        // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
+        if (!in_array($locale, $this->getParameter('app.locales'), true)) {
+            $request->getSession()->set('_locale', 'fr'); 
+            $request->getSession()->set('locale', 'fr');
+            return $this->redirect("/");
+        }
+        
         $newsletter = $this->newsletterRepo->findOneBy(["id" => $id]);
 
-        return $this->render('newsletter/display.html.twig', [
-            'newsletter' => $newsletter,
-        ]);
+        if (!is_null($newsletter)) {
+            return $this->render('newsletter/display.html.twig', [
+                'newsletter' => $newsletter,
+            ]);
+        } else {
+            $message = $translator->trans('La nouvelle que vous essayez de consulter n\'existe pas.');
+            $this->addFlash('notice', $message);
+            return $this->redirectToRoute('newsletters', [
+                'locale' => $locale,
+                'page' => 1,
+            ]);
+        }
+
+        
     }
 
     /**
      * @IsGranted("ROLE_AGENT")
      * @Route("/{locale}/actualite/agent/creer", name="newsletterCreate")
      */
-    public function create(Request $request, ManagerRegistry $doctrine): Response
+    public function create(string $locale, Request $request, ManagerRegistry $doctrine): Response
     {
+        // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
+        if (!in_array($locale, $this->getParameter('app.locales'), true)) {
+            $request->getSession()->set('_locale', 'fr'); 
+            $request->getSession()->set('locale', 'fr');
+            return $this->redirect("/");
+        }
+        
         $newsletter = new Newsletter();
         $newsletter->setNewCreatedAt(new DateTime());
         $newsletter->setUser($this->getUser());
@@ -84,29 +118,123 @@ class NewsletterController extends AbstractController
 
     /**
      * @IsGranted("ROLE_AGENT")
-     * @Route("/{locale}/actualites/{id<\d+>}/agent/editer", name="newsletterUpdate")
+     * @Route("/{locale}/actualite/{id<\d+>}/agent/editer", name="newsletterUpdate")
      */
-    public function update(): Response
+    public function update(string $locale, int $id, Request $request, ManagerRegistry $doctrine): Response
     {
-        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : null;
-
+        // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
+        if (!in_array($locale, $this->getParameter('app.locales'), true)) {
+            $request->getSession()->set('_locale', 'fr'); 
+            $request->getSession()->set('locale', 'fr');
+            return $this->redirect("/");
+        }
         
+        // On va chercher la newsletter a modifier
+        $newsletter = $this->newsletterRepo->findOneBy(["id" => $id]);
 
-        return $this->render('newsletter/update.html.twig', [
-            'userEmail' => $userEmail,
-        ]);
+        // Si la newsletter existe
+        if (!is_null($newsletter)) {
+            // Création du formulaire
+            $form = $this->createForm(NewsletterType::class, $newsletter);
+            $form->handleRequest($request);
+
+            // Si le formulaire est bien rempli
+            if ($form->isSubmitted() && $form->isValid()) {
+                $doctrine->getManager()->persist($newsletter);
+                $doctrine->getManager()->flush();
+                $this->addFlash('success', 'Votre nouvelle a été créée et ajoutée dans le fil d\'actualités');
+                return $this->redirectToRoute('newsletter', [
+                    'locale'=> $request->getSession()->get('_locale'),
+                    'id' => $newsletter->getId(),
+                ]);
+            }
+
+            return $this->render('newsletter/update.html.twig', [
+                'form' => $form->createView(),
+            ]);
+
+
+        // Sinon, redirection vers la liste des actualités
+        } else {
+            $this->addFlash('notice', 'La nouvelle que vous essayez de modifier n\'existe pas.');
+            return $this->redirectToRoute('newsletters', [
+                'locale' => $locale,
+                'page' => 1,
+            ]);
+        }            
     }
 
     /**
      * @IsGranted("ROLE_AGENT")
-     * @Route("/{locale}/actualites/agent/supprimer", name="newsletterDelete")
+     * @Route("/{locale}/actualite/{id<\d+>}/agent/supprimer", name="newsletterDelete")
      */
-    public function delete(): Response
+    public function delete(string $locale, int $id, Request $request, ManagerRegistry $doctrine): Response
     {
-        $userEmail = ($this->getUser()) ? $this->getUser()->getEmail() : null;
+        // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
+        if (!in_array($locale, $this->getParameter('app.locales'), true)) {
+            $request->getSession()->set('_locale', 'fr'); 
+            $request->getSession()->set('locale', 'fr');
+            return $this->redirect("/");
+        }
 
-        return $this->render('newsletter/creation.html.twig', [
-            'userEmail' => $userEmail,
-        ]);
+        // On va chercher la newsletter a supprimer
+        $newsletter = $this->newsletterRepo->findOneBy(["id" => $id]);
+
+        // Si la newsletter existe
+        if (!is_null($newsletter)) {
+            // Affichage de la question êtes-vous sure... ?
+            return $this->render('newsletter/delete.html.twig', [
+                'locale' => $locale,
+                'newsletter' => $newsletter,
+            ]);
+
+
+        // Sinon, redirection vers la liste des actualités
+        } else {
+            $this->addFlash('notice', 'La nouvelle que vous essayez de supprimer n\'existe pas.');
+            return $this->redirectToRoute('newsletters', [
+                'locale' => $locale,
+                'page' => 1,
+            ]);
+        }            
+    }
+
+    /**
+     * @IsGranted("ROLE_AGENT")
+     * @Route("/{locale}/actualite/{id<\d+>}/agent/suppression", name="newsletterDeletion")
+     */
+    public function deletion(string $locale, int $id, Request $request, ManagerRegistry $doctrine): Response
+    {
+        // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
+        if (!in_array($locale, $this->getParameter('app.locales'), true)) {
+            $request->getSession()->set('_locale', 'fr'); 
+            $request->getSession()->set('locale', 'fr');
+            return $this->redirect("/");
+        }
+
+        // On va chercher la newsletter a supprimer
+        $newsletter = $this->newsletterRepo->findOneBy(["id" => $id]);
+
+        // Si la newsletter existe
+        if (!is_null($newsletter)) {
+            // Suppression
+            $doctrine->getManager()->remove($newsletter);
+            $doctrine->getManager()->flush();
+            $this->addFlash('notice', 'La nouvelle a bien été supprimée.');
+
+            return $this->redirectToRoute('newsletters', [
+                'locale' => $locale,
+                'page' => 1,
+            ]);
+
+
+        // Sinon, redirection vers la liste des actualités
+        } else {
+            $this->addFlash('notice', 'La nouvelle que vous essayez de supprimer n\'existe pas.');
+            return $this->redirectToRoute('newsletters', [
+                'locale' => $locale,
+                'page' => 1,
+            ]);
+        }            
     }
 }

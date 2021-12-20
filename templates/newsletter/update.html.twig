@@ -1,11 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello NewsletterController!{% endblock %}
+{% block title %}Mise à jour{% endblock %}
 
 {% block body %}
 <div>
     <p>
-        <h1>Editer</h1>
+        <h1>Mise à jour de la nouvelle</h1>
     </p>
+
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+        {{ form_label(form.new_content_fr, 'Contenu de la nouvelle en français') }}
+        {{ form_errors(form.new_content_fr) }}
+        {{ form_widget(form.new_content_fr) }}
+        {{ form_label(form.new_content_en, 'Contenu de la nouvelle en anglais') }}
+        {{ form_errors(form.new_content_en) }}
+        {{ form_widget(form.new_content_en) }}
+        {{ form_errors(form) }}
+        <button type="submit" class="btn btn-primary">Mettre à jour</button>
+    {{ form_end(form) }}
 </div>
 {% endblock %}

@@ -44,8 +44,15 @@ class HomeController extends AbstractController
     /**
      * @Route("/{locale}", name="home")
      */
-    public function home(Request $request): Response
+    public function home(string $locale, Request $request): Response
     {        
+        // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
+        if (!in_array($locale, $this->getParameter('app.locales'), true)) {
+            $request->getSession()->set('_locale', 'fr'); 
+            $request->getSession()->set('locale', 'fr');
+            return $this->redirect("/");
+        }
+
         // Envoi des "x" dernieres newsletters dans le template
         $newsletters = $this->newsletterRepo->findLast(self::NUMBER_OF_NEWSLETTERS);
         // Envoi des "x" dernieres actions dans le template

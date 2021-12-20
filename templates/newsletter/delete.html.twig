@@ -1,11 +1,23 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello NewsletterController!{% endblock %}
+{% block title %}{% trans %}Supprimer nouvelle{% endtrans %}{% endblock %}
 
 {% block body %}
-<div>
-    <p>
-        <h1>Supprimer</h1>
-    </p>
-</div>
+<section>
+    <h1>{% trans %}Supprimer la nouvelle{% endtrans %}</h1>
+    <div>
+        <h2>{% trans %}Publié le{% endtrans %} {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
+        <p>
+            {% if attribute(newsletter, 'newContent'~app.request.locale|capitalize) is not empty %}
+                {{ attribute(newsletter, 'newContent'~app.request.locale|capitalize) }}
+            {% else %}
+                {{ newsletter.newContentFr }}
+            {% endif %}
+        </p>
+    </div>
+    <div>
+        <h2>Etes-vous sure de vouloir supprimer cette nouvelle ?</h2>
+        <a href="/{{ locale }}/actualite/{{ newsletter.id }}/agent/suppression">Oui</a><a href="/{{ locale }}/actualites/1">Non</a>
+    </div>
+</section>
 {% endblock %}

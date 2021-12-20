@@ -65,6 +65,10 @@
         <source>Déconnexion</source>
         <target>Log out</target>
       </trans-unit>
+      <trans-unit id="nouvelle_consultation">
+          <source>La nouvelle que vous essayez de consulter n'existe pas.</source>
+          <target>The news you are trying to read does not exist.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
