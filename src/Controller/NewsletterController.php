@@ -120,7 +120,7 @@ class NewsletterController extends AbstractController
      * @IsGranted("ROLE_AGENT")
      * @Route("/{locale}/actualite/{id<\d+>}/agent/editer", name="newsletterUpdate")
      */
-    public function update(string $locale, int $id, Request $request, ManagerRegistry $doctrine): Response
+    public function update(string $locale = 'fr', int $id, Request $request, ManagerRegistry $doctrine): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {

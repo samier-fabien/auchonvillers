@@ -58,6 +58,9 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
 
     protected function getLoginUrl(Request $request): string
     {
+        if (empty($request->getSession()->get('_locale')) || is_null($request->getSession()->get('_locale'))) {
+            $request->getSession()->set('_locale', 'fr');
+        }
         return $this->urlGenerator->generate(self::LOGIN_ROUTE, [
             'locale'=> $request->getSession()->get('_locale'),
         ]);

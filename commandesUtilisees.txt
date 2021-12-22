@@ -44,8 +44,17 @@ php bin/console translation:extract --help
 // Montre les traductions manquantes en anglais. Sans --only-missing : montre toutes les traductions
 php bin/console debug:translation en --only-missing
 
-// Composer installe apache pack utile pour faire de l'url rewriting et configurer le serveur apache
+// Composer install apache pack utile pour faire de l'url rewriting et configurer le serveur apache
 composer require symfony/apache-pack
 
 // Montre la liste des services
 php bin/console debug:container
+
+// CKEditor >> php ext-zip obligatoire : sudo apt install php-zip
+composer require friendsofsymfony/ckeditor-bundle
+symfony console ckeditor:install
+symfony console assets:install public
+
+// Elfinder
+composer require helios-ag/fm-elfinder-bundle
+symfony console elfinder:install
