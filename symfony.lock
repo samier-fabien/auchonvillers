@@ -1,4 +1,10 @@
 {
+    "artgris/filemanager-bundle": {
+        "version": "2.2.5"
+    },
+    "composer/installers": {
+        "version": "v2.0.1"
+    },
     "composer/package-versions-deprecated": {
         "version": "1.11.99.4"
     },
@@ -126,6 +132,9 @@
     },
     "nikic/php-parser": {
         "version": "v4.13.2"
+    },
+    "oomphinc/composer-installers-extender": {
+        "version": "2.0.1"
     },
     "phar-io/manifest": {
         "version": "2.0.3"

@@ -15,7 +15,8 @@ class NewsletterType extends AbstractType
     {
         $builder
             ->add('new_content_fr', CKEditorType::class, [
-                'help' => "Le contenu de la nouvelle en français"
+                'help' => "Le contenu de la nouvelle en français",
+                'config_name' => 'main_config'
             ])
             ->add('new_content_en', CKEditorType::class, [
                 'help' => "Le contenu de la nouvelle en anglais"
