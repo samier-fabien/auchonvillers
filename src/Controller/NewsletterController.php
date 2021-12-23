@@ -42,8 +42,6 @@ class NewsletterController extends AbstractController
         $newsletters = $this->newsletterRepo->findByPage($page, self::NEWSLETTERS_PER_PAGE);
         $pages = (int) ceil($this->newsletterRepo->getnumber() / self::NEWSLETTERS_PER_PAGE);
 
-        //dd($newsletters);
-
         $datas = [];
         foreach ($newsletters as $key => $value) {
             $datas[$key] = [
@@ -59,8 +57,6 @@ class NewsletterController extends AbstractController
             'newsletters' => $datas,
             'page' => $page,
             'pages' => $pages,
-            'total' => $pages,
-            'current' => $page,
         ]);
     }
 

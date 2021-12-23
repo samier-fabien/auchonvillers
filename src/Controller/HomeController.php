@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\ActionRepository;
 use App\Repository\NewsletterRepository;
+use App\Service\Regex;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,7 +45,7 @@ class HomeController extends AbstractController
     /**
      * @Route("/{locale}", name="home")
      */
-    public function home(string $locale, Request $request): Response
+    public function home(string $locale, Request $request, Regex $regex): Response
     {        
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -58,8 +59,19 @@ class HomeController extends AbstractController
         // Envoi des "x" dernieres actions dans le template
         $actions = $this->actionRepo->findLast(self::NUMBER_OF_ACTIONS);
 
+        $datas = [];
+        foreach ($newsletters as $key => $value) {
+            $datas[$key] = [
+                'id' => $value->getId(),
+                'newCreatedAt' => $value->getNewCreatedAt(),
+                'newContentFr' => $value->getNewContentFr(),
+                'newContentEn' => $value->getNewContentEn(),
+                'thumb' => $regex->findFirstImage($value->getNewContentFr()),
+            ];
+        }
+
         return $this->render('home/home.html.twig', [
-            'newsletters' => $newsletters,
+            'newsletters' => $datas,
             'actions' => $actions,
         ]);
     }
