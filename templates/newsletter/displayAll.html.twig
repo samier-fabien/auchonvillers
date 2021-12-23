@@ -7,6 +7,7 @@
     <h1>{% trans %}Actualités{% endtrans %}</h1>
     {% for newsletter in newsletters %}
     <article>
+        <img src="{{ newsletter.thumb }}" alt="">
         <h2>{% trans %}Publié le{% endtrans %} {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
         <p>
             {% if attribute(newsletter, 'newContent'~app.request.locale|capitalize) is not empty %}

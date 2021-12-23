@@ -7,6 +7,7 @@ use App\Entity\Newsletter;
 use App\Form\NewsletterType;
 use App\Service\LocaleCheck;
 use App\Repository\NewsletterRepository;
+use App\Service\Regex;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +30,7 @@ class NewsletterController extends AbstractController
     /**
      * @Route("/{locale}/actualites/{page<\d+>}", name="newsletters")
      */
-    public function displayAll(string $locale, int $page = 1, Request $request): Response
+    public function displayAll(string $locale, int $page = 1, Request $request, Regex $regex): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -41,8 +42,21 @@ class NewsletterController extends AbstractController
         $newsletters = $this->newsletterRepo->findByPage($page, self::NEWSLETTERS_PER_PAGE);
         $pages = (int) ceil($this->newsletterRepo->getnumber() / self::NEWSLETTERS_PER_PAGE);
 
+        //dd($newsletters);
+
+        $datas = [];
+        foreach ($newsletters as $key => $value) {
+            $datas[$key] = [
+                'id' => $value->getId(),
+                'newCreatedAt' => $value->getNewCreatedAt(),
+                'newContentFr' => $value->getNewContentFr(),
+                'newContentEn' => $value->getNewContentEn(),
+                'thumb' => $regex->findFirstImage($value->getNewContentFr()),
+            ];
+        }
+
         return $this->render('newsletter/displayAll.html.twig', [
-            'newsletters' => $newsletters,
+            'newsletters' => $datas,
             'page' => $page,
             'pages' => $pages,
             'total' => $pages,
