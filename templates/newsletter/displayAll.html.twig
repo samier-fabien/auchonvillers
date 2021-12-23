@@ -10,7 +10,7 @@
         <h2>{% trans %}Publié le{% endtrans %} {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
         <p>
             {% if attribute(newsletter, 'newContent'~app.request.locale|capitalize) is not empty %}
-                {{ attribute(newsletter, 'newContent'~app.request.locale|capitalize)|length > 25 ? attribute(newsletter, 'newContent'~app.request.locale|capitalize)|slice(0,25) ~ '...' : attribute(newsletter, 'newContent'~app.request.locale|capitalize) }}
+                {{ attribute(newsletter, 'newContent'~app.request.locale|capitalize)|length > 25 ? attribute(newsletter, 'newContent'~app.request.locale|capitalize)|slice(0,25) ~ '...'|raw : attribute(newsletter, 'newContent'~app.request.locale|capitalize)|raw }}
             {% else %}
                 {{ newsletter.newContentFr|length > 25 ? newsletter.newContentFr|slice(0,25) ~ '...' : newsletter.newContentFr }}
             {% endif %}
