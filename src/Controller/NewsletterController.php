@@ -35,7 +35,6 @@ class NewsletterController extends AbstractController
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
-            $request->getSession()->set('locale', 'fr');
             return $this->redirect("/");
         }
 
@@ -68,7 +67,6 @@ class NewsletterController extends AbstractController
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
-            $request->getSession()->set('locale', 'fr');
             return $this->redirect("/");
         }
         
@@ -101,7 +99,6 @@ class NewsletterController extends AbstractController
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
-            $request->getSession()->set('locale', 'fr');
             return $this->redirect("/");
         }
         
@@ -139,7 +136,6 @@ class NewsletterController extends AbstractController
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
-            $request->getSession()->set('locale', 'fr');
             return $this->redirect("/");
         }
         
@@ -191,7 +187,6 @@ class NewsletterController extends AbstractController
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
-            $request->getSession()->set('locale', 'fr');
             return $this->redirect("/");
         }
 
@@ -226,7 +221,6 @@ class NewsletterController extends AbstractController
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
-            $request->getSession()->set('locale', 'fr');
             return $this->redirect("/");
         }
 

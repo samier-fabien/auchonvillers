@@ -31,13 +31,11 @@ class HomeController extends AbstractController
         // Cherche si La session _locale existe. Si non, on la crée et configure en fr
         if (!$request->getSession()->get('_locale')) {
             $request->getSession()->set('_locale', 'fr'); 
-            $request->getSession()->set('locale', 'fr');
         }
 
         // Si la _locale n'est pas dans la liste de app.locales alors on la reconfigure en fr
         if (!in_array($request->getSession()->get('_locale'), $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
-            $request->getSession()->set('locale', 'fr');
         }
         return $this->redirect("/" . $request->getSession()->get('_locale'));
     }
@@ -50,7 +48,6 @@ class HomeController extends AbstractController
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
-            $request->getSession()->set('locale', 'fr');
             return $this->redirect("/");
         }
 
@@ -93,7 +90,6 @@ class HomeController extends AbstractController
         
         // Stockage de la langue dans la session
         $request->getSession()->set('_locale', $locale); 
-        $request->getSession()->set('locale', $locale);
 
         // Si la page précédente n'existe pas alors on retourne l'url de l'accueil, 
         $url = (!is_null($request->headers->get('referer'))) ? $request->headers->get('referer') : "/";
