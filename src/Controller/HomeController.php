@@ -46,7 +46,7 @@ class HomeController extends AbstractController
      * @Route("/{locale}", name="home")
      */
     public function home(string $locale, Request $request, Regex $regex): Response
-    {        
+    {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
@@ -64,9 +64,9 @@ class HomeController extends AbstractController
             $datas[$key] = [
                 'id' => $value->getId(),
                 'newCreatedAt' => $value->getNewCreatedAt(),
-                'newContentFr' => $value->getNewContentFr(),
-                'newContentEn' => $value->getNewContentEn(),
-                'thumb' => $regex->findFirstImage($value->getNewContentFr()),
+                'newContentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES)),
+                'newContentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getNewContentEn(), ENT_QUOTES)),
+                'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES)),
             ];
         }
 

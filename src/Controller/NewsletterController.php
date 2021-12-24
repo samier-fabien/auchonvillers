@@ -47,9 +47,9 @@ class NewsletterController extends AbstractController
             $datas[$key] = [
                 'id' => $value->getId(),
                 'newCreatedAt' => $value->getNewCreatedAt(),
-                'newContentFr' => $value->getNewContentFr(),
-                'newContentEn' => $value->getNewContentEn(),
-                'thumb' => $regex->findFirstImage($value->getNewContentFr()),
+                'newContentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES)),
+                'newContentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getNewContentEn(), ENT_QUOTES)),
+                'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES)),
             ];
         }
 
@@ -73,6 +73,8 @@ class NewsletterController extends AbstractController
         }
         
         $newsletter = $this->newsletterRepo->findOneBy(["id" => $id]);
+        $newsletter->setNewContentFr(htmlspecialchars_decode($newsletter->getNewContentFr()), ENT_QUOTES);
+        $newsletter->setNewContentEn(htmlspecialchars_decode($newsletter->getNewContentEn()), ENT_QUOTES);
 
         if (!is_null($newsletter)) {
             return $this->render('newsletter/display.html.twig', [
@@ -111,6 +113,8 @@ class NewsletterController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $newsletter->setNewContentFr(htmlspecialchars($newsletter->getNewContentFr(), ENT_QUOTES));
+            $newsletter->setNewContentEn(htmlspecialchars($newsletter->getNewContentEn(), ENT_QUOTES));
             $doctrine->getManager()->persist($newsletter);
             $doctrine->getManager()->flush();
             $this->addFlash('success', 'Votre nouvelle a été créée et ajoutée dans le fil d\'actualités');
@@ -141,6 +145,8 @@ class NewsletterController extends AbstractController
         
         // On va chercher la newsletter a modifier
         $newsletter = $this->newsletterRepo->findOneBy(["id" => $id]);
+        $newsletter->setNewContentFr(htmlspecialchars_decode($newsletter->getNewContentFr()), ENT_QUOTES);
+        $newsletter->setNewContentEn(htmlspecialchars_decode($newsletter->getNewContentEn()), ENT_QUOTES);
 
         // Si la newsletter existe
         if (!is_null($newsletter)) {
@@ -150,6 +156,8 @@ class NewsletterController extends AbstractController
 
             // Si le formulaire est bien rempli
             if ($form->isSubmitted() && $form->isValid()) {
+                $newsletter->setNewContentFr(htmlspecialchars($newsletter->getNewContentFr(), ENT_QUOTES));
+                $newsletter->setNewContentEn(htmlspecialchars($newsletter->getNewContentEn(), ENT_QUOTES));
                 $doctrine->getManager()->persist($newsletter);
                 $doctrine->getManager()->flush();
                 $this->addFlash('success', 'Votre nouvelle a été créée et ajoutée dans le fil d\'actualités');
