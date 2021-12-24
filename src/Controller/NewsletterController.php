@@ -38,12 +38,20 @@ class NewsletterController extends AbstractController
             return $this->redirect("/");
         }
 
+        // Recherche des newsletters dans la bdd
         $newsletters = $this->newsletterRepo->findByPage($page, self::NEWSLETTERS_PER_PAGE);
+
+        // Calcul du nombres de pages en fonction du nombre de news par page
         $pages = (int) ceil($this->newsletterRepo->getnumber() / self::NEWSLETTERS_PER_PAGE);
 
-        $datas = [];
+        // Le tableau datas contient toutes les données des newsletters
+        // Utilité :
+        //  -retourne des données décodées vias htmlSpecialChars
+        //  -ajoute un thumbnail basé sur la première image trouvé dans la news fr (seule la version fr est obligatoire dans le formulaire)
+        //  -le texte est une version de "x" caractères (twig) sans les tags html créés avec ckeditor : pas besoin de 'titre' ni de 'chemin vers une image' en bdd
+        $newsDatas = [];
         foreach ($newsletters as $key => $value) {
-            $datas[$key] = [
+            $newsDatas[$key] = [
                 'id' => $value->getId(),
                 'newCreatedAt' => $value->getNewCreatedAt(),
                 'newContentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES)),
@@ -53,7 +61,7 @@ class NewsletterController extends AbstractController
         }
 
         return $this->render('newsletter/displayAll.html.twig', [
-            'newsletters' => $datas,
+            'newsletters' => $newsDatas,
             'page' => $page,
             'pages' => $pages,
         ]);
@@ -70,14 +78,19 @@ class NewsletterController extends AbstractController
             return $this->redirect("/");
         }
         
+        // Recherche de la news avec l'id "x"
         $newsletter = $this->newsletterRepo->findOneBy(["id" => $id]);
-        $newsletter->setNewContentFr(htmlspecialchars_decode($newsletter->getNewContentFr()), ENT_QUOTES);
-        $newsletter->setNewContentEn(htmlspecialchars_decode($newsletter->getNewContentEn()), ENT_QUOTES);
 
+        // Si la news est trouvée
         if (!is_null($newsletter)) {
+            // On en décode les contenus fr et en
+            $newsletter->setNewContentFr(htmlspecialchars_decode($newsletter->getNewContentFr()), ENT_QUOTES);
+            $newsletter->setNewContentEn(htmlspecialchars_decode($newsletter->getNewContentEn()), ENT_QUOTES);
+
             return $this->render('newsletter/display.html.twig', [
                 'newsletter' => $newsletter,
             ]);
+        // Sinon, redirection vers la liste des actualités avec un message
         } else {
             $message = $translator->trans('La nouvelle que vous essayez de consulter n\'existe pas.');
             $this->addFlash('notice', $message);
@@ -102,18 +115,23 @@ class NewsletterController extends AbstractController
             return $this->redirect("/");
         }
         
+        // Création d'un nouvel objet Newsletter qu'on pré-rempli avec la date actuelle et l'utilisateur actuel
         $newsletter = new Newsletter();
         $newsletter->setNewCreatedAt(new DateTime());
         $newsletter->setUser($this->getUser());
 
+        // Créaion du formulaire
         $form = $this->createForm(NewsletterType::class, $newsletter);
         $form->handleRequest($request);
 
+        // Si formulaire soumis et correctement rempli...
         if ($form->isSubmitted() && $form->isValid()) {
+            // ... alors on encode les contenus fr et en avant de les ajouter en bdd
             $newsletter->setNewContentFr(htmlspecialchars($newsletter->getNewContentFr(), ENT_QUOTES));
             $newsletter->setNewContentEn(htmlspecialchars($newsletter->getNewContentEn(), ENT_QUOTES));
             $doctrine->getManager()->persist($newsletter);
             $doctrine->getManager()->flush();
+            // Ajout de message de succes et redirection vers la news qui vient d'être publiée
             $this->addFlash('success', 'Votre nouvelle a été créée et ajoutée dans le fil d\'actualités');
             return $this->redirectToRoute('newsletter', [
                 'locale'=> $request->getSession()->get('_locale'),
@@ -141,21 +159,25 @@ class NewsletterController extends AbstractController
         
         // On va chercher la newsletter a modifier
         $newsletter = $this->newsletterRepo->findOneBy(["id" => $id]);
-        $newsletter->setNewContentFr(htmlspecialchars_decode($newsletter->getNewContentFr()), ENT_QUOTES);
-        $newsletter->setNewContentEn(htmlspecialchars_decode($newsletter->getNewContentEn()), ENT_QUOTES);
 
-        // Si la newsletter existe
+        // Si la news est trouvée
         if (!is_null($newsletter)) {
+            // On en décode les contenus fr et en
+            $newsletter->setNewContentFr(htmlspecialchars_decode($newsletter->getNewContentFr()), ENT_QUOTES);
+            $newsletter->setNewContentEn(htmlspecialchars_decode($newsletter->getNewContentEn()), ENT_QUOTES);    
+
             // Création du formulaire
             $form = $this->createForm(NewsletterType::class, $newsletter);
             $form->handleRequest($request);
 
-            // Si le formulaire est bien rempli
+            // Si le formulaire est bien rempli..
             if ($form->isSubmitted() && $form->isValid()) {
+                // ... on encode les contenus fr et en avant de les ajhouter en bdd
                 $newsletter->setNewContentFr(htmlspecialchars($newsletter->getNewContentFr(), ENT_QUOTES));
                 $newsletter->setNewContentEn(htmlspecialchars($newsletter->getNewContentEn(), ENT_QUOTES));
                 $doctrine->getManager()->persist($newsletter);
                 $doctrine->getManager()->flush();
+                // Ajout de message de succes et redirection vers la news qui vient d'être modifié
                 $this->addFlash('success', 'Votre nouvelle a été créée et ajoutée dans le fil d\'actualités');
                 return $this->redirectToRoute('newsletter', [
                     'locale'=> $request->getSession()->get('_locale'),
@@ -168,7 +190,7 @@ class NewsletterController extends AbstractController
             ]);
 
 
-        // Sinon, redirection vers la liste des actualités
+        // Sinon, redirection vers la liste des actualités avec un message
         } else {
             $this->addFlash('notice', 'La nouvelle que vous essayez de modifier n\'existe pas.');
             return $this->redirectToRoute('newsletters', [
@@ -193,8 +215,12 @@ class NewsletterController extends AbstractController
         // On va chercher la newsletter a supprimer
         $newsletter = $this->newsletterRepo->findOneBy(["id" => $id]);
 
-        // Si la newsletter existe
+        // Si la news est trouvée       
         if (!is_null($newsletter)) {
+            // On en décode les contenus fr et en
+            $newsletter->setNewContentFr(htmlspecialchars_decode($newsletter->getNewContentFr()), ENT_QUOTES);
+            $newsletter->setNewContentEn(htmlspecialchars_decode($newsletter->getNewContentEn()), ENT_QUOTES);    
+
             // Affichage de la question êtes-vous sure... ?
             return $this->render('newsletter/delete.html.twig', [
                 'locale' => $locale,
@@ -202,7 +228,7 @@ class NewsletterController extends AbstractController
             ]);
 
 
-        // Sinon, redirection vers la liste des actualités
+        // Sinon, redirection vers la liste des actualités avec un message
         } else {
             $this->addFlash('notice', 'La nouvelle que vous essayez de supprimer n\'existe pas.');
             return $this->redirectToRoute('newsletters', [
@@ -227,7 +253,7 @@ class NewsletterController extends AbstractController
         // On va chercher la newsletter a supprimer
         $newsletter = $this->newsletterRepo->findOneBy(["id" => $id]);
 
-        // Si la newsletter existe
+        // Si la news est trouvée
         if (!is_null($newsletter)) {
             // Suppression
             $doctrine->getManager()->remove($newsletter);
@@ -240,7 +266,7 @@ class NewsletterController extends AbstractController
             ]);
 
 
-        // Sinon, redirection vers la liste des actualités
+        // Sinon, redirection vers la liste des actualités avec un message
         } else {
             $this->addFlash('notice', 'La nouvelle que vous essayez de supprimer n\'existe pas.');
             return $this->redirectToRoute('newsletters', [

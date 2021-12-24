@@ -28,7 +28,7 @@ class HomeController extends AbstractController
      */
     public function index(Request $request): Response
     {
-        // Cherche si La session _locale existe. Si non, on la crée et configure en fr
+        // Cherche si La session _locale existe. Sinon, on la crée et configure en fr
         if (!$request->getSession()->get('_locale')) {
             $request->getSession()->set('_locale', 'fr'); 
         }
@@ -51,14 +51,20 @@ class HomeController extends AbstractController
             return $this->redirect("/");
         }
 
-        // Envoi des "x" dernieres newsletters dans le template
+        // Recherche des "x" dernieres newsletters dans la bdd
         $newsletters = $this->newsletterRepo->findLast(self::NUMBER_OF_NEWSLETTERS);
-        // Envoi des "x" dernieres actions dans le template
+
+        // Recherche des "x" dernieres actions dans la bdd
         $actions = $this->actionRepo->findLast(self::NUMBER_OF_ACTIONS);
 
-        $datas = [];
+        // Le tableau datas contient toutes les données des newsletters
+        // Utilité :
+        //  -retourne des données décodées vias htmlSpecialChars
+        //  -ajoute un thumbnail basé sur la première image trouvé dans la news fr (seule la version fr est obligatoire dans le formulaire)
+        //  -le texte est une version de "x" caractères (twig) sans les tags html créés avec ckeditor : pas besoin de 'titre' ni de 'chemin vers une image' en bdd
+        $newsDatas = [];
         foreach ($newsletters as $key => $value) {
-            $datas[$key] = [
+            $newsDatas[$key] = [
                 'id' => $value->getId(),
                 'newCreatedAt' => $value->getNewCreatedAt(),
                 'newContentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES)),
@@ -68,7 +74,7 @@ class HomeController extends AbstractController
         }
 
         return $this->render('home/home.html.twig', [
-            'newsletters' => $datas,
+            'newsletters' => $newsDatas,
             'actions' => $actions,
         ]);
     }
@@ -84,7 +90,6 @@ class HomeController extends AbstractController
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
-            $request->getSession()->set('locale', 'fr');
             return $this->redirect("/");
         }
         
@@ -94,7 +99,7 @@ class HomeController extends AbstractController
         // Si la page précédente n'existe pas alors on retourne l'url de l'accueil, 
         $url = (!is_null($request->headers->get('referer'))) ? $request->headers->get('referer') : "/";
 
-        // si elle existe alors on retourne à la page précédente en changeant /{locale}/.../... par la nouvelle locale
+        // si elle existe alors on retourne à la page précédente en changeant /{locale}/.../... par la nouvelle locale et...
         $tab = explode("/", $url);
         for ($i=0; $i < count($tab); $i++) { 
             if ($tab[$i] == $lastLocale) {
@@ -104,7 +109,7 @@ class HomeController extends AbstractController
         }
         $url = implode("/", $tab);
 
-        // Redirection vers l'url
+        // ... on redirige vers l'url
         return $this->redirect($url);
     }
 }
