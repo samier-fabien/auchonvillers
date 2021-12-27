@@ -17,15 +17,11 @@ class ArticleFixtures extends Fixture implements DependentFixtureInterface
         
         $articles = [
             1 => [
-                'title_fr' => 'Premier article fr',
-                'title_en' => 'First article en',
                 'content_fr' => 'Corps du premier article en français',
                 'content_en' => 'First article\'s body in english',
                 'order_of_appearance' => 1
             ],
             2 => [
-                'title_fr' => 'Deuxième article fr',
-                'title_en' => 'Second article en',
                 'content_fr' => 'Corps du deuxième article en français',
                 'content_en' => 'Second article\'s body in english',
                 'order_of_appearance' => 2
@@ -38,8 +34,6 @@ class ArticleFixtures extends Fixture implements DependentFixtureInterface
         foreach ($articles as $key => $value) {
             $article = new Article();
             $article->setArtCreatedAt(new DateTime());
-            $article->setArtTitleFr($value['title_fr']);
-            $article->setArtTitleEn($value['title_en']);
             $article->setArtContentFr($value['content_fr']);
             $article->setArtContentEn($value['content_en']);
             $article->setUser($this->getReference('mayor'));

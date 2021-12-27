@@ -34,7 +34,7 @@
     <h1>{% trans %}Agenda{% endtrans %}</h1>
     <div>
         {% for action in actions %}
-        <h2>{{ attribute(action, 'actTitle'~app.request.locale|capitalize)|length > 25 ? attribute(action, 'actTitle'~app.request.locale|capitalize)|slice(0,25) ~ '...' : attribute(action, 'actTitle'~app.request.locale|capitalize) }}</h2>
+        <h2>{{ attribute(action, 'actContent'~app.request.locale|capitalize)|length > 25 ? attribute(action, 'actContent'~app.request.locale|capitalize)|slice(0,25) ~ '...' : attribute(action, 'actContent'~app.request.locale|capitalize) }}</h2>
         <p>{% trans %}Du{% endtrans %} {{ action.actBegining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ action.actEnd|date('Y-m-d') }}</p>
         <a href="#">{% trans %}Voir{% endtrans %}</a>
         {% endfor %}

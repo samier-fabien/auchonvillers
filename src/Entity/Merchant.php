@@ -23,24 +23,14 @@ class Merchant
     private $mer_created_at;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $mer_title_fr;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $mer_title_en;
-
-    /**
      * @ORM\Column(type="text")
      */
-    private $mer_description_fr;
+    private $mer_content_fr;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $mer_description_en;
+    private $mer_content_en;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -69,50 +59,26 @@ class Merchant
         return $this;
     }
 
-    public function getMerTitleFr(): ?string
+    public function getMerContentFr(): ?string
     {
-        return $this->mer_title_fr;
+        return $this->mer_content_fr;
     }
 
-    public function setMerTitleFr(string $mer_title_fr): self
+    public function setMerContentFr(string $mer_content_fr): self
     {
-        $this->mer_title_fr = $mer_title_fr;
+        $this->mer_content_fr = $mer_content_fr;
 
         return $this;
     }
 
-    public function getMerTitleEn(): ?string
+    public function getMerContentEn(): ?string
     {
-        return $this->mer_title_en;
+        return $this->mer_content_en;
     }
 
-    public function setMerTitleEn(?string $mer_title_en): self
+    public function setMerContentEn(?string $mer_content_en): self
     {
-        $this->mer_title_en = $mer_title_en;
-
-        return $this;
-    }
-
-    public function getMerDescriptionFr(): ?string
-    {
-        return $this->mer_description_fr;
-    }
-
-    public function setMerDescriptionFr(string $mer_description_fr): self
-    {
-        $this->mer_description_fr = $mer_description_fr;
-
-        return $this;
-    }
-
-    public function getMerDescriptionEn(): ?string
-    {
-        return $this->mer_description_en;
-    }
-
-    public function setMerDescriptionEn(?string $mer_description_en): self
-    {
-        $this->mer_description_en = $mer_description_en;
+        $this->mer_content_en = $mer_content_en;
 
         return $this;
     }

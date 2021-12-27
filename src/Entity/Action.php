@@ -33,24 +33,14 @@ class Action
     private $act_end;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $act_title_fr;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $act_title_en;
-
-    /**
      * @ORM\Column(type="text")
      */
-    private $act_body_fr;
+    private $act_content_fr;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $act_body_en;
+    private $act_content_en;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="actions")
@@ -113,50 +103,26 @@ class Action
         return $this;
     }
 
-    public function getActTitleFr(): ?string
+    public function getActContentFr(): ?string
     {
-        return $this->act_title_fr;
+        return $this->act_content_fr;
     }
 
-    public function setActTitleFr(string $act_title_fr): self
+    public function setActContentFr(string $act_content_fr): self
     {
-        $this->act_title_fr = $act_title_fr;
+        $this->act_content_fr = $act_content_fr;
 
         return $this;
     }
 
-    public function getActTitleEn(): ?string
+    public function getActContentEn(): ?string
     {
-        return $this->act_title_en;
+        return $this->act_content_en;
     }
 
-    public function setActTitleEn(?string $act_title_en): self
+    public function setActContentEn(?string $act_content_en): self
     {
-        $this->act_title_en = $act_title_en;
-
-        return $this;
-    }
-
-    public function getActBodyFr(): ?string
-    {
-        return $this->act_body_fr;
-    }
-
-    public function setActBodyFr(string $act_body_fr): self
-    {
-        $this->act_body_fr = $act_body_fr;
-
-        return $this;
-    }
-
-    public function getActBodyEn(): ?string
-    {
-        return $this->act_body_en;
-    }
-
-    public function setActBodyEn(?string $act_body_en): self
-    {
-        $this->act_body_en = $act_body_en;
+        $this->act_content_en = $act_content_en;
 
         return $this;
     }
