@@ -2,12 +2,12 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Opinion;
+use App\Entity\Opinions;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class OpinionFixtures extends Fixture implements DependentFixtureInterface
+class OpinionsFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -25,7 +25,7 @@ class OpinionFixtures extends Fixture implements DependentFixtureInterface
         ];
 
         foreach ($opinions as $key => $value) {
-            $opinion = new Opinion();
+            $opinion = new Opinions();
             $opinion->setOpiOpinion($value["opinion"]);
             $opinion->setUser($this->getReference("user_" . $value["user"]));
             $opinion->setSurvey($this->getReference("survey_" . $value["survey"]));
@@ -40,7 +40,7 @@ class OpinionFixtures extends Fixture implements DependentFixtureInterface
     {
         return array(
             UserFixtures::class,
-            SurveyFixtures::class,
+            SurveysFixtures::class,
         );
     }
 }

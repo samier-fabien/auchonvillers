@@ -2,12 +2,12 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Ballot;
+use App\Entity\Ballots;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class BallotFixtures extends Fixture implements DependentFixtureInterface
+class BallotsFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -25,7 +25,7 @@ class BallotFixtures extends Fixture implements DependentFixtureInterface
         ];
 
         foreach ($ballots as $key => $value) {
-            $ballot = new Ballot();
+            $ballot = new Ballots();
             $ballot->setUser($this->getReference("user_" . $value["user"]));
             $ballot->setVote($this->getReference("vote_" . $value["vote"]));
             $ballot->setBalVote($value["response"]);
@@ -40,7 +40,7 @@ class BallotFixtures extends Fixture implements DependentFixtureInterface
     {
         return array(
             UserFixtures::class,
-            VoteFixtures::class,
+            VotesFixtures::class,
         );
     }
 }

@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\AttendRepository;
+use App\Repository\AttendsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=AttendRepository::class)
+ * @ORM\Entity(repositoryClass=AttendsRepository::class)
  */
-class Attend
+class Attends
 {
     /**
      * @ORM\Id
@@ -24,7 +24,7 @@ class Attend
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Event::class, inversedBy="attends")
+     * @ORM\ManyToOne(targetEntity=Events::class, inversedBy="attends")
      * @ORM\JoinColumn(nullable=false)
      */
     private $event;
@@ -46,12 +46,12 @@ class Attend
         return $this;
     }
 
-    public function getEvent(): ?Event
+    public function getEvent(): ?Events
     {
         return $this->event;
     }
 
-    public function setEvent(?Event $event): self
+    public function setEvent(?Events $event): self
     {
         $this->event = $event;
 

@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\VoteRepository;
+use App\Repository\VotesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=VoteRepository::class)
+ * @ORM\Entity(repositoryClass=VotesRepository::class)
  */
-class Vote
+class Votes
 {
     /**
      * @ORM\Id
@@ -20,18 +20,37 @@ class Vote
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity=Action::class, inversedBy="vote", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(type="datetime")
      */
-    private $action;
+    private $vot_created_at;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $vot_begining;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $vot_end;
 
     /**
      * @ORM\Column(type="text")
      */
-    private $vot_question_fr;
+    private $vot_content_fr;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     */
+    private $vot_content_en;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $vot_question_fr;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $vot_question_en;
 
@@ -53,10 +72,16 @@ class Vote
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $vot_seconde_choice_en;
+    private $vot_second_choice_en;
 
     /**
-     * @ORM\OneToMany(targetEntity=Ballot::class, mappedBy="vote", orphanRemoval=true)
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="votes")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Ballots::class, mappedBy="vote", orphanRemoval=true)
      */
     private $ballots;
 
@@ -70,14 +95,62 @@ class Vote
         return $this->id;
     }
 
-    public function getAction(): ?Action
+    public function getVotCreatedAt(): ?\DateTimeInterface
     {
-        return $this->action;
+        return $this->vot_created_at;
     }
 
-    public function setAction(Action $action): self
+    public function setVotCreatedAt(\DateTimeInterface $vot_created_at): self
     {
-        $this->action = $action;
+        $this->vot_created_at = $vot_created_at;
+
+        return $this;
+    }
+
+    public function getVotBegining(): ?\DateTimeInterface
+    {
+        return $this->vot_begining;
+    }
+
+    public function setVotBegining(\DateTimeInterface $vot_begining): self
+    {
+        $this->vot_begining = $vot_begining;
+
+        return $this;
+    }
+
+    public function getVotEnd(): ?\DateTimeInterface
+    {
+        return $this->vot_end;
+    }
+
+    public function setVotEnd(\DateTimeInterface $vot_end): self
+    {
+        $this->vot_end = $vot_end;
+
+        return $this;
+    }
+
+    public function getVotContentFr(): ?string
+    {
+        return $this->vot_content_fr;
+    }
+
+    public function setVotContentFr(string $vot_content_fr): self
+    {
+        $this->vot_content_fr = $vot_content_fr;
+
+        return $this;
+    }
+
+    public function getVotContentEn(): ?string
+    {
+        return $this->vot_content_en;
+    }
+
+    public function setVotContentEn(?string $vot_content_en): self
+    {
+        $this->vot_content_en = $vot_content_en;
 
         return $this;
     }
@@ -142,27 +215,39 @@ class Vote
         return $this;
     }
 
-    public function getVotSecondeChoiceEn(): ?string
+    public function getVotSecondChoiceEn(): ?string
     {
-        return $this->vot_seconde_choice_en;
+        return $this->vot_second_choice_en;
     }
 
-    public function setVotSecondeChoiceEn(?string $vot_seconde_choice_en): self
+    public function setVotSecondChoiceEn(?string $vot_second_choice_en): self
     {
-        $this->vot_seconde_choice_en = $vot_seconde_choice_en;
+        $this->vot_second_choice_en = $vot_second_choice_en;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * @return Collection|Ballot[]
+     * @return Collection|Ballots[]
      */
     public function getBallots(): Collection
     {
         return $this->ballots;
     }
 
-    public function addBallot(Ballot $ballot): self
+    public function addBallot(Ballots $ballot): self
     {
         if (!$this->ballots->contains($ballot)) {
             $this->ballots[] = $ballot;
@@ -172,7 +257,7 @@ class Vote
         return $this;
     }
 
-    public function removeBallot(Ballot $ballot): self
+    public function removeBallot(Ballots $ballot): self
     {
         if ($this->ballots->removeElement($ballot)) {
             // set the owning side to null (unless already changed)

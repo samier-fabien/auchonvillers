@@ -109,25 +109,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $newsletters;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Action::class, mappedBy="user")
-     */
-    private $actions;
+    // /**
+    //  * @ORM\OneToMany(targetEntity=Action::class, mappedBy="user")
+    //  */
+    // private $actions;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Attend::class, mappedBy="user", orphanRemoval=true)
-     */
-    private $attends;
+    // /**
+    //  * @ORM\OneToMany(targetEntity=Attend::class, mappedBy="user", orphanRemoval=true)
+    //  */
+    // private $attends;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Ballot::class, mappedBy="user", orphanRemoval=true)
-     */
-    private $ballots;
+    // /**
+    //  * @ORM\OneToMany(targetEntity=Ballot::class, mappedBy="user", orphanRemoval=true)
+    //  */
+    // private $ballots;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Opinion::class, mappedBy="user", orphanRemoval=true)
-     */
-    private $opinions;
+    // /**
+    //  * @ORM\OneToMany(targetEntity=Opinion::class, mappedBy="user", orphanRemoval=true)
+    //  */
+    // private $opinions;
 
     /**
      * @ORM\OneToMany(targetEntity=Chat::class, mappedBy="user", orphanRemoval=true)
@@ -144,17 +144,50 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $isVerified = false;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Events::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $events;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Attends::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $attends;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Votes::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $votes;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Ballots::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $ballots;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Surveys::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $surveys;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Opinions::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $opinions;
+
     public function __construct()
     {
         $this->merchants = new ArrayCollection();
         $this->articles = new ArrayCollection();
         $this->newsletters = new ArrayCollection();
-        $this->actions = new ArrayCollection();
-        $this->attends = new ArrayCollection();
-        $this->ballots = new ArrayCollection();
-        $this->opinions = new ArrayCollection();
+        //$this->actions = new ArrayCollection();
+        //$this->attends = new ArrayCollection();
+        //$this->ballots = new ArrayCollection();
+        //$this->opinions = new ArrayCollection();
         $this->chats = new ArrayCollection();
         $this->messages = new ArrayCollection();
+        $this->events = new ArrayCollection();
+        $this->votes = new ArrayCollection();
+        $this->surveys = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -468,125 +501,125 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|Action[]
-     */
-    public function getActions(): Collection
-    {
-        return $this->actions;
-    }
+    // /**
+    //  * @return Collection|Action[]
+    //  */
+    // public function getActions(): Collection
+    // {
+    //     return $this->actions;
+    // }
 
-    public function addAction(Action $action): self
-    {
-        if (!$this->actions->contains($action)) {
-            $this->actions[] = $action;
-            $action->setUser($this);
-        }
+    // public function addAction(Action $action): self
+    // {
+    //     if (!$this->actions->contains($action)) {
+    //         $this->actions[] = $action;
+    //         $action->setUser($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeAction(Action $action): self
-    {
-        if ($this->actions->removeElement($action)) {
-            // set the owning side to null (unless already changed)
-            if ($action->getUser() === $this) {
-                $action->setUser(null);
-            }
-        }
+    // public function removeAction(Action $action): self
+    // {
+    //     if ($this->actions->removeElement($action)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($action->getUser() === $this) {
+    //             $action->setUser(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    /**
-     * @return Collection|Attend[]
-     */
-    public function getAttends(): Collection
-    {
-        return $this->attends;
-    }
+    // /**
+    //  * @return Collection|Attend[]
+    //  */
+    // public function getAttends(): Collection
+    // {
+    //     return $this->attends;
+    // }
 
-    public function addAttend(Attend $attend): self
-    {
-        if (!$this->attends->contains($attend)) {
-            $this->attends[] = $attend;
-            $attend->setUser($this);
-        }
+    // public function addAttend(Attend $attend): self
+    // {
+    //     if (!$this->attends->contains($attend)) {
+    //         $this->attends[] = $attend;
+    //         $attend->setUser($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeAttend(Attend $attend): self
-    {
-        if ($this->attends->removeElement($attend)) {
-            // set the owning side to null (unless already changed)
-            if ($attend->getUser() === $this) {
-                $attend->setUser(null);
-            }
-        }
+    // public function removeAttend(Attend $attend): self
+    // {
+    //     if ($this->attends->removeElement($attend)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($attend->getUser() === $this) {
+    //             $attend->setUser(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    /**
-     * @return Collection|Ballot[]
-     */
-    public function getBallots(): Collection
-    {
-        return $this->ballots;
-    }
+    // /**
+    //  * @return Collection|Ballot[]
+    //  */
+    // public function getBallots(): Collection
+    // {
+    //     return $this->ballots;
+    // }
 
-    public function addBallot(Ballot $ballot): self
-    {
-        if (!$this->ballots->contains($ballot)) {
-            $this->ballots[] = $ballot;
-            $ballot->setUser($this);
-        }
+    // public function addBallot(Ballot $ballot): self
+    // {
+    //     if (!$this->ballots->contains($ballot)) {
+    //         $this->ballots[] = $ballot;
+    //         $ballot->setUser($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeBallot(Ballot $ballot): self
-    {
-        if ($this->ballots->removeElement($ballot)) {
-            // set the owning side to null (unless already changed)
-            if ($ballot->getUser() === $this) {
-                $ballot->setUser(null);
-            }
-        }
+    // public function removeBallot(Ballot $ballot): self
+    // {
+    //     if ($this->ballots->removeElement($ballot)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($ballot->getUser() === $this) {
+    //             $ballot->setUser(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    /**
-     * @return Collection|Opinion[]
-     */
-    public function getOpinions(): Collection
-    {
-        return $this->opinions;
-    }
+    // /**
+    //  * @return Collection|Opinion[]
+    //  */
+    // public function getOpinions(): Collection
+    // {
+    //     return $this->opinions;
+    // }
 
-    public function addOpinion(Opinion $opinion): self
-    {
-        if (!$this->opinions->contains($opinion)) {
-            $this->opinions[] = $opinion;
-            $opinion->setUser($this);
-        }
+    // public function addOpinion(Opinion $opinion): self
+    // {
+    //     if (!$this->opinions->contains($opinion)) {
+    //         $this->opinions[] = $opinion;
+    //         $opinion->setUser($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeOpinion(Opinion $opinion): self
-    {
-        if ($this->opinions->removeElement($opinion)) {
-            // set the owning side to null (unless already changed)
-            if ($opinion->getUser() === $this) {
-                $opinion->setUser(null);
-            }
-        }
+    // public function removeOpinion(Opinion $opinion): self
+    // {
+    //     if ($this->opinions->removeElement($opinion)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($opinion->getUser() === $this) {
+    //             $opinion->setUser(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * @return Collection|Chat[]
@@ -656,6 +689,186 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Events[]
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
+
+    public function addEvent(Events $event): self
+    {
+        if (!$this->events->contains($event)) {
+            $this->events[] = $event;
+            $event->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Events $event): self
+    {
+        if ($this->events->removeElement($event)) {
+            // set the owning side to null (unless already changed)
+            if ($event->getUser() === $this) {
+                $event->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Attends[]
+     */
+    public function getAttends(): Collection
+    {
+        return $this->attends;
+    }
+
+    public function addAttend(Attends $attend): self
+    {
+        if (!$this->attends->contains($attend)) {
+            $this->attends[] = $attend;
+            $attend->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttend(Attends $attend): self
+    {
+        if ($this->attends->removeElement($attend)) {
+            // set the owning side to null (unless already changed)
+            if ($attend->getUser() === $this) {
+                $attend->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Votes[]
+     */
+    public function getVotes(): Collection
+    {
+        return $this->votes;
+    }
+
+    public function addVote(Votes $vote): self
+    {
+        if (!$this->votes->contains($vote)) {
+            $this->votes[] = $vote;
+            $vote->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVote(Votes $vote): self
+    {
+        if ($this->votes->removeElement($vote)) {
+            // set the owning side to null (unless already changed)
+            if ($vote->getUser() === $this) {
+                $vote->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Ballots[]
+     */
+    public function getBallots(): Collection
+    {
+        return $this->ballots;
+    }
+
+    public function addBallot(Ballots $ballot): self
+    {
+        if (!$this->ballots->contains($ballot)) {
+            $this->ballots[] = $ballot;
+            $ballot->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBallot(Ballots $ballot): self
+    {
+        if ($this->ballots->removeElement($ballot)) {
+            // set the owning side to null (unless already changed)
+            if ($ballot->getUser() === $this) {
+                $ballot->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Surveys[]
+     */
+    public function getSurveys(): Collection
+    {
+        return $this->surveys;
+    }
+
+    public function addSurvey(Surveys $survey): self
+    {
+        if (!$this->surveys->contains($survey)) {
+            $this->surveys[] = $survey;
+            $survey->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSurvey(Surveys $survey): self
+    {
+        if ($this->surveys->removeElement($survey)) {
+            // set the owning side to null (unless already changed)
+            if ($survey->getUser() === $this) {
+                $survey->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Opinions[]
+     */
+    public function getOpinions(): Collection
+    {
+        return $this->opinions;
+    }
+
+    public function addOpinion(Opinions $opinion): self
+    {
+        if (!$this->opinions->contains($opinion)) {
+            $this->opinions[] = $opinion;
+            $opinion->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOpinion(Opinions $opinion): self
+    {
+        if ($this->opinions->removeElement($opinion)) {
+            // set the owning side to null (unless already changed)
+            if ($opinion->getUser() === $this) {
+                $opinion->setUser(null);
+            }
+        }
 
         return $this;
     }

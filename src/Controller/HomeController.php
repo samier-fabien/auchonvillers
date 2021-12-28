@@ -2,25 +2,25 @@
 
 namespace App\Controller;
 
-use App\Repository\ActionRepository;
-use App\Repository\NewsletterRepository;
 use App\Service\Regex;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\EventsRepository;
+use App\Repository\NewsletterRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class HomeController extends AbstractController
 {
     public const NUMBER_OF_NEWSLETTERS = 4;
     public const NUMBER_OF_ACTIONS = 4;
     private $newsletterRepo;
-    private $actionRepo;
+    private $eventsRepo;
 
-    public function __construct(NewsletterRepository $newsletterRepo, ActionRepository $actionRepo)
+    public function __construct(NewsletterRepository $newsletterRepo, EventsRepository $eventsRepo)
     {
         $this->newsletterRepo = $newsletterRepo;
-        $this->actionRepo = $actionRepo;
+        $this->eventsRepo = $eventsRepo;
     }
 
     /**
@@ -55,7 +55,7 @@ class HomeController extends AbstractController
         $newsletters = $this->newsletterRepo->findLast(self::NUMBER_OF_NEWSLETTERS);
 
         // Recherche des "x" dernieres actions dans la bdd
-        $actions = $this->actionRepo->findLast(self::NUMBER_OF_ACTIONS);
+        $actions = $this->eventsRepo->findLast(self::NUMBER_OF_ACTIONS);
 
         // Le tableau datas contient toutes les données des newsletters
         // Utilité :
@@ -82,12 +82,12 @@ class HomeController extends AbstractController
         foreach ($actions as $key => $value) {
             $actionsDatas[$key] = [
                 'id' => $value->getId(),
-                'actCreatedAt' => $value->getActCreatedAt(),
-                'actBegining' => $value->getActBegining(),
-                'actEnd' => $value->getActEnd(),
-                'actContentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getActContentFr(), ENT_QUOTES)),
-                'actContentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getActContentEn(), ENT_QUOTES)),
-                'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getActContentFr(), ENT_QUOTES)),
+                'actCreatedAt' => $value->getEveCreatedAt(),
+                'actBegining' => $value->getEveBegining(),
+                'actEnd' => $value->getEveEnd(),
+                'actContentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getEveContentFr(), ENT_QUOTES)),
+                'actContentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getEveContentEn(), ENT_QUOTES)),
+                'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getEveContentFr(), ENT_QUOTES)),
             ];
         }
 

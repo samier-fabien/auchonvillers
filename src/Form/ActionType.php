@@ -35,13 +35,13 @@ class ActionType extends AbstractType
             // ])
         ;
 
-        $builder->add('event', CollectionType::class, [
-            'entry_type' => EventType::class,
-            'entry_options' => ['label' => false],
-            'allow_add' => true,
-            'allow_delete' => false,
-            'by_reference' => false,
-        ]);
+        // $builder->add('event', CollectionType::class, [
+        //     'entry_type' => EventType::class,
+        //     'entry_options' => ['label' => false],
+        //     'allow_add' => true,
+        //     'allow_delete' => false,
+        //     'by_reference' => false,
+        // ]);
 
         // $builder
         //     ->add('event', EntityType::class, [

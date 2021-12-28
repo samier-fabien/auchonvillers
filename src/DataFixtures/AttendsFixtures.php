@@ -2,12 +2,12 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Attend;
+use App\Entity\Attends;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class AttendFixtures extends Fixture implements DependentFixtureInterface
+class AttendsFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -16,14 +16,18 @@ class AttendFixtures extends Fixture implements DependentFixtureInterface
                 "user" => "1",
                 "event" => "1"
             ],
+            2 => [
+                "user" => "1",
+                "event" => "2"
+            ],
         ];
 
         foreach ($attends as $key => $value) {
-            $attend = new Attend();
-            $attend->setUser($this->getReference("user_" . $value["user"]));
-            $attend->setEvent($this->getReference("event_" . $value["event"]));
+            $attends = new Attends();
+            $attends->setUser($this->getReference("user_" . $value["user"]));
+            $attends->setEvent($this->getReference("event_" . $value["event"]));
 
-            $manager->persist($attend);
+            $manager->persist($attends);
         }
 
         $manager->flush();
@@ -33,7 +37,7 @@ class AttendFixtures extends Fixture implements DependentFixtureInterface
     {
         return array(
             UserFixtures::class,
-            EventFixtures::class,
+            EventsFixtures::class,
         );
     }
 }

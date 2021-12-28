@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\Attend;
+use App\Entity\Attends;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Attend|null find($id, $lockMode = null, $lockVersion = null)
- * @method Attend|null findOneBy(array $criteria, array $orderBy = null)
- * @method Attend[]    findAll()
- * @method Attend[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Attends|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Attends|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Attends[]    findAll()
+ * @method Attends[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AttendRepository extends ServiceEntityRepository
+class AttendsRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Attend::class);
+        parent::__construct($registry, Attends::class);
     }
 
     // /**
-    //  * @return Attend[] Returns an array of Attend objects
+    //  * @return Attends[] Returns an array of Attends objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class AttendRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Attend
+    public function findOneBySomeField($value): ?Attends
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.exampleField = :val')

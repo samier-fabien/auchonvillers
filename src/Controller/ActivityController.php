@@ -3,11 +3,12 @@
 namespace App\Controller;
 
 use DateTime;
-use App\Entity\Action;
 use App\Entity\Event;
+use App\Entity\Action;
 use App\Service\Regex;
 use App\Form\ActionType;
 use App\Repository\ActionRepository;
+use App\Repository\EventsRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,13 +17,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class ActionController extends AbstractController
+class ActivityController extends AbstractController
 {
     public const ACTION_PER_PAGE = 4;
-    private $actionRepo;
+    private $eventsRepo;
 
-    public function __construct(ActionRepository $actionRepo) {
-        $this->actionRepo = $actionRepo;
+    public function __construct(EventsRepository $eventsRepo) { 
+        $this->eventsRepo = $eventsRepo;
     }
 
     /**
