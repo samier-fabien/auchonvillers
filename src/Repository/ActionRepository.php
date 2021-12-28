@@ -25,11 +25,34 @@ class ActionRepository extends ServiceEntityRepository
      */
     public function findLast(int $value)
     {
-        return $this->createQueryBuilder('n')
-            ->orderBy('n.act_created_at', 'DESC')
+        return $this->createQueryBuilder('a')
+            ->orderBy('a.act_created_at', 'DESC')
             ->setMaxResults($value)
             ->getQuery()
             ->getResult()
+        ;
+    }
+
+    /**
+     * @return Newsletter[] Returns an array of Newsletter objects
+     */
+    public function findByPage(int $page = 1, int $numberPerPage)
+    {
+        return $this->createQueryBuilder('a')
+            ->orderBy('a.act_created_at', 'DESC')
+            ->setFirstResult(($page * $numberPerPage) - $numberPerPage)
+            ->setMaxResults($numberPerPage)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function getnumber()
+    {
+        return $this->createQueryBuilder('a')
+            ->select('count(a.id)')
+            ->getQuery()
+            ->getSingleScalarResult()
         ;
     }
 

@@ -73,9 +73,27 @@ class HomeController extends AbstractController
             ];
         }
 
+        // Le tableau datas contient toutes les données des actions
+        // Utilité :
+        //  -retourne des données décodées vias htmlSpecialChars
+        //  -ajoute un thumbnail basé sur la première image trouvé dans l'action fr (seule la version fr est obligatoire dans le formulaire)
+        //  -le texte est une version de "x" caractères (twig) sans les tags html créés avec ckeditor : pas besoin de 'titre' ni de 'chemin vers une image' en bdd
+        $actionsDatas = [];
+        foreach ($actions as $key => $value) {
+            $actionsDatas[$key] = [
+                'id' => $value->getId(),
+                'actCreatedAt' => $value->getActCreatedAt(),
+                'actBegining' => $value->getActBegining(),
+                'actEnd' => $value->getActEnd(),
+                'actContentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getActContentFr(), ENT_QUOTES)),
+                'actContentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getActContentEn(), ENT_QUOTES)),
+                'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getActContentFr(), ENT_QUOTES)),
+            ];
+        }
+
         return $this->render('home/home.html.twig', [
             'newsletters' => $newsDatas,
-            'actions' => $actions,
+            'actions' => $actionsDatas,
         ]);
     }
 

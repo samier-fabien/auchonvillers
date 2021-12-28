@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello NewsletterController!{% endblock %}
+
+{% block body %}
+<div>
+    <p>
+        <h1>Création</h1>
+    </p>
+
+    {{ form(form) }}
+    {# {{ form(form.event) }} #}
+
+    <pre>
+        {{ dump(form) }}
+    </pre>
+</div>
+{% endblock %}

@@ -98,9 +98,7 @@ class NewsletterController extends AbstractController
                 'locale' => $locale,
                 'page' => 1,
             ]);
-        }
-
-        
+        }  
     }
 
     /**

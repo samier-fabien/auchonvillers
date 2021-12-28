@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% trans %}Evènement{% endtrans %}{% endblock %}
+
+{% block body %}
+<section>
+    <h1>{% trans %}Evènement{% endtrans %}</h1>
+    <div>
+        <p>{% trans %}Du{% endtrans %} {{ action.actBegining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ action.actEnd|date('Y-m-d') }}</p>
+        <p>
+            {% if attribute(action, 'actContent'~app.request.locale|capitalize) is not empty %}
+                {{ attribute(action, 'actContent'~app.request.locale|capitalize)|raw }}
+            {% else %}
+                {{ action.actContentFr|raw }}
+            {% endif %}
+        </p>
+    </div>
+</section>
+{% endblock %}

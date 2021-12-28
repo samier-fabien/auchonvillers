@@ -31,16 +31,29 @@
 </section>
 
 <section>
-    <h1>{% trans %}Agenda{% endtrans %}</h1>
-    <div>
-        {% for action in actions %}
-        <h2>{{ attribute(action, 'actContent'~app.request.locale|capitalize)|length > 25 ? attribute(action, 'actContent'~app.request.locale|capitalize)|slice(0,25) ~ '...' : attribute(action, 'actContent'~app.request.locale|capitalize) }}</h2>
+    <h1>{% trans %}Evènements{% endtrans %}</h1>  
+
+    {% for action in actions %}
+    <article>
+        <img src="{{ asset(action.thumb) | imagine_filter('my_thumb') }}" alt="{% trans %}Image introductive relative à l'évènement.{% endtrans %}">
+
         <p>{% trans %}Du{% endtrans %} {{ action.actBegining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ action.actEnd|date('Y-m-d') }}</p>
-        <a href="#">{% trans %}Voir{% endtrans %}</a>
-        {% endfor %}
-    </div>
+        <p>
+            {% if attribute(action, 'actContent'~app.request.locale|capitalize) is not empty %}
+                {{ attribute(action, 'actContent'~app.request.locale|capitalize)|length > 25 ? attribute(action, 'actContent'~app.request.locale|capitalize)|slice(0,25) ~ '...' : attribute(action, 'actContent'~app.request.locale|capitalize) }}
+            {% else %}
+                {{ action.actContentFr|length > 25 ? action.actContentFr|slice(0,25) ~ '...' : action.actContentFr }}
+            {% endif %}
+        </p>
+
+        <a href="/{{ app.request.locale }}/evenement/{{ action.id }}">{% trans %}Voir{% endtrans %}</a>
+    
+    </article>
+    {% endfor %}
+    
     <div>
-        <a href="#">{% trans %}Tout voir{% endtrans %}</a>
+        <a href="/{{ app.request.locale }}/evenements/{{ 1 }}">{% trans %}Tout voir{% endtrans %}</a>
     </div>
+    
 </section>
 {% endblock %}
