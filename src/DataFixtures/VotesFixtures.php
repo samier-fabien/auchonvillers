@@ -14,7 +14,7 @@ class VotesFixtures extends Fixture implements DependentFixtureInterface
     {
         $votes = [
             1 => [
-                "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-28 09:00:00"),
+                "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-10 11:00:00"),
                 "begining" => Datetime::createFromFormat("Y-m-d H:i:s", "2022-11-28 18:00:00"),
                 "end" => Datetime::createFromFormat("Y-m-d H:i:s", "2022-11-28 22:00:00"),
                 "content_fr" => "Petite réunion entre voisins pour fêter l'anniversaire de Fabien",

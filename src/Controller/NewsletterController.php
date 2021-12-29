@@ -134,7 +134,7 @@ class NewsletterController extends AbstractController
             return $this->redirectToRoute('newsletter', [
                 'locale'=> $request->getSession()->get('_locale'),
                 'id' => $newsletter->getId(),
-            ]);
+            ], Response::HTTP_SEE_OTHER);
         }
 
 

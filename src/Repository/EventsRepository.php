@@ -19,6 +19,29 @@ class EventsRepository extends ServiceEntityRepository
         parent::__construct($registry, Events::class);
     }
 
+        // Dommage : ne fonctionne pas avec doctrine
+        // $query = $this->getEntityManager()->createQuery("
+        //     SELECT created_at, id, type
+        //     FROM
+        //         ( ( SELECT `eve_created_at` AS created_at, `id` AS id, 'event' AS type
+        //         FROM `events`
+        //         ORDER BY `eve_created_at` DESC
+        //         LIMIT 4 )
+        //         UNION
+        //         ( SELECT `sur_created_at` AS created_at, `id` AS id, 'survey' AS type 
+        //         FROM `surveys`
+        //         ORDER BY `sur_created_at` DESC
+        //         LIMIT 4 )
+        //         UNION
+        //         ( SELECT `vot_created_at` AS created_at, `id` AS id, 'vote' AS type 
+        //         FROM `votes`
+        //         ORDER BY `vot_created_at` DESC
+        //         LIMIT 4 ) ) as tab
+        //     ORDER BY created_at DESC
+        //     LIMIT 4
+        // ");
+        // dd($query->getResult());
+
     /**
      * @return Events[] Returns an array of Events objects
      */

@@ -1,0 +1,19 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{ form_label(form.eve_begining, 'Date du début de l\'évènement') }}
+    {{ form_errors(form.eve_begining) }}
+    {{ form_widget(form.eve_begining) }}
+    {{ form_label(form.eve_end, 'Date de fin de l\'évènement') }}
+    {{ form_errors(form.eve_end) }}
+    {{ form_widget(form.eve_end) }}
+    {{ form_label(form.eve_content_fr, 'Contenu de l\'évènement en français') }}
+    {{ form_errors(form.eve_content_fr) }}
+    {{ form_widget(form.eve_content_fr) }}
+    {{ form_label(form.eve_content_en, 'Contenu de l\'évènement en anglais') }}
+    {{ form_errors(form.eve_content_en) }}
+    {{ form_widget(form.eve_content_en) }}
+    {{ form_label(form.eve_location_osm, 'Longitude et latitude pour openstreetmap') }}
+    {{ form_errors(form.eve_location_osm) }}
+    {{ form_widget(form.eve_location_osm) }}
+    {{ form_errors(form) }}
+    <button type="submit" class="btn btn-primary">Créer</button>
+{{ form_end(form) }}

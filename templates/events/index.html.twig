@@ -1,0 +1,139 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Evènements{% endblock %}
+
+{% block body %}
+<section>
+    <h1>{% trans %}Evènements{% endtrans %}</h1>
+
+    {% for event in events %}
+    <article>
+
+        <img src="{{ asset(event.thumb) | imagine_filter('my_thumb') }}" alt="{% trans %}Image introductive relative à l'évènement.{% endtrans %}">
+        
+        <p>{% trans %}Du{% endtrans %} {{ event.begining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ event.end|date('Y-m-d') }}</p>
+        <p>
+            {% if attribute(event, 'content'~app.request.locale|capitalize) is not empty %}
+                {{ attribute(event, 'content'~app.request.locale|capitalize)|length > 25 ? attribute(event, 'content'~app.request.locale|capitalize)|slice(0,25) ~ '...'|raw : attribute(event, 'content'~app.request.locale|capitalize)|raw }}
+            {% else %}
+                {{ event.contentFr|length > 25 ? event.contentFr|slice(0,25) ~ '...' : event.contentFr }}
+            {% endif %}
+        </p>
+
+        <a href="/{{ app.request.locale }}/evenement/{{ event.id }}">{% trans %}Voir{% endtrans %}</a>
+    
+    </article>
+    {% endfor %}
+</section>
+<div>
+    {% set url = '/'~app.request.locale~'/evenements/' %}
+    {% set page = page %}
+    {% set pages = pages %}
+    {% set nearby = 4 %}
+
+    {% apply spaceless %}
+        {% if pages > 1 %}
+            {% if page > 1 %}
+                <a href="{{ (url ~ (page-1))|e }}/">&laquo;</a>
+            {% endif %}
+
+            {% for i in 1..pages %}
+                {% if 0 == (page - nearby) - loop.index %}
+                    <a href="{{ (url ~ 1)|e }}/">1</a>
+                    {% if 1 != loop.index %}
+                        <a href="#">...</a>
+                    {% endif %}
+                {% elseif 0 == (page + nearby) - loop.index  and (page + nearby) < pages %}
+                    <a href="#">...</a>
+                {% elseif 0 < (page - nearby) - loop.index %}
+                    <!-- #1 -->
+                {% elseif 0 > (page + nearby) - loop.index %}
+                    <!-- #2 -->
+                {% else %}
+                        {% if page == loop.index  %}
+                            <strong><a href="#">{{ loop.index }}</a></strong>
+                        {% else %}
+                            {% if loop.index == 1 %}
+                                <a href="{{ (url ~ 1)|e }}">{{ loop.index }}</a>
+                            {% else %}
+                                <a href="{{ url ~ loop.index }}/">{{ loop.index }}</a>
+                            {% endif %}
+                        {% endif %}
+                {% endif %}
+            {% endfor %}
+            {% if page != pages  and (page + nearby) < pages %}
+                <a href="{{ (url ~ pages)|e }}/">{{ pages }}</a>
+            {% endif %}
+            {% if page < pages %}
+                <a href="{{ (url ~ (page+1))|e }}/">&raquo;</a>
+            {% endif %}
+        {% endif %}
+    {% endapply %}
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    {# <h1>Events index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Eve_created_at</th>
+                <th>Eve_begining</th>
+                <th>Eve_end</th>
+                <th>Eve_content_fr</th>
+                <th>Eve_content_en</th>
+                <th>Eve_location_osm</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for event in events %}
+            <tr>
+                <td>{{ event.id }}</td>
+                <td>{{ event.eveCreatedAt ? event.eveCreatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ event.eveBegining ? event.eveBegining|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ event.eveEnd ? event.eveEnd|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ event.eveContentFr }}</td>
+                <td>{{ event.eveContentEn }}</td>
+                <td>{{ event.eveLocationOsm }}</td>
+                <td>
+                    <a href="{{ path('events_show', {'id': event.id}) }}">show</a>
+                    <a href="{{ path('events_edit', {'id': event.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('events_new') }}">Create new</a> #}
+{% endblock %}

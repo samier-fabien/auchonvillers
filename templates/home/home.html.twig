@@ -4,7 +4,7 @@
 
 {% block body %}
 <section>
-    <h1>{% trans %}Accueil{% endtrans %}</h1>  
+    <h1>{% trans %}Actualités{% endtrans %}</h1>  
 
     {% for newsletter in newsletters %}
     <article>
@@ -31,22 +31,22 @@
 </section>
 
 <section>
-    <h1>{% trans %}Evènements{% endtrans %}</h1>  
+    <h1>{% trans %}Activités{% endtrans %}</h1>  
 
-    {% for action in actions %}
+    {% for activity in activities %}
     <article>
-        <img src="{{ asset(action.thumb) | imagine_filter('my_thumb') }}" alt="{% trans %}Image introductive relative à l'évènement.{% endtrans %}">
+        <img src="{{ asset(activity.thumb) | imagine_filter('my_thumb') }}" alt="{% trans %}Image introductive relative à l'évènement.{% endtrans %}">
 
-        <p>{% trans %}Du{% endtrans %} {{ action.actBegining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ action.actEnd|date('Y-m-d') }}</p>
+        <p>{% trans %}Du{% endtrans %} {{ activity.begining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ activity.end|date('Y-m-d') }}</p>
         <p>
-            {% if attribute(action, 'actContent'~app.request.locale|capitalize) is not empty %}
-                {{ attribute(action, 'actContent'~app.request.locale|capitalize)|length > 25 ? attribute(action, 'actContent'~app.request.locale|capitalize)|slice(0,25) ~ '...' : attribute(action, 'actContent'~app.request.locale|capitalize) }}
+            {% if attribute(activity, 'content'~app.request.locale|capitalize) is not empty %}
+                {{ attribute(activity, 'content'~app.request.locale|capitalize)|length > 25 ? attribute(activity, 'content'~app.request.locale|capitalize)|slice(0,25) ~ '...' : attribute(activity, 'content'~app.request.locale|capitalize) }}
             {% else %}
-                {{ action.actContentFr|length > 25 ? action.actContentFr|slice(0,25) ~ '...' : action.actContentFr }}
+                {{ activity.contentFr|length > 25 ? activity.contentFr|slice(0,25) ~ '...' : activity.contentFr }}
             {% endif %}
         </p>
 
-        <a href="/{{ app.request.locale }}/evenement/{{ action.id }}">{% trans %}Voir{% endtrans %}</a>
+        <a href="/{{ app.request.locale }}/evenement/{{ activity.id }}">{% trans %}Voir{% endtrans %}</a>
     
     </article>
     {% endfor %}

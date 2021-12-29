@@ -5,6 +5,9 @@ namespace App\Controller;
 use App\Service\Regex;
 use App\Repository\EventsRepository;
 use App\Repository\NewsletterRepository;
+use App\Repository\SurveysRepository;
+use App\Repository\VotesRepository;
+use App\Service\ArraySort;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,14 +16,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class HomeController extends AbstractController
 {
     public const NUMBER_OF_NEWSLETTERS = 4;
-    public const NUMBER_OF_ACTIONS = 4;
+    public const NUMBER_OF_ACTIVITIES = 4;
     private $newsletterRepo;
     private $eventsRepo;
+    private $surveysRepo;
+    private $votesRepo;
 
-    public function __construct(NewsletterRepository $newsletterRepo, EventsRepository $eventsRepo)
+    public function __construct(NewsletterRepository $newsletterRepo, EventsRepository $eventsRepo, SurveysRepository $surveysRepo, VotesRepository $votesRepo)
     {
         $this->newsletterRepo = $newsletterRepo;
         $this->eventsRepo = $eventsRepo;
+        $this->surveysRepo = $surveysRepo;
+        $this->votesRepo = $votesRepo;
     }
 
     /**
@@ -43,7 +50,7 @@ class HomeController extends AbstractController
     /**
      * @Route("/{locale}", name="home")
      */
-    public function home(string $locale, Request $request, Regex $regex): Response
+    public function home(string $locale, Request $request, Regex $regex, ArraySort $arraySort): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -53,9 +60,6 @@ class HomeController extends AbstractController
 
         // Recherche des "x" dernieres newsletters dans la bdd
         $newsletters = $this->newsletterRepo->findLast(self::NUMBER_OF_NEWSLETTERS);
-
-        // Recherche des "x" dernieres actions dans la bdd
-        $actions = $this->eventsRepo->findLast(self::NUMBER_OF_ACTIONS);
 
         // Le tableau datas contient toutes les données des newsletters
         // Utilité :
@@ -73,27 +77,59 @@ class HomeController extends AbstractController
             ];
         }
 
-        // Le tableau datas contient toutes les données des actions
-        // Utilité :
-        //  -retourne des données décodées vias htmlSpecialChars
-        //  -ajoute un thumbnail basé sur la première image trouvé dans l'action fr (seule la version fr est obligatoire dans le formulaire)
-        //  -le texte est une version de "x" caractères (twig) sans les tags html créés avec ckeditor : pas besoin de 'titre' ni de 'chemin vers une image' en bdd
-        $actionsDatas = [];
-        foreach ($actions as $key => $value) {
-            $actionsDatas[$key] = [
+        // Recherche des "x" derniers evenements dans la bdd
+        $events = $this->eventsRepo->findLast(self::NUMBER_OF_ACTIVITIES);
+        $eventsDatas = [];
+        foreach ($events as $key => $value) {
+            $eventsDatas[$key] = [
                 'id' => $value->getId(),
-                'actCreatedAt' => $value->getEveCreatedAt(),
-                'actBegining' => $value->getEveBegining(),
-                'actEnd' => $value->getEveEnd(),
-                'actContentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getEveContentFr(), ENT_QUOTES)),
-                'actContentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getEveContentEn(), ENT_QUOTES)),
+                'createdAt' => $value->getEveCreatedAt(),
+                'begining' => $value->getEveBegining(),
+                'end' => $value->getEveEnd(),
+                'contentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getEveContentFr(), ENT_QUOTES)),
+                'contentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getEveContentEn(), ENT_QUOTES)),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getEveContentFr(), ENT_QUOTES)),
+                'type' => 'evenement'
+            ];
+        }
+        
+        // Recherche des "x" dernieres enquetes dans la bdd
+        $surveys = $this->surveysRepo->findLast(self::NUMBER_OF_ACTIVITIES);
+        $surveysDatas = [];
+        foreach ($surveys as $key => $value) {
+            $surveysDatas[$key] = [
+                'id' => $value->getId(),
+                'createdAt' => $value->getSurCreatedAt(),
+                'begining' => $value->getSurBegining(),
+                'end' => $value->getSurEnd(),
+                'contentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getSurContentFr(), ENT_QUOTES)),
+                'contentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getSurContentEn(), ENT_QUOTES)),
+                'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getSurContentFr(), ENT_QUOTES)),
+                'type' => 'enquete'
             ];
         }
 
+        // Recherche des "x" dernieres votes dans la bdd
+        $votes = $this->votesRepo->findLast(self::NUMBER_OF_ACTIVITIES);
+        $votesDatas = [];
+        foreach ($votes as $key => $value) {
+            $votesDatas[$key] = [
+                'id' => $value->getId(),
+                'createdAt' => $value->getVotCreatedAt(),
+                'begining' => $value->getVotBegining(),
+                'end' => $value->getVotEnd(),
+                'contentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getVotContentFr(), ENT_QUOTES)),
+                'contentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getVotContentEn(), ENT_QUOTES)),
+                'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getVotContentFr(), ENT_QUOTES)),
+                'type' => 'vote'
+            ];
+        }
+
+        $activitiesDatas = $arraySort->sortLastsByDatetime(array_merge($eventsDatas, $surveysDatas, $votesDatas), self::NUMBER_OF_ACTIVITIES);
+
         return $this->render('home/home.html.twig', [
             'newsletters' => $newsDatas,
-            'actions' => $actionsDatas,
+            'activities' => $activitiesDatas,
         ]);
     }
 
