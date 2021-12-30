@@ -132,6 +132,7 @@ class EventsController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_AGENT")
      * @Route("/{locale}/evenement/{id<\d+>}/agent/editer", name="events_edit", methods={"GET", "POST"})
      */
     public function edit(Request $request, Events $event, EntityManagerInterface $entityManager): Response
@@ -152,15 +153,31 @@ class EventsController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_AGENT")
      * @Route("/{locale}/evenement/{id<\d+>}/agent/supprimer", name="events_delete", methods={"POST"})
      */
-    public function delete(Request $request, Events $event, EntityManagerInterface $entityManager): Response
+    public function delete(string $locale, int $id, Request $request, ManagerRegistry $doctrine): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$event->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($event);
-            $entityManager->flush();
+        // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
+        if (!in_array($locale, $this->getParameter('app.locales'), true)) {
+            $request->getSession()->set('_locale', 'fr'); 
+            return $this->redirect("/");
         }
 
-        return $this->redirectToRoute('events_index', [], Response::HTTP_SEE_OTHER);
+        // On va chercher la newsletter a supprimer
+        $event = $this->eventsRepo->findOneBy(["id" => $id]);
+
+
+        if ($this->isCsrfTokenValid('delete'.$event->getId(), $request->request->get('_token'))) {
+            // Suppression
+            $doctrine->getManager()->remove($event);
+            $doctrine->getManager()->flush();
+            $this->addFlash('notice', 'L\'évènement a bien été supprimée.');
+        }
+
+        return $this->redirectToRoute('events_index', [
+            'locale' => $request->getSession()->get('_locale'),
+            'page' => 1,
+        ], Response::HTTP_SEE_OTHER);
     }
 }
