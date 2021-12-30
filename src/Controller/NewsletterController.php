@@ -28,9 +28,9 @@ class NewsletterController extends AbstractController
     }
 
     /**
-     * @Route("/{locale}/actualites/{page<\d+>}", name="newsletters")
+     * @Route("/{locale}/actualites/{page<\d+>}", name="newsletters_index")
      */
-    public function displayAll(string $locale, int $page = 1, Request $request, Regex $regex): Response
+    public function index(string $locale, int $page = 1, Request $request, Regex $regex): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -60,7 +60,7 @@ class NewsletterController extends AbstractController
             ];
         }
 
-        return $this->render('newsletter/displayAll.html.twig', [
+        return $this->render('newsletter/index.html.twig', [
             'newsletters' => $newsDatas,
             'page' => $page,
             'pages' => $pages,
@@ -68,9 +68,9 @@ class NewsletterController extends AbstractController
     }
 
     /**
-     * @Route("/{locale}/actualite/{id<\d+>}", name="newsletter")
+     * @Route("/{locale}/actualite/{id<\d+>}", name="newsletter_show")
      */
-    public function display(string $locale, int $id, Request $request, TranslatorInterface $translator): Response
+    public function show(string $locale, int $id, Request $request, TranslatorInterface $translator): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -87,14 +87,14 @@ class NewsletterController extends AbstractController
             $newsletter->setNewContentFr(htmlspecialchars_decode($newsletter->getNewContentFr()), ENT_QUOTES);
             $newsletter->setNewContentEn(htmlspecialchars_decode($newsletter->getNewContentEn()), ENT_QUOTES);
 
-            return $this->render('newsletter/display.html.twig', [
+            return $this->render('newsletter/show.html.twig', [
                 'newsletter' => $newsletter,
             ]);
         // Sinon, redirection vers la liste des actualités avec un message
         } else {
             $message = $translator->trans('La nouvelle que vous essayez de consulter n\'existe pas.');
             $this->addFlash('notice', $message);
-            return $this->redirectToRoute('newsletters', [
+            return $this->redirectToRoute('newsletters_index', [
                 'locale' => $locale,
                 'page' => 1,
             ]);
@@ -103,9 +103,9 @@ class NewsletterController extends AbstractController
 
     /**
      * @IsGranted("ROLE_AGENT")
-     * @Route("/{locale}/actualite/agent/creer", name="newsletterCreate")
+     * @Route("/{locale}/actualite/agent/creer", name="newsletter_new")
      */
-    public function create(string $locale, Request $request, ManagerRegistry $doctrine): Response
+    public function new(string $locale, Request $request, ManagerRegistry $doctrine): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -131,23 +131,23 @@ class NewsletterController extends AbstractController
             $doctrine->getManager()->flush();
             // Ajout de message de succes et redirection vers la news qui vient d'être publiée
             $this->addFlash('success', 'Votre nouvelle a été créée et ajoutée dans le fil d\'actualités');
-            return $this->redirectToRoute('newsletter', [
+            return $this->redirectToRoute('newsletter_show', [
                 'locale'=> $request->getSession()->get('_locale'),
                 'id' => $newsletter->getId(),
             ], Response::HTTP_SEE_OTHER);
         }
 
 
-        return $this->render('newsletter/create.html.twig', [
+        return $this->render('newsletter/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
     /**
      * @IsGranted("ROLE_AGENT")
-     * @Route("/{locale}/actualite/{id<\d+>}/agent/editer", name="newsletterUpdate")
+     * @Route("/{locale}/actualite/{id<\d+>}/agent/editer", name="newsletter_edit")
      */
-    public function update(string $locale = 'fr', int $id, Request $request, ManagerRegistry $doctrine): Response
+    public function edit(string $locale = 'fr', int $id, Request $request, ManagerRegistry $doctrine): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -170,20 +170,23 @@ class NewsletterController extends AbstractController
 
             // Si le formulaire est bien rempli..
             if ($form->isSubmitted() && $form->isValid()) {
-                // ... on encode les contenus fr et en avant de les ajhouter en bdd
+                // ... on encode les contenus fr et en avant de les ajouter en bdd
                 $newsletter->setNewContentFr(htmlspecialchars($newsletter->getNewContentFr(), ENT_QUOTES));
                 $newsletter->setNewContentEn(htmlspecialchars($newsletter->getNewContentEn(), ENT_QUOTES));
                 $doctrine->getManager()->persist($newsletter);
                 $doctrine->getManager()->flush();
+                
                 // Ajout de message de succes et redirection vers la news qui vient d'être modifié
-                $this->addFlash('success', 'Votre nouvelle a été créée et ajoutée dans le fil d\'actualités');
-                return $this->redirectToRoute('newsletter', [
+                $this->addFlash('success', 'Votre nouvelle a été créée');
+
+                return $this->redirectToRoute('newsletter_show', [
                     'locale'=> $request->getSession()->get('_locale'),
                     'id' => $newsletter->getId(),
                 ]);
             }
 
-            return $this->render('newsletter/update.html.twig', [
+            return $this->render('newsletter/edit.html.twig', [
+                'newsletter' => $newsletter,
                 'form' => $form->createView(),
             ]);
 
@@ -191,7 +194,7 @@ class NewsletterController extends AbstractController
         // Sinon, redirection vers la liste des actualités avec un message
         } else {
             $this->addFlash('notice', 'La nouvelle que vous essayez de modifier n\'existe pas.');
-            return $this->redirectToRoute('newsletters', [
+            return $this->redirectToRoute('newsletters_index', [
                 'locale' => $locale,
                 'page' => 1,
             ]);
@@ -200,7 +203,7 @@ class NewsletterController extends AbstractController
 
     /**
      * @IsGranted("ROLE_AGENT")
-     * @Route("/{locale}/actualite/{id<\d+>}/agent/supprimer", name="newsletterDelete")
+     * @Route("/{locale}/actualite/{id<\d+>}/agent/supprimer", name="newsletter_delete", methods={"POST"})
      */
     public function delete(string $locale, int $id, Request $request, ManagerRegistry $doctrine): Response
     {
@@ -213,64 +216,17 @@ class NewsletterController extends AbstractController
         // On va chercher la newsletter a supprimer
         $newsletter = $this->newsletterRepo->findOneBy(["id" => $id]);
 
-        // Si la news est trouvée       
-        if (!is_null($newsletter)) {
-            // On en décode les contenus fr et en
-            $newsletter->setNewContentFr(htmlspecialchars_decode($newsletter->getNewContentFr()), ENT_QUOTES);
-            $newsletter->setNewContentEn(htmlspecialchars_decode($newsletter->getNewContentEn()), ENT_QUOTES);    
 
-            // Affichage de la question êtes-vous sure... ?
-            return $this->render('newsletter/delete.html.twig', [
-                'locale' => $locale,
-                'newsletter' => $newsletter,
-            ]);
-
-
-        // Sinon, redirection vers la liste des actualités avec un message
-        } else {
-            $this->addFlash('notice', 'La nouvelle que vous essayez de supprimer n\'existe pas.');
-            return $this->redirectToRoute('newsletters', [
-                'locale' => $locale,
-                'page' => 1,
-            ]);
-        }            
-    }
-
-    /**
-     * @IsGranted("ROLE_AGENT")
-     * @Route("/{locale}/actualite/{id<\d+>}/agent/suppression", name="newsletterDeletion")
-     */
-    public function deletion(string $locale, int $id, Request $request, ManagerRegistry $doctrine): Response
-    {
-        // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
-        if (!in_array($locale, $this->getParameter('app.locales'), true)) {
-            $request->getSession()->set('_locale', 'fr'); 
-            return $this->redirect("/");
-        }
-
-        // On va chercher la newsletter a supprimer
-        $newsletter = $this->newsletterRepo->findOneBy(["id" => $id]);
-
-        // Si la news est trouvée
-        if (!is_null($newsletter)) {
+        if ($this->isCsrfTokenValid('delete'.$newsletter->getId(), $request->request->get('_token'))) {
             // Suppression
             $doctrine->getManager()->remove($newsletter);
             $doctrine->getManager()->flush();
-            $this->addFlash('notice', 'La nouvelle a bien été supprimée.');
+            $this->addFlash('notice', 'L\'évènement a bien été supprimée.');
+        }
 
-            return $this->redirectToRoute('newsletters', [
-                'locale' => $locale,
-                'page' => 1,
-            ]);
-
-
-        // Sinon, redirection vers la liste des actualités avec un message
-        } else {
-            $this->addFlash('notice', 'La nouvelle que vous essayez de supprimer n\'existe pas.');
-            return $this->redirectToRoute('newsletters', [
-                'locale' => $locale,
-                'page' => 1,
-            ]);
-        }            
+        return $this->redirectToRoute('newsletters_index', [
+            'locale' => $request->getSession()->get('_locale'),
+            'page' => 1,
+        ], Response::HTTP_SEE_OTHER);
     }
 }

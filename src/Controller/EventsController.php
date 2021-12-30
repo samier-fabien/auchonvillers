@@ -135,21 +135,56 @@ class EventsController extends AbstractController
      * @IsGranted("ROLE_AGENT")
      * @Route("/{locale}/evenement/{id<\d+>}/agent/editer", name="events_edit", methods={"GET", "POST"})
      */
-    public function edit(Request $request, Events $event, EntityManagerInterface $entityManager): Response
+    public function edit(string $locale = 'fr', int $id, Request $request, ManagerRegistry $doctrine): Response
     {
-        $form = $this->createForm(EventsType::class, $event);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('events_index', [], Response::HTTP_SEE_OTHER);
+        // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
+        if (!in_array($locale, $this->getParameter('app.locales'), true)) {
+            $request->getSession()->set('_locale', 'fr'); 
+            return $this->redirect("/");
         }
 
-        return $this->renderForm('events/edit.html.twig', [
-            'event' => $event,
-            'form' => $form,
-        ]);
+        // On va chercher l'evenement a modifier
+        $event = $this->eventsRepo->findOneBy(["id" => $id]);
+
+        // Si l'evenement est trouvée
+        if (!is_null($event)) {
+            // On en décode les contenus fr et en
+            $event->setEveContentFr(htmlspecialchars_decode($event->getEveContentFr()), ENT_QUOTES);
+            $event->setEveContentEn(htmlspecialchars_decode($event->getEveContentEn()), ENT_QUOTES);    
+
+            // Création du formulaire
+            $form = $this->createForm(EventsType::class, $event);
+            $form->handleRequest($request);
+
+            // Si le formulaire est bien rempli..
+            if ($form->isSubmitted() && $form->isValid()) {
+                // ... on encode les contenus fr et en avant de les ajouter en bdd
+                $event->setEveContentFr(htmlspecialchars($event->getEveContentFr(), ENT_QUOTES));
+                $event->setEveContentEn(htmlspecialchars($event->getEveContentEn(), ENT_QUOTES));
+                $doctrine->getManager()->persist($event);
+                $doctrine->getManager()->flush();
+
+                // Ajout de message de succes et redirection vers la news qui vient d'être modifié
+                $this->addFlash('success', 'Votre évènement a été créé');
+
+                return $this->redirectToRoute('events_show', [
+                    'locale'=> $request->getSession()->get('_locale'),
+                    'id' => $event->getId(),
+                ]);
+            }
+
+            return $this->render('events/edit.html.twig', [
+                'event' => $event,
+                'form' => $form->createView(),
+            ]);
+
+        } else {
+            $this->addFlash('notice', 'L\'évènement que vous essayez de modifier n\'existe pas.');
+            return $this->redirectToRoute('events_index', [
+                'locale' => $locale,
+                'page' => 1,
+            ]);
+        }   
     }
 
     /**

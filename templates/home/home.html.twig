@@ -46,7 +46,7 @@
             {% endif %}
         </p>
 
-        <a href="/{{ app.request.locale }}/evenement/{{ activity.id }}">{% trans %}Voir{% endtrans %}</a>
+        <a href="/{{ app.request.locale }}/{{ activity.type }}/{{ activity.id }}">{% trans %}Voir{% endtrans %}</a>
     
     </article>
     {% endfor %}

@@ -15,5 +15,5 @@
     {{ form_errors(form.eve_location_osm) }}
     {{ form_widget(form.eve_location_osm) }}
     {{ form_errors(form) }}
-    <button type="submit" class="btn btn-primary">Créer</button>
+    <button type="submit" class="btn btn-primary">{{ button_label|trans }}</button>
 {{ form_end(form) }}

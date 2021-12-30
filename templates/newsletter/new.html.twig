@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création d'actualité{% endblock %}
+
+{% block body %}
+        <h1>Création d'actualité</h1>
+
+    {{ include('newsletter/_form.html.twig', {'button_label': 'Créer'}) }}
+
+{% endblock %}

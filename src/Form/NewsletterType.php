@@ -30,8 +30,8 @@ class NewsletterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('new_content_fr', CKEditorType::class, [])
-            ->add('new_content_en', CKEditorType::class, [])
+            ->add('new_content_fr', CKEditorType::class, ['label' => false])
+            ->add('new_content_en', CKEditorType::class, ['label' => false])
         ;
     }
 
