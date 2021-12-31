@@ -18,7 +18,7 @@
 </section>
 
 {% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
-    <button class="btn btn-primary"><a href="/{{ app.request.locale }}/actualite/{{ newsletter.id }}/agent/editer" class="text-light text-decoration-none">{% trans %}Editer{% endtrans %}</a></button>
+    <a href="/{{ app.request.locale }}/actualite/{{ newsletter.id }}/agent/editer" class="text-light text-decoration-none"><button class="btn btn-primary">{% trans %}Editer{% endtrans %}</button></a>
     {{ include('newsletter/_delete_form.html.twig') }}
 {% endif %}
 

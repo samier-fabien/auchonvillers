@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Ballots;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,6 +18,34 @@ class BallotsRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Ballots::class);
+    }
+
+    /**
+     * @return Ballots[] Returns an array of Votes objects
+     */
+    public function findPerVoteAndUser(int $vote, int $user)
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.vote = :vote')
+            ->andWhere('b.user = :user')
+            ->setParameter('vote', $vote)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @return Ballots[] Returns an array of Votes objects
+     */
+    public function findResults(int $vote)
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.vote = :vote')
+            ->setParameter('vote', $vote)
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
     // /**

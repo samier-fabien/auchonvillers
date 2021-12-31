@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% trans %}Mise à jour du vote{% endtrans %}{% endblock %}
+
+{% block body %}
+    <h1>{% trans %}Mise à jour du vote{% endtrans %}</h1>
+
+    {{ include('votes/_form.html.twig', {'button_label': 'Editer'}) }}
+
+    {{ include('votes/_delete_form.html.twig') }}
+    
+{% endblock %}

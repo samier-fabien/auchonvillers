@@ -21,6 +21,7 @@
             <a href="/{{ app.request.locale }}/">{% trans %}Accueil{% endtrans %}</a>
             <a href="/{{ app.request.locale }}/actualites/1">{% trans %}Actualités{% endtrans %}</a>
             <a href="/{{ app.request.locale }}/evenements/1">{% trans %}Evènements{% endtrans %}</a>
+            <a href="/{{ app.request.locale }}/votes/1">{% trans %}Votes{% endtrans %}</a>
             {% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
                 <a href="/{{ app.request.locale }}/gestion">{% trans %}Gestion{% endtrans %}</a>
             {% endif %}

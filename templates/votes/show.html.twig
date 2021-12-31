@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vote{% endblock %}
+
+{% block body %}
+<section>
+    <h1>{% trans %}Vote{% endtrans %}</h1>
+    <div>
+        <p>{% trans %}Du{% endtrans %} {{ vote.VotBegining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ vote.VotEnd|date('Y-m-d') }}</p>
+        <p>
+            {% if attribute(vote, 'VotContent'~app.request.locale|capitalize) is not empty %}
+                {{ attribute(vote, 'VotContent'~app.request.locale|capitalize)|raw }}
+            {% else %}
+                {{ vote.contentFr|raw }}
+            {% endif %}
+        </p>
+    </div>
+    <div>
+
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+            {{ form_label(form.bal_vote) }}
+            {{ form_errors(form.bal_vote) }}
+            {{ form_widget(form.bal_vote) }}
+            {{ form_errors(form) }}
+            <button type="submit" class="btn btn-primary">{% trans %}Donner son avis{% endtrans %}</button>
+        {{ form_end(form) }}
+    </div>
+</section>
+
+{% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
+    <a href="/{{ app.request.locale }}/vote/{{ vote.id }}/agent/editer" class="text-light text-decoration-none"><button class="btn btn-primary">{% trans %}Editer{% endtrans %}</button></a>
+    {{ include('votes/_delete_form.html.twig') }}
+{% endif %}
+
+    
+{% endblock %}
