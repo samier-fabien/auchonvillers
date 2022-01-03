@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Creation d'enquête{% endblock %}
+
+{% block body %}
+    <h1>Creation d'enquête</h1>
+
+    {{ include('surveys/_form.html.twig', {'button_label': 'Créer'}) }}
+
+{% endblock %}

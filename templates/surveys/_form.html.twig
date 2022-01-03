@@ -1,0 +1,28 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{ form_label(form.sur_begining, 'Date du début de l\'enquête') }}
+    {{ form_errors(form.sur_begining) }}
+    {{ form_widget(form.sur_begining) }}
+
+    {{ form_label(form.sur_end, 'Date de fin de l\'enquête') }}
+    {{ form_errors(form.sur_end) }}
+    {{ form_widget(form.sur_end) }}
+
+    {{ form_label(form.sur_content_fr, 'Contenu de l\'enquête en français') }}
+    {{ form_errors(form.sur_content_fr) }}
+    {{ form_widget(form.sur_content_fr) }}
+
+    {{ form_label(form.sur_content_en, 'Contenu de l\'enquête en anglais') }}
+    {{ form_errors(form.sur_content_en) }}
+    {{ form_widget(form.sur_content_en) }}
+
+    {{ form_label(form.sur_question_fr, 'Question en français') }}
+    {{ form_errors(form.sur_question_fr) }}
+    {{ form_widget(form.sur_question_fr) }}
+
+    {{ form_label(form.sur_question_en, 'Question en anglais') }}
+    {{ form_errors(form.sur_question_en) }}
+    {{ form_widget(form.sur_question_en) }}
+
+    {{ form_errors(form) }}
+    <button type="submit" class="btn btn-primary">{{ button_label|trans }}</button>
+{{ form_end(form) }}

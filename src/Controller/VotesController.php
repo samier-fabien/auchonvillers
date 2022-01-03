@@ -259,7 +259,7 @@ class VotesController extends AbstractController
             ]);
 
         } else {
-            $this->addFlash('notice', 'L\'évènement que vous essayez de modifier n\'existe pas.');
+            $this->addFlash('notice', 'Le vote que vous essayez de modifier n\'existe pas.');
             return $this->redirectToRoute('votes_index', [
                 'locale' => $locale,
                 'page' => 1,

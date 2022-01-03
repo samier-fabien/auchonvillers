@@ -19,6 +19,22 @@ class OpinionsRepository extends ServiceEntityRepository
         parent::__construct($registry, Opinions::class);
     }
 
+
+    /**
+     * @return Opinions[] Returns an array of Opinions objects
+     */
+    public function findPerSurveyAndUser(int $survey, int $user)
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.survey = :survey')
+            ->andWhere('b.user = :user')
+            ->setParameter('survey', $survey)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // /**
     //  * @return Opinions[] Returns an array of Opinions objects
     //  */

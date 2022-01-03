@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('surveys_delete', {'locale': app.request.locale, 'id': survey.id}) }}" onsubmit="return confirm('{% trans %}Etes-vous sure de vouloir supprimer cet élément ?{% endtrans %}');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ survey.id) }}">
+    <button class="btn btn-primary">{% trans %}Supprimer{% endtrans %}</button>
+</form>
