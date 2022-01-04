@@ -42,6 +42,22 @@ class Article
      */
     private $art_order_of_appearance;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $art_title_fr;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $art_title_en;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="articles")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $category;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -103,6 +119,42 @@ class Article
     public function setArtOrderOfAppearance(?int $art_order_of_appearance): self
     {
         $this->art_order_of_appearance = $art_order_of_appearance;
+
+        return $this;
+    }
+
+    public function getArtTitleFr(): ?string
+    {
+        return $this->art_title_fr;
+    }
+
+    public function setArtTitleFr(string $art_title_fr): self
+    {
+        $this->art_title_fr = $art_title_fr;
+
+        return $this;
+    }
+
+    public function getArtTitleEn(): ?string
+    {
+        return $this->art_title_en;
+    }
+
+    public function setArtTitleEn(?string $art_title_en): self
+    {
+        $this->art_title_en = $art_title_en;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }

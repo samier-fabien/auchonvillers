@@ -94,10 +94,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $employee_terms_of_use;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Merchant::class, mappedBy="user")
-     */
-    private $merchants;
+    // /**
+    //  * @ORM\OneToMany(targetEntity=Merchant::class, mappedBy="user")
+    //  */
+    // private $merchants;
 
     /**
      * @ORM\OneToMany(targetEntity=Article::class, mappedBy="user")
@@ -411,35 +411,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|Merchant[]
-     */
-    public function getMerchants(): Collection
-    {
-        return $this->merchants;
-    }
+    // /**
+    //  * @return Collection|Merchant[]
+    //  */
+    // public function getMerchants(): Collection
+    // {
+    //     return $this->merchants;
+    // }
 
-    public function addMerchant(Merchant $merchant): self
-    {
-        if (!$this->merchants->contains($merchant)) {
-            $this->merchants[] = $merchant;
-            $merchant->setUser($this);
-        }
+    // public function addMerchant(Merchant $merchant): self
+    // {
+    //     if (!$this->merchants->contains($merchant)) {
+    //         $this->merchants[] = $merchant;
+    //         $merchant->setUser($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeMerchant(Merchant $merchant): self
-    {
-        if ($this->merchants->removeElement($merchant)) {
-            // set the owning side to null (unless already changed)
-            if ($merchant->getUser() === $this) {
-                $merchant->setUser(null);
-            }
-        }
+    // public function removeMerchant(Merchant $merchant): self
+    // {
+    //     if ($this->merchants->removeElement($merchant)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($merchant->getUser() === $this) {
+    //             $merchant->setUser(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * @return Collection|Article[]
