@@ -28,6 +28,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class SurveysController extends AbstractController
 {
@@ -143,22 +144,10 @@ class SurveysController extends AbstractController
         $opinion->setUser($this->getUser());
         $opinion->setSurvey($survey);
 
-        // // Résultats de l'enquête
-        // $ballotsResults = $ballotsRepo->findResults($id);
-        // $firstChoice = 0;
-        // $secondChoice = 0;
-        // foreach ($ballotsResults as $key => $value) {
-        //     if ($value->getBalVote()) {
-        //         $secondChoice++;
-        //     } else {
-        //         $firstChoice++;
-        //     }
-        // }
-
         // Création du formulaire d'enquête
         $questionLabel = ($locale == "en") ? $survey->getSurQuestionEn() : $survey->getSurQuestionFr();
         $form = $this->createFormBuilder($opinion)
-            ->add('opi_opinion', TextType::class, [
+            ->add('opi_opinion', TextareaType::class, [
                 'label' => $questionLabel,
             ])
             ->getForm()
