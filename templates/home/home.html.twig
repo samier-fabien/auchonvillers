@@ -3,7 +3,7 @@
 {% block title %}{% trans %}Accueil{% endtrans %}{% endblock %}
 
 {% block body %}
-<div class="container-fluid mt-5">
+<div class="container-fluid my-5">
 	<section class="container">
 		<h1 class="text-center mb-4">{% trans %}Dernières actualités{% endtrans %}</h1>  
 		<div class="row row-cols-1 row-cols-xs-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-3">
@@ -46,30 +46,38 @@
 	</section>
 </div> 
 
-<section>
-    <h1>{% trans %}Activités{% endtrans %}</h1>  
-
-    {% for activity in activities %}
-    <article>
-        <img src="{{ asset(activity.thumb) | imagine_filter('my_thumb') }}" alt="{% trans %}Image introductive relative à l'évènement.{% endtrans %}">
-
-        <p>{% trans %}Du{% endtrans %} {{ activity.begining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ activity.end|date('Y-m-d') }}</p>
-        <p>
-            {% if attribute(activity, 'content'~app.request.locale|capitalize) is not empty %}
-                {{ attribute(activity, 'content'~app.request.locale|capitalize)|length > 25 ? attribute(activity, 'content'~app.request.locale|capitalize)|slice(0,25) ~ '...' : attribute(activity, 'content'~app.request.locale|capitalize) }}
-            {% else %}
-                {{ activity.contentFr|length > 25 ? activity.contentFr|slice(0,25) ~ '...' : activity.contentFr }}
-            {% endif %}
-        </p>
-
-        <a href="/{{ app.request.locale }}/{{ activity.type }}/{{ activity.id }}">{% trans %}Voir{% endtrans %}</a>
-    
-    </article>
-    {% endfor %}
-    
-    <div>
-        <a href="/{{ app.request.locale }}/evenements/{{ 1 }}">{% trans %}Tout voir{% endtrans %}</a>
-    </div>
-    
-</section>
+<div class="container-fluid my-5">
+	<section class="container">
+		<h1 class="text-center mb-4">{% trans %}Dernières actualités{% endtrans %}</h1>  
+		<div class="row row-cols-1 row-cols-xs-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-3">
+		{% for activity in activities %}
+				<div class="col mb-4">
+					<article class="card text-dark bg-light shadow">
+						<img class="card-img-top" src="{{ asset(activity.thumb) | imagine_filter('my_thumb') }}" alt="{% trans %}Image introductive relative à l'évènement.{% endtrans %}">
+						<div class="card-body">
+							<div class="container-fluid mb-3">
+								<div class="row align-items-center">
+										<span class"text-muted">Du {{ activity.begining|date('d-m-Y') }} au {{ activity.end|date('d-m-Y') }}</span></br>
+										<span class="fs-5" style="text-align: justify">
+											{% if attribute(activity, 'content'~app.request.locale|capitalize) is not empty %}
+												{{ attribute(activity, 'content'~app.request.locale|capitalize)|length > 60 ? attribute(activity, 'content'~app.request.locale|capitalize)|slice(0,60) ~ '...' : attribute(activity, 'content'~app.request.locale|capitalize) }}
+											{% else %}
+												{{ activity.contentFr|length > 60 ? activity.contentFr|slice(0,60) ~ '...' : activity.contentFr }}
+											{% endif %}
+										</span>
+								</div>
+							</div>
+							<p class="text-center">
+								<a class="card-link btn btn-primary px-5" href="/{{ app.request.locale }}/{{ activity.type }}/{{ activity.id }}">{% trans %}Voir{% endtrans %}</a>
+							</p>
+						</div>
+					</article>
+				</div>
+		{% endfor %}
+		</div>
+		<div class="text-center fs-2">
+			<a class="btn btn-primary btn-lg px-5" href="/{{ app.request.locale }}/evenements/{{ 1 }}">{% trans %}Tout voir{% endtrans %}</a>
+		</div>
+	</section>
+</div> 
 {% endblock %}

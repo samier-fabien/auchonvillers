@@ -57,7 +57,7 @@ class HomeController extends AbstractController
             $request->getSession()->set('_locale', 'fr'); 
             return $this->redirect("/");
         }
-
+        
         // Recherche des "x" dernieres newsletters dans la bdd
         $newsletters = $this->newsletterRepo->findLast(self::NUMBER_OF_NEWSLETTERS);
 
