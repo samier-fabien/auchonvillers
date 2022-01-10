@@ -15,8 +15,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class HomeController extends AbstractController
 {
-    public const NUMBER_OF_NEWSLETTERS = 4;
-    public const NUMBER_OF_ACTIVITIES = 4;
+    public const NUMBER_OF_NEWSLETTERS = 6;
+    public const NUMBER_OF_ACTIVITIES = 6;
     private $newsletterRepo;
     private $eventsRepo;
     private $surveysRepo;

@@ -3,32 +3,48 @@
 {% block title %}{% trans %}Accueil{% endtrans %}{% endblock %}
 
 {% block body %}
-<section>
-    <h1>{% trans %}Actualités{% endtrans %}</h1>  
-
-    {% for newsletter in newsletters %}
-    <article>
-        <img src="{{ asset(newsletter.thumb) | imagine_filter('my_thumb') }}" alt="{% trans %}Image introductive relative à la nouvelle.{% endtrans %}">
-
-        <h2>{% trans %}Publié le{% endtrans %} {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
-        <p>
-            {% if attribute(newsletter, 'newContent'~app.request.locale|capitalize) is not empty %}
-                {{ attribute(newsletter, 'newContent'~app.request.locale|capitalize)|length > 25 ? attribute(newsletter, 'newContent'~app.request.locale|capitalize)|slice(0,25) ~ '...' : attribute(newsletter, 'newContent'~app.request.locale|capitalize) }}
-            {% else %}
-                {{ newsletter.newContentFr|length > 25 ? newsletter.newContentFr|slice(0,25) ~ '...' : newsletter.newContentFr }}
-            {% endif %}
-        </p>
-
-        <a href="/{{ app.request.locale }}/actualite/{{ newsletter.id }}">{% trans %}Voir{% endtrans %}</a>
-    
-    </article>
-    {% endfor %}
-    
-    <div>
-        <a href="/{{ app.request.locale }}/actualites/{{ 1 }}">{% trans %}Tout voir{% endtrans %}</a>
-    </div>
-    
-</section>
+<div class="container-fluid mt-5">
+	<section class="container">
+		<h1 class="text-center mb-4">{% trans %}Dernières actualités{% endtrans %}</h1>  
+		<div class="row row-cols-1 row-cols-xs-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-3">
+			{% for newsletter in newsletters %}
+				<div class="col mb-4">
+					<article class="card text-dark bg-light shadow">
+						<img class="card-img-top" src="{{ asset(newsletter.thumb) | imagine_filter('my_thumb') }}" alt="{% trans %}Image introductive relative à la nouvelle.{% endtrans %}">
+						<div class="card-body">
+							<div class="container-fluid mb-3">
+								<div class="row align-items-center">
+									<div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-3 text-center fw-bold fs-4 bg-warning text-dark bg-opacity-50">
+										{# <span class="badge bg-dark bg-opacity-25 text-light text-opacity-50 rounded-pill"> #}
+											{{ newsletter.newCreatedAt|date('d') }}</br>
+											{{ newsletter.newCreatedAt|date('m') }}</br>
+											{{ newsletter.newCreatedAt|date('Y') }}</br>
+										{# </span> #}
+									</div>
+									<div class="col-sm-8 col-md-8 col-lg-8 col-xl-8 col-xxl-9">
+										<span class="fs-5" style="text-align: justify">
+											{% if attribute(newsletter, 'newContent'~app.request.locale|capitalize) is not empty %}
+												{{ attribute(newsletter, 'newContent'~app.request.locale|capitalize)|length > 60 ? attribute(newsletter, 'newContent'~app.request.locale|capitalize)|slice(0,60) ~ ' ...' : attribute(newsletter, 'newContent'~app.request.locale|capitalize) }}
+											{% else %}
+												{{ newsletter.newContentFr|length > 60 ? newsletter.newContentFr|slice(0,60) ~ ' ...' : newsletter.newContentFr }}
+											{% endif %}
+										</span>
+									</div>
+								</div>
+							</div>
+							<p class="text-center">
+								<a class="card-link btn btn-primary px-5" href="/{{ app.request.locale }}/actualite/{{ newsletter.id }}">{% trans %}Voir{% endtrans %}</a>
+							</p>
+						</div>
+					</article>
+				</div>
+			{% endfor %}
+		</div>
+		<div class="text-center fs-2">
+			<a class="btn btn-primary btn-lg px-5" href="/{{ app.request.locale }}/actualites/{{ 1 }}">{% trans %}Tout voir{% endtrans %}</a>
+		</div>
+	</section>
+</div> 
 
 <section>
     <h1>{% trans %}Activités{% endtrans %}</h1>  

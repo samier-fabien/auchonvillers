@@ -18,25 +18,99 @@
     </head>
     <body>
         {% block nav %}
-            <a href="/{{ app.request.locale }}/">{% trans %}Accueil{% endtrans %}</a>
-            <a href="/{{ app.request.locale }}/actualites/1">{% trans %}Actualités{% endtrans %}</a>
-            <a href="/{{ app.request.locale }}/evenements/1">{% trans %}Evènements{% endtrans %}</a>
-            <a href="/{{ app.request.locale }}/votes/1">{% trans %}Votes{% endtrans %}</a>
-            <a href="/{{ app.request.locale }}/enquetes/1">{% trans %}Enquêtes{% endtrans %}</a>
-            {% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
-                <a href="/{{ app.request.locale }}/gestion">{% trans %}Gestion{% endtrans %}</a>
-            {% endif %}
-            {# Si l'utilisateur est connecté on affiche son email et le lien vers deconnexion sinon le lien vers connexion #}
-            {% if is_granted('ROLE_USER') or is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
-                {{ app.user.email }}
-                <a href="/{{ app.request.locale }}/deconnexion">{% trans %}Deconnexion{% endtrans %}</a>
-            {% else %}
-                <a href="/{{ app.request.locale }}/connexion">{% trans %}Connexion{% endtrans %}</a>
-            {% endif %}
-            {# Liste dans la variable globale - définie dans services.yaml et envoyée dans la vue par twig.yaml - celles qui ne sont pas la langue active #}
-            {% for locale in locales|filter(locale => locale != app.request.locale) -%}
-                <a href="/langue/{{ locale }}">{{ locale }}</a>
-            {% endfor %}
+            <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light p-3 shadow">
+                <div class="container-fluid g-0">
+                                        
+                    <a href="/{{ app.request.locale }}/" class="navbar-brand mb-0 h1">Auchonvillers</a>
+
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navDropdown" aria-controls="navDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navDropdown">
+                        <ul class="navbar-nav me-auto">
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navCategoryDrop" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="10,50"  data-bs-reference="parent">
+                                    Plus sur
+                                </a>
+                                <ul class="dropdown-menu mt-lg-3 mt-xl-3 mt-xxl-3" aria-labelledby="navCategoryDrop">
+                                    {% for navcat in navcats.list %}
+                                        {% if attribute(navcat, 'catName'~app.request.locale|capitalize) is not empty %}
+                                            <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/categorie/{{ navcat.id }}">{{ attribute(navcat, 'catName'~app.request.locale|capitalize)|raw }}</a></li>
+                                        {% else %}
+                                            <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/categorie/{{ navcat.id }}">{{ navcat.catNameFr|raw }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+
+                            <li class"nav-item"><a class="nav-link" href="/{{ app.request.locale }}/actualites/1">{% trans %}Actualités{% endtrans %}</a></li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navActivityDrop" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Activités
+                                </a>
+                                <ul class="dropdown-menu mt-lg-3 mt-xl-3 mt-xxl-3" aria-labelledby="navActivityDrop">
+                                    <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/evenements/1">{% trans %}Evènements{% endtrans %}</a></li>
+                                    <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/votes/1">{% trans %}Votes{% endtrans %}</a></li>
+                                    <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/enquetes/1">{% trans %}Enquêtes{% endtrans %}</a></li>
+                                </ul>
+                            </li>
+
+                            {% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
+                                <li class"nav-item"><a class="nav-link" href="/{{ app.request.locale }}/gestion">{% trans %}Gestion{% endtrans %}</a></li>
+                            {% endif %}
+
+                        </ul>
+
+                        <ul class="navbar-nav">
+
+                            {# Si l'utilisateur est connecté on affiche son email et le lien vers deconnexion sinon le lien vers connexion #}
+                            {% if is_granted('ROLE_USER') or is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
+                                <li class="nav-item dropdown d-flex">
+                                    <a class="nav-link dropdown-toggle" id="navAccountDrop" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {{ app.user.email }}
+                                    </a>
+                                    <ul class="dropdown-menu mt-lg-3 mt-xl-3 mt-xxl-3" aria-labelledby="navAccountDrop">
+                                        <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/compte/{{ app.user.id }}">{% trans %}Mon compte{% endtrans %}</a></li>
+                                        <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/deconnexion">{% trans %}Deconnexion{% endtrans %}</a></li>
+                                    </ul>
+                                </li>
+                            {% else %}
+                                <li class"nav-item d-flex"><a class="nav-link" href="/{{ app.request.locale }}/connexion">{% trans %}Connexion{% endtrans %}</a></li>
+                            {% endif %}
+
+                            {# Liste dans la variable globale - définie dans services.yaml et envoyée dans la vue par twig.yaml - celles qui ne sont pas la langue active #}
+                             <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navLangDrop" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    {{ app.request.locale }}
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end mt-lg-3 mt-xl-3 mt-xxl-3" aria-labelledby="navLangDrop">
+                                    {% for locale in locales|filter(locale => locale != app.request.locale) -%}
+                                        <li class="dropdown-item"><a class="nav-link" href="/langue/{{ locale }}">{{ locale }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        {% endblock %}
+
+        {% block jumbo %}
+            <div class="p-5 mb-4 bg-light rounded-3">
+                <div class="container-fluid py-5 text-end">
+                    <h1 class="display-5 fw-bold">Auchonvillers</h1>
+                    <p class="fs-4 text-end">
+                        <span class="text-end">
+                            Bienvenue Sur le site de la commune
+                        </span>
+                    </p>
+                    <button class="btn btn-primary btn-lg" type="button">Example button</button>
+                </div>
+            </div>
         {% endblock %}
 
         {% block flashMessages %}
