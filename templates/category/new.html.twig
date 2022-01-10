@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Creation de thème{% endblock %}
+
+{% block body %}
+    <h1>Creation de thème</h1>
+
+    {{ include('category/_form.html.twig', {'button_label': 'Créer'}) }}
+
+{% endblock %}

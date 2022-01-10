@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% if attribute(category, 'CatName'~app.request.locale|capitalize) is not empty %}
+                    {{ attribute(category, 'CatName'~app.request.locale|capitalize) }}
+                {% else %}
+                    {{ category.CatNameFr }}
+                {% endif %}
+    {% endblock %}
+{% block body %}
+<section>
+    <article>
+        <h1>
+            {% if attribute(category, 'CatName'~app.request.locale|capitalize) is not empty %}
+                {{ attribute(category, 'CatName'~app.request.locale|capitalize) }}
+            {% else %}
+                {{ category.CatNameFr|capitalize }}
+            {% endif %}
+        </h1>
+        <p>
+            {% if attribute(category, 'CatDescription'~app.request.locale|capitalize) is not empty %}
+                {{ attribute(category, 'CatDescription'~app.request.locale|capitalize) }}
+            {% else %}
+                {{ category.CatDescriptionFr|capitalize }}
+            {% endif %}
+        </p>
+        {% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
+            <a href="/{{ app.request.locale }}/theme/{{ category.id }}/agent/editer" class="text-light text-decoration-none"><button class="btn btn-primary">{% trans %}Editer{% endtrans %}</button></a>
+            {{ include('category/_delete_form.html.twig') }}
+        {% endif %}
+    </article>
+
+    {% for article in articles %}
+    <article>
+        <img src="{{ asset(article.thumb) | imagine_filter('my_little_thumb') }}" alt="{% trans %}Image introductive relative à l'article.{% endtrans %}">
+        <h2>
+            {% if attribute(article, 'title'~app.request.locale|capitalize) is not empty %}
+                {{ attribute(article, 'title'~app.request.locale|capitalize) }}
+            {% else %}
+                {{ article.titleFr|capitalize }}
+            {% endif %}
+        </h2>
+        <p>
+            {% if attribute(article, 'content'~app.request.locale|capitalize) is not empty %}
+                {{ attribute(article, 'content'~app.request.locale|capitalize)|length > 200 ? attribute(article, 'content'~app.request.locale|capitalize)|slice(0,200) ~ '...' : attribute(article, 'content'~app.request.locale|capitalize) }}
+            {% else %}
+                {{ article.contentFr|capitalize|length > 200 ? attribute(article, 'content'~app.request.locale|capitalize)|slice(0,200) ~ '...' : attribute(article, 'content'~app.request.locale|capitalize) }}
+            {% endif %}
+        </p>
+        <a href="/{{ app.request.locale }}/article/{{ article.id }}" class="text-light text-decoration-none"><button class="btn btn-primary">{% trans %}Voir{% endtrans %}</button></a>
+
+    </article>
+    {% endfor %}
+
+</section>
+
+    
+{% endblock %}

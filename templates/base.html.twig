@@ -37,9 +37,9 @@
                                 <ul class="dropdown-menu mt-lg-3 mt-xl-3 mt-xxl-3" aria-labelledby="navCategoryDrop">
                                     {% for navcat in navcats.list %}
                                         {% if attribute(navcat, 'catName'~app.request.locale|capitalize) is not empty %}
-                                            <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/categorie/{{ navcat.id }}">{{ attribute(navcat, 'catName'~app.request.locale|capitalize)|raw }}</a></li>
+                                            <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/theme/{{ navcat.id }}">{{ attribute(navcat, 'catName'~app.request.locale|capitalize)|raw }}</a></li>
                                         {% else %}
-                                            <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/categorie/{{ navcat.id }}">{{ navcat.catNameFr|raw }}</a></li>
+                                            <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/theme/{{ navcat.id }}">{{ navcat.catNameFr|raw }}</a></li>
                                         {% endif %}
                                     {% endfor %}
                                 </ul>

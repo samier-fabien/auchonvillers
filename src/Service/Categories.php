@@ -14,7 +14,7 @@ class Categories
 
     public function getList():array
     {
-        return $this->categoryRepo->findAll();
+        return $this->categoryRepo->findAllOrderedByNumber();
     }
      
 }
