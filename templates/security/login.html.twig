@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}{% trans %}Log in{% endtrans %}{% endblock %}
 
 {% block body %}
-<form method="post">
+<form method="post" novalidate>
     {% if error %}
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
@@ -37,6 +37,12 @@
 
     <button class="btn btn-lg btn-primary" type="submit">
         {% trans %}Sign in{% endtrans %}
-    </button>
+    </button>   
 </form>
+
+{% if error is not empty %}
+    <div class="my-5">
+        <a href="/{{ app.request.locale }}/oubli">Mot de passe oublié ?</a>
+    </div>
+{% endif %}
 {% endblock %}

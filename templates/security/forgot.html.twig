@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% trans %}Mot de passe oublié{% endtrans %}{% endblock %}
+
+{% block body %}
+<h1>Mot de passe oublié ?</h1>
+<p>
+    {% trans %}Si c'est le cas remplissez le formulaire suivant et cliquez sur "envoyer le lien", un lien sera envoyé à l'adresse donnée. En cliquant sur ce lien vous changer votre mot de passe. Vous devez être inscrit pour que la procédure fonctionne.{% endtrans %}
+</p>
+<form action="{{ path('app_forgot', {'locale' : app.request.locale,}) }}" method="post">
+    <label class="form-label" for="email">E-mail</label>
+    <input class="form-control" type="email" name="email" id="email">
+    <input type="hidden" name="_token" value="{{ csrf_token('generateLink') }}">
+
+    <button class="btn btn-lg btn-primary" type="submit">
+        {% trans %}Envoyer le lien{% endtrans %}
+    </button>   
+</form>
+{% endblock %}
