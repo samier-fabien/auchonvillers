@@ -1,0 +1,28 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{ form_label(form.art_title_fr, 'Titre de l\'article en français') }}
+    {{ form_errors(form.art_title_fr) }}
+    {{ form_widget(form.art_title_fr) }}
+
+    {{ form_label(form.art_title_en, 'Titre de l\'article en anglais') }}
+    {{ form_errors(form.art_title_en) }}
+    {{ form_widget(form.art_title_en) }}
+
+    {{ form_label(form.art_content_fr, 'Contenu de l\'article en français') }}
+    {{ form_errors(form.art_content_fr) }}
+    {{ form_widget(form.art_content_fr) }}
+
+    {{ form_label(form.art_content_en, 'Contenu de l\'article en anglais') }}
+    {{ form_errors(form.art_content_en) }}
+    {{ form_widget(form.art_content_en) }}
+
+    {{ form_label(form.art_order_of_appearance, 'Numéro d\'apparition') }}
+    {{ form_errors(form.art_order_of_appearance) }}
+    {{ form_widget(form.art_order_of_appearance) }}
+
+    {{ form_label(form.category, 'Thème associé à l\'article') }}
+    {{ form_errors(form.category) }}
+    {{ form_widget(form.category) }}
+
+    {{ form_errors(form) }}
+    <button type="submit" class="btn btn-primary">{{ button_label|trans }}</button>
+{{ form_end(form) }}

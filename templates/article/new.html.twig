@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Creation d'article{% endblock %}
+
+{% block body %}
+    <h1>Creation d'article</h1>
+
+    {{ include('article/_form.html.twig', {'button_label': 'Créer'}) }}
+
+{% endblock %}

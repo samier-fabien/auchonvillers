@@ -30,7 +30,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CategoryController extends AbstractController
 {
-    public const VOTES_PER_PAGE = 4;
     private $categoryRepo;
 
     public function __construct(CategoryRepository $categoryRepo) {
@@ -94,7 +93,7 @@ class CategoryController extends AbstractController
             $category->setCatNameFr(htmlspecialchars($category->getCatNameFr(), ENT_QUOTES));
             $category->setCatNameEn(htmlspecialchars($category->getCatNameEn(), ENT_QUOTES));
             $category->setCatDescriptionFr(htmlspecialchars($category->getCatDescriptionFr(), ENT_QUOTES));
-            $category->setCatDescriptionFr(htmlspecialchars($category->getCatDescriptionEn(), ENT_QUOTES));
+            $category->setCatDescriptionEn(htmlspecialchars($category->getCatDescriptionEn(), ENT_QUOTES));
 
             $doctrine->getManager()->persist($category);
             $doctrine->getManager()->flush();
@@ -248,10 +247,9 @@ class CategoryController extends AbstractController
             // Suppression
             $doctrine->getManager()->remove($category);
             $doctrine->getManager()->flush();
-            $this->addFlash('notice', 'Le thème a bien été supprimée.');
+            $this->addFlash('success', 'Le thème a bien été supprimée.');
         }
 
-        $this->addFlash('danger', 'Le thème n\'a pas été supprimé');
         return $this->redirectToRoute('home', [
             'locale' => $request->getSession()->get('_locale'),
         ], Response::HTTP_SEE_OTHER);
