@@ -1,44 +1,14 @@
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-    {{ form_label(form.vot_begining, 'Date du début du vote') }}
-    {{ form_errors(form.vot_begining) }}
-    {{ form_widget(form.vot_begining) }}
-
-    {{ form_label(form.vot_end, 'Date de fin du vote') }}
-    {{ form_errors(form.vot_end) }}
-    {{ form_widget(form.vot_end) }}
-
-    {{ form_label(form.vot_content_fr, 'Contenu du vote en français') }}
-    {{ form_errors(form.vot_content_fr) }}
-    {{ form_widget(form.vot_content_fr) }}
-
-    {{ form_label(form.vot_content_en, 'Contenu du vote en anglais') }}
-    {{ form_errors(form.vot_content_en) }}
-    {{ form_widget(form.vot_content_en) }}
-
-    {{ form_label(form.vot_question_fr, 'Question en français') }}
-    {{ form_errors(form.vot_question_fr) }}
-    {{ form_widget(form.vot_question_fr) }}
-
-    {{ form_label(form.vot_question_en, 'Question en anglais') }}
-    {{ form_errors(form.vot_question_en) }}
-    {{ form_widget(form.vot_question_en) }}
-
-    {{ form_label(form.vot_first_choice_fr, 'Premier choix en français') }}
-    {{ form_errors(form.vot_first_choice_fr) }}
-    {{ form_widget(form.vot_first_choice_fr) }}
-
-    {{ form_label(form.vot_first_choice_en, 'Premier choix en anglais') }}
-    {{ form_errors(form.vot_first_choice_en) }}
-    {{ form_widget(form.vot_first_choice_en) }}
-
-    {{ form_label(form.vot_second_choice_fr, 'Deuxième choix en français') }}
-    {{ form_errors(form.vot_second_choice_fr) }}
-    {{ form_widget(form.vot_second_choice_fr) }}
-
-    {{ form_label(form.vot_second_choice_en, 'Deuxième choix en anglais') }}
-    {{ form_errors(form.vot_second_choice_en) }}
-    {{ form_widget(form.vot_second_choice_en) }}
-
+    {{ form_row(form.vot_begining) }}
+    {{ form_row(form.vot_end) }}
+    {{ form_row(form.vot_content_fr) }}
+    {{ form_row(form.vot_content_en) }}
+    {{ form_row(form.vot_question_fr) }}
+    {{ form_row(form.vot_question_en) }}
+    {{ form_row(form.vot_first_choice_fr) }}
+    {{ form_row(form.vot_first_choice_en) }}
+    {{ form_row(form.vot_second_choice_fr) }}
+    {{ form_row(form.vot_second_choice_en) }}
     {{ form_errors(form) }}
     <button type="submit" class="btn btn-primary">{{ button_label|trans }}</button>
 {{ form_end(form) }}

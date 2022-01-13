@@ -1,10 +1,6 @@
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-        {{ form_label(form.new_content_fr, 'Contenu de la nouvelle en français') }}
-        {{ form_errors(form.new_content_fr) }}
-        {{ form_widget(form.new_content_fr) }}
-        {{ form_label(form.new_content_en, 'Contenu de la nouvelle en anglais') }}
-        {{ form_errors(form.new_content_en) }}
-        {{ form_widget(form.new_content_en) }}
+        {{ form_row(form.new_content_fr) }}
+        {{ form_row(form.new_content_en) }}
         {{ form_errors(form) }}
         <button type="submit" class="btn btn-primary">{{ button_label|trans }}</button>
     {{ form_end(form) }}

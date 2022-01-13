@@ -1,21 +1,24 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}{% trans %}Inscription{% endtrans %}{% endblock %}
 
 {% block body %}
     {% for flashError in app.flashes('verify_email_error') %}
         <div class="alert alert-danger" role="alert">{{ flashError }}</div>
     {% endfor %}
 
-    <h1>Register</h1>
+    <h1>{% trans %}Inscription{% endtrans %}</h1>
 
-    {{ form_start(registrationForm) }}
+    {{ form_start(registrationForm, {'attr': {'novalidate': 'novalidate'}}) }}
         {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
-
-        <button type="submit" class="btn">Register</button>
+        {{ form_row(registrationForm.plainPassword) }}
+        {{ form_row(registrationForm.rgpd) }}
+        {{ form_row(registrationForm.user_terms_of_use) }}
+        {{ form_row(registrationForm.newsletter) }}
+        {{ form_row(registrationForm.event) }}
+        {{ form_row(registrationForm.survey) }}
+        {{ form_row(registrationForm.vote) }}
+        {{ form_errors(registrationForm) }}
+        <button type="submit" class="btn btn-primary">Register</button>
     {{ form_end(registrationForm) }}
 {% endblock %}

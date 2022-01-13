@@ -53,8 +53,14 @@ class SecurityController extends AbstractController
     /**
      * @Route("/{locale}/oubli", name="app_forgot")
      */
-    public function linkCreation(NotifierInterface $notifier, LoginLinkHandlerInterface $loginLinkHandler, UserRepository $userRepo, Request $request, MailerInterface $mailer)
+    public function linkCreation(string $locale, NotifierInterface $notifier, LoginLinkHandlerInterface $loginLinkHandler, UserRepository $userRepo, Request $request, MailerInterface $mailer)
     {
+        // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
+        if (!in_array($locale, $this->getParameter('app.locales'), true)) {
+            $request->getSession()->set('_locale', 'fr'); 
+            return $this->redirect("/");
+        }
+
         // Vérifie si le formulaire de connexion est soumis
         if ($request->isMethod('POST') && $this->isCsrfTokenValid('generateLink', $request->request->get('_token'))) {
             // Charge l'utilisateur à partir du champs 'email'
@@ -65,6 +71,10 @@ class SecurityController extends AbstractController
                 $loginLinkDetails = $loginLinkHandler->createLoginLink($user);
 
                 // Envoi du lien par e-mail
+                $subject = ($locale === "fr") ? "Récupération": "Recovery";
+                $text = ($locale === "fr") ?
+                "Bonjour. Vous trouverez ci-dessous le lien de récupération que vous avez demandé. Si vous n'êtes pas à l'origine de cette demande ou que vous avez fait une fausse manipulation, n'en tenez pas compte. " . $loginLinkDetails->getUrl() :
+                "Hello. Below is the recovery link you asked for. If you are not the one that initiated that request or you made a bad movement, ignore it. " . $loginLinkDetails->getUrl();
                 $email = (new Email())
                     ->from('samierfabien@gmail.com')
                     ->to($user->getEmail())
@@ -72,8 +82,8 @@ class SecurityController extends AbstractController
                     //->bcc('bcc@example.com')
                     //->replyTo('fabien@example.com')
                     //->priority(Email::PRIORITY_HIGH)
-                    ->subject('Récupération')
-                    ->text("Bonjour. Vous trouverez ci-dessous le lien de récupération que vous avez demandé. Si vous n'êtes pas à l'origine de cette demande ou que vous avez fait une fausse manipulation, n'en tenez pas compte. " . $loginLinkDetails->getUrl());
+                    ->subject($subject)
+                    ->text($text);
                     //->html('<p>See Twig integration for better HTML integration!</p>');
         
                 try {

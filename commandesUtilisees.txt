@@ -4,6 +4,51 @@ symfony serve -D
 // Crée la table User
 php bin/console make:user
 
+// Crée le nécessaire pour s'inscrire
+php bin/console make:registration-form :
+Creating a registration form for App\Entity\User
+
+ Do you want to send an email to verify the user's email address after registration? (yes/no) [yes]:
+ > 
+
+ By default, users are required to be authenticated when they click the verification link that is emailed to them.
+ This prevents the user from registering on their laptop, then clicking the link on their phone, without
+ having to log in. To allow multi device email verification, we can embed a user id in the verification link.
+
+ Would you like to include the user id in the verification link to allow anonymous email verification? (yes/no) [no]:
+ > 
+
+ What email address will be used to send registration confirmations? e.g. mailer@your-domain.com:
+ > samierfabien@gmail.com
+
+ What "name" should be associated with that email address? e.g. "Acme Mail Bot":
+ > Mairie d'Auchonvillers
+
+ Do you want to automatically authenticate the user after registration? (yes/no) [yes]:
+ > 
+
+ Not generating User::isVerified(): method already exists
+ Not generating User::setIsVerified(): method already exists
+ no change: src/Entity/User.php
+ created: src/Security/EmailVerifier.php
+ created: templates/registration/confirmation_email.html.twig
+ created: src/Form/RegistrationFormType.php
+ created: src/Controller/RegistrationController.php
+ created: templates/registration/register.html.twig
+
+           
+  Success! 
+           
+
+ Next:
+ 1) In RegistrationController::verifyUserEmail():
+    * Customize the last redirectToRoute() after a successful email verification.
+    * Make sure you're rendering success flash messages or change the $this->addFlash() line.
+ 2) Review and customize the form, controller, and templates as needed.
+ 3) Run "php bin/console make:migration" to generate a migration for the newly added User::isVerified property.
+
+ Then open your browser, go to "/register" and enjoy your new form!
+
 // Crée une entité
 php bin/console make:entity
 
@@ -33,7 +78,10 @@ composer require twig/extra-bundle
 
 // Montre tous les messages qui pourraient être traduits en francais
 // translation:extract = translation:update dans les version précédentes
-php bin/console translation:extract --dump-messages en
+php bin/console translation:extract --dump-messages fr
+php bin/console translation:extract --force fr
+php bin/console translation:extract --help
+
 
 // Mets à jour les fichiers de traduction francaise avec tous les éléments pas encore traduits
 php bin/console translation:extract --force en

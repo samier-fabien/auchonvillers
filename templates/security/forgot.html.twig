@@ -5,7 +5,7 @@
 {% block body %}
 <h1>Mot de passe oublié ?</h1>
 <p>
-    {% trans %}Si c'est le cas remplissez le formulaire suivant et cliquez sur "envoyer le lien", un lien sera envoyé à l'adresse donnée. En cliquant sur ce lien vous changer votre mot de passe. Vous devez être inscrit pour que la procédure fonctionne.{% endtrans %}
+    {% trans %}Si c'est le cas remplissez le formulaire suivant et cliquez sur "envoyer le lien", un lien sera envoyé à l'adresse donnée. En cliquant sur ce lien vous pourrez changer votre mot de passe. Vous devez être inscrit pour que la procédure fonctionne. Le lien ne sera valide que pour trois tentatives pendant cinq minutes. Ces restrictions sont dues au fait que ce procédé n'est qu'une méthode de connexion de secours.{% endtrans %}
 </p>
 <form action="{{ path('app_forgot', {'locale' : app.request.locale,}) }}" method="post">
     <label class="form-label" for="email">E-mail</label>

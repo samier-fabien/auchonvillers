@@ -62,37 +62,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="boolean")
      */
-    private $newsletter;
+    private $newsletter = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $vote;
+    private $vote = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $event;
+    private $event = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $survey;
+    private $survey = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $rgpd;
+    private $rgpd = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $user_terms_of_use;
+    private $user_terms_of_use = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $employee_terms_of_use;
+    private $employee_terms_of_use = false;
 
     // /**
     //  * @ORM\OneToMany(targetEntity=Merchant::class, mappedBy="user")

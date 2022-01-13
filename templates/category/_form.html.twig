@@ -1,24 +1,9 @@
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-    {{ form_label(form.cat_name_fr, 'Nom du thème en français') }}
-    {{ form_errors(form.cat_name_fr) }}
-    {{ form_widget(form.cat_name_fr) }}
-
-    {{ form_label(form.cat_name_en, 'Nom du thème en anglais') }}
-    {{ form_errors(form.cat_name_en) }}
-    {{ form_widget(form.cat_name_en) }}
-
-    {{ form_label(form.cat_description_fr, 'Description du thème en français') }}
-    {{ form_errors(form.cat_description_fr) }}
-    {{ form_widget(form.cat_description_fr) }}
-
-    {{ form_label(form.cat_description_en, 'Description du thème en anglais') }}
-    {{ form_errors(form.cat_description_en) }}
-    {{ form_widget(form.cat_description_en) }}
-
-    {{ form_label(form.cat_order_of_appearance, 'Numéro d\'apparition') }}
-    {{ form_errors(form.cat_order_of_appearance) }}
-    {{ form_widget(form.cat_order_of_appearance) }}
-
+    {{ form_row(form.cat_name_fr) }}
+    {{ form_row(form.cat_name_en) }}
+    {{ form_row(form.cat_description_fr) }}
+    {{ form_row(form.cat_description_en) }}
+    {{ form_row(form.cat_order_of_appearance) }}
     {{ form_errors(form) }}
     <button type="submit" class="btn btn-primary">{{ button_label|trans }}</button>
 {{ form_end(form) }}

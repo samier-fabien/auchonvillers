@@ -7,7 +7,7 @@
     <body>
       <trans-unit id="acVpEs4" resname="You are logged in as">
         <source>You are logged in as</source>
-        <target>__You are logged in as</target>
+        <target>You are logged in as</target>
       </trans-unit>
       <trans-unit id="0FJ_Sz1" resname="Logout">
         <source>Logout</source>
@@ -65,9 +65,273 @@
         <source>Déconnexion</source>
         <target>Log out</target>
       </trans-unit>
-      <trans-unit id="nouvelle_consultation">
-          <source>La nouvelle que vous essayez de consulter n'existe pas.</source>
-          <target>The news you are trying to read does not exist.</target>
+      <trans-unit id=".kK77tJ" resname="La nouvelle que vous essayez de consulter n'existe pas.">
+        <source>La nouvelle que vous essayez de consulter n'existe pas.</source>
+        <target>The news you are trying to read does not exist.</target>
+      </trans-unit>
+      <trans-unit id="OHKGHIt" resname="Veuillez entrer votre email s'il vous plait.">
+        <source>Veuillez entrer votre email s'il vous plait.</source>
+        <target>Please enter your email.</target>
+      </trans-unit>
+      <trans-unit id="u1CXd_h" resname="L'email &quot;{{ value }}&quot; n'est pas un email valide.">
+        <source>L'email "{{ value }}" n'est pas un email valide.</source>
+        <target>The email "{ value }" is not a valid email.</target>
+      </trans-unit>
+      <trans-unit id="7PxmbbQ" resname="Vous devez accepter nos conditions générales afin d'être inscrit(e).">
+        <source>Vous devez accepter nos conditions générales afin d'être inscrit(e).</source>
+        <target>You should agree with our terms and conditions in order to be registered.</target>
+      </trans-unit>
+      <trans-unit id="IS53Oos" resname="Votre mot de passe doit être composé d'au moins {{ limit }} caractères.">
+        <source>Votre mot de passe doit être composé d'au moins {{ limit }} caractères.</source>
+        <target>Your password should be at least { limit } characters.</target>
+      </trans-unit>
+      <trans-unit id="LGjBquW" resname="input.default">
+        <source>input.default</source>
+        <target>input.default</target>
+      </trans-unit>
+      <trans-unit id="K_.1t1m" resname="button.save">
+        <source>button.save</source>
+        <target>button.save</target>
+      </trans-unit>
+      <trans-unit id="JkGAZ_V" resname="folder.add.success">
+        <source>folder.add.success</source>
+        <target>folder.add.success</target>
+      </trans-unit>
+      <trans-unit id="KPBc2r2" resname="folder.add.danger">
+        <source>folder.add.danger</source>
+        <target>folder.add.danger</target>
+      </trans-unit>
+      <trans-unit id="7VDw_TL" resname="file.renamed.unauthorized">
+        <source>file.renamed.unauthorized</source>
+        <target>file.renamed.unauthorized</target>
+      </trans-unit>
+      <trans-unit id="Vvy.pNV" resname="file.renamed.success">
+        <source>file.renamed.success</source>
+        <target>file.renamed.success</target>
+      </trans-unit>
+      <trans-unit id="J.mT97." resname="file.renamed.danger">
+        <source>file.renamed.danger</source>
+        <target>file.renamed.danger</target>
+      </trans-unit>
+      <trans-unit id="HDlTUtf" resname="file.renamed.nochanged">
+        <source>file.renamed.nochanged</source>
+        <target>file.renamed.nochanged</target>
+      </trans-unit>
+      <trans-unit id="_rAeQhc" resname="L'article que vous essayez de consulter n'existe pas.">
+        <source>L'article que vous essayez de consulter n'existe pas.</source>
+        <target>The article you are trying to access doesn't exist.</target>
+      </trans-unit>
+      <trans-unit id="EMq.l3a" resname="Le thème que vous essayez de consulter n'existe pas.">
+        <source>Le thème que vous essayez de consulter n'existe pas.</source>
+        <target>The theme you are trying to access doesn't exist.</target>
+      </trans-unit>
+      <trans-unit id="EMfs0dy" resname="L'évènement que vous essayez de consulter n'existe pas.">
+        <source>L'évènement que vous essayez de consulter n'existe pas.</source>
+        <target>The event you are trying to access doesn't exist.</target>
+      </trans-unit>
+      <trans-unit id="hR8I9s." resname="L'enquête que vous essayez de consulter n'existe pas.">
+        <source>L'enquête que vous essayez de consulter n'existe pas.</source>
+        <target>The survey you are trying to access doesn't exist.</target>
+      </trans-unit>
+      <trans-unit id="tO72MOJ" resname="Le vote que vous essayez de consulter n'existe pas.">
+        <source>Le vote que vous essayez de consulter n'existe pas.</source>
+        <target>Le vote you are trying to access doesn't exist.</target>
+      </trans-unit>
+      <trans-unit id="RULWH19" resname="Mot de passe oublié">
+        <source>Mot de passe oublié</source>
+        <target>Forgotten password</target>
+      </trans-unit>
+      <trans-unit id="lXc5EMw" resname="Si c'est le cas remplissez le formulaire suivant et cliquez sur &quot;envoyer le lien&quot;, un lien sera envoyé à l'adresse donnée. En cliquant sur ce lien vous pourrez changer votre mot de passe. Vous devez être inscrit pour que la procédure fonctionne. Le lien ne sera valide que pour trois tentatives pendant cinq minutes. Ces restrictions sont dues au fait que ce procédé n'est qu'une méthode de connexion de secours.">
+        <source>Si c'est le cas remplissez le formulaire suivant et cliquez sur "envoyer le lien", un lien sera envoyé à l'adresse donnée. En cliquant sur ce lien vous pourrez changer votre mot de passe. Vous devez être inscrit pour que la procédure fonctionne. Le lien ne sera valide que pour trois tentatives pendant cinq minutes. Ces restrictions sont dues au fait que ce procédé n'est qu'une méthode de connexion de secours.</source>
+        <target>In that case, fill the following form and click on "send link". By clicking on that link you could change your password. You should be registered or it won't work. The link will only be valid three times for fives minutes. All those constraints are due to the fact that this process is only a fallback procedure.</target>
+      </trans-unit>
+      <trans-unit id="18Ukc63" resname="Envoyer le lien">
+        <source>Envoyer le lien</source>
+        <target>Send link</target>
+      </trans-unit>
+      <trans-unit id="wYmEDPf" resname="Log in">
+        <source>Log in</source>
+        <target>Log in</target>
+      </trans-unit>
+      <trans-unit id="bayMHPh" resname="Etes-vous sure de vouloir supprimer cet élément ?">
+        <source>Etes-vous sure de vouloir supprimer cet élément ?</source>
+        <target>Are you sure you want to delete this element ?</target>
+      </trans-unit>
+      <trans-unit id="Xl0CFs4" resname="Supprimer">
+        <source>Supprimer</source>
+        <target>Delete</target>
+      </trans-unit>
+      <trans-unit id="zY6XS_I" resname="Votes">
+        <source>Votes</source>
+        <target>Votes</target>
+      </trans-unit>
+      <trans-unit id="ymVU7nP" resname="Image introductive relative au vote.">
+        <source>Image introductive relative au vote.</source>
+        <target>Introductory picture relating to the vote.</target>
+      </trans-unit>
+      <trans-unit id="GyuRxZ6" resname="Mise à jour du vote">
+        <source>Mise à jour du vote</source>
+        <target>Vote update</target>
+      </trans-unit>
+      <trans-unit id="zVWI22." resname="Vote">
+        <source>Vote</source>
+        <target>Vote</target>
+      </trans-unit>
+      <trans-unit id="Jk3Rdme" resname="Donner son avis">
+        <source>Donner son avis</source>
+        <target>Give your opinion</target>
+      </trans-unit>
+      <trans-unit id="IumSuye" resname="Editer">
+        <source>Editer</source>
+        <target>Edit</target>
+      </trans-unit>
+      <trans-unit id="0hHmi05" resname="Enquêtes">
+        <source>Enquêtes</source>
+        <target>Surveys</target>
+      </trans-unit>
+      <trans-unit id="LUg41dM" resname="Image introductive relative à l'enquête.">
+        <source>Image introductive relative à l'enquête.</source>
+        <target>Introductory picture relating to the survey.</target>
+      </trans-unit>
+      <trans-unit id="RTIkDEn" resname="Mise à jour de l'enquête">
+        <source>Mise à jour de l'enquête</source>
+        <target>Survey update</target>
+      </trans-unit>
+      <trans-unit id="whFducy" resname="Enquête">
+        <source>Enquête</source>
+        <target>Survey</target>
+      </trans-unit>
+      <trans-unit id="Zro62EE" resname="Donner son opinion">
+        <source>Donner son opinion</source>
+        <target>Give your opinion</target>
+      </trans-unit>
+      <trans-unit id="dNTj8U_" resname="Etes-vous sure de vouloir supprimer ce thème et tous les articles associés ?">
+        <source>Etes-vous sure de vouloir supprimer ce thème et tous les articles associés ?</source>
+        <target>Are you sure you want to delete the theme and all the articles related to it ?</target>
+      </trans-unit>
+      <trans-unit id="gwjiLji" resname="Mise à jour du thème">
+        <source>Mise à jour du thème</source>
+        <target>Theme update</target>
+      </trans-unit>
+      <trans-unit id="3DAQFfE" resname="Image introductive relative à l'article.">
+        <source>Image introductive relative à l'article.</source>
+        <target>Introductory picture relating to the article.</target>
+      </trans-unit>
+      <trans-unit id="FXPVS_i" resname="Dernières actualités">
+        <source>Dernières actualités</source>
+        <target>Last news</target>
+      </trans-unit>
+      <trans-unit id="VEQmHm9" resname="Image introductive relative à la nouvelle.">
+        <source>Image introductive relative à la nouvelle.</source>
+        <target>Introductory picture relating to the new.</target>
+      </trans-unit>
+      <trans-unit id="26.y_sr" resname="Dernières activités">
+        <source>Dernières activités</source>
+        <target>Last activities</target>
+      </trans-unit>
+      <trans-unit id="x6EkQNb" resname="Image introductive relative à l'évènement.">
+        <source>Image introductive relative à l'évènement.</source>
+        <target>Introductory picture relating to the event.</target>
+      </trans-unit>
+      <trans-unit id="_AdZwnY" resname="Evènements">
+        <source>Evènements</source>
+        <target>Events</target>
+      </trans-unit>
+      <trans-unit id="qTJzOqA" resname="Mise à jour de l'évènement">
+        <source>Mise à jour de l'évènement</source>
+        <target>Events update</target>
+      </trans-unit>
+      <trans-unit id="Eh7ugW5" resname="Evenement">
+        <source>Evenement</source>
+        <target>Event</target>
+      </trans-unit>
+      <trans-unit id="xutdx4K" resname="Créer un thème">
+        <source>Créer un thème</source>
+        <target>Create theme</target>
+      </trans-unit>
+      <trans-unit id="LkrYGJ4" resname="Créer un article">
+        <source>Créer un article</source>
+        <target>Create article</target>
+      </trans-unit>
+      <trans-unit id="ai1xOWh" resname="Créer une actualité">
+        <source>Créer une actualité</source>
+        <target>Create new</target>
+      </trans-unit>
+      <trans-unit id="E3ipKbH" resname="Créer un évènement">
+        <source>Créer un évènement</source>
+        <target>Create event</target>
+      </trans-unit>
+      <trans-unit id="Zt6KijV" resname="Créer une enquête">
+        <source>Créer une enquête</source>
+        <target>Create survey</target>
+      </trans-unit>
+      <trans-unit id="Ev6SBKc" resname="Créer un vote">
+        <source>Créer un vote</source>
+        <target>Create vote</target>
+      </trans-unit>
+      <trans-unit id="ISCZd5." resname="Voir les discussions">
+        <source>Voir les discussions</source>
+        <target>See discussions</target>
+      </trans-unit>
+      <trans-unit id="kU6pq40" resname="Voir les inscrits">
+        <source>Voir les inscrits</source>
+        <target>See registered</target>
+      </trans-unit>
+      <trans-unit id="KPRXHyi" resname="Mon compte">
+        <source>Mon compte</source>
+        <target>My account</target>
+      </trans-unit>
+      <trans-unit id="DL02fX6" resname="Deconnexion">
+        <source>Deconnexion</source>
+        <target>Log out</target>
+      </trans-unit>
+      <trans-unit id="z7GsDIB" resname="Inscription">
+        <source>Inscription</source>
+        <target>Register</target>
+      </trans-unit>
+      <trans-unit id="ya08MsQ" resname="Succès">
+        <source>Succès</source>
+        <target>Success</target>
+      </trans-unit>
+      <trans-unit id="c3woZwF" resname="Faire disparaitre le message">
+        <source>Faire disparaitre le message</source>
+        <target>Hide message</target>
+      </trans-unit>
+      <trans-unit id="HLC6El_" resname="Information">
+        <source>Information</source>
+        <target>Information</target>
+      </trans-unit>
+      <trans-unit id="Bph9I7c" resname="Mise à jour de l'article">
+        <source>Mise à jour de l'article</source>
+        <target>Article update</target>
+      </trans-unit>
+      <trans-unit id="KdlJIlE" resname="Article">
+        <source>Article</source>
+        <target>Article</target>
+      </trans-unit>
+      <trans-unit id="41fFvBz" resname="Mise à jour de la nouvelle">
+        <source>Mise à jour de la nouvelle</source>
+        <target>News update</target>
+      </trans-unit>
+      <trans-unit id="iiJjJ2u" resname="Actualité">
+        <source>Actualité</source>
+        <target>News</target>
+      </trans-unit>
+      <trans-unit id="ayWEuaa" resname="Veuillez entrer votre mot de passe s'il vous plait.">
+        <source>Veuillez entrer votre mot de passe s'il vous plait.</source>
+        <target>Please enter you password.</target>
+      </trans-unit>
+      <trans-unit id="WD1083T" resname="Veuillez entrer le contenu de l'article s'il vous plait.">
+        <source>Veuillez entrer le contenu de l'article s'il vous plait.</source>
+        <target>Please enter the article's content.</target>
+      </trans-unit>
+      <trans-unit id="QjJPs5i" resname="Veuillez entrer le numéro d'apparition de l'article s'il vous plait.">
+        <source>Veuillez entrer le numéro d'apparition de l'article s'il vous plait.</source>
+        <target>Please enter the article's number of appearance.</target>
+      </trans-unit>
+      <trans-unit id="7116hWc" resname="Veuillez entrer le titre de l'article s'il vous plait.">
+        <source>Veuillez entrer le titre de l'article s'il vous plait.</source>
+        <target>Please enter the article's title.</target>
       </trans-unit>
     </body>
   </file>
