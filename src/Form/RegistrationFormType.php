@@ -72,27 +72,15 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('newsletter', CheckboxType::class, [
                 'label' => $this->translator->trans(self::NEWSLETTER_LABEL),
-                'constraints' => [
-                    new IsTrue(),
-                ],
             ])
             ->add('event', CheckboxType::class, [
                 'label' => $this->translator->trans(self::EVENT_LABEL),
-                'constraints' => [
-                    new IsTrue(),
-                ],
             ])
             ->add('survey', CheckboxType::class, [
                 'label' => $this->translator->trans(self::SURVEY_LABEL),
-                'constraints' => [
-                    new IsTrue(),
-                ],
             ])
             ->add('vote', CheckboxType::class, [
                 'label' => $this->translator->trans(self::VOTE_LABEL),
-                'constraints' => [
-                    new IsTrue(),
-                ],
             ])
         ;
     }

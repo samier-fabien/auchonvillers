@@ -333,6 +333,50 @@
         <source>Veuillez entrer le titre de l'article s'il vous plait.</source>
         <target>Veuillez entrer le titre de l'article s'il vous plait.</target>
       </trans-unit>
+      <trans-unit id="mC6JWRK" resname="Le site web d'Auchonvillers">
+        <source>Le site web d'Auchonvillers</source>
+        <target>Le site web d'Auchonvillers</target>
+      </trans-unit>
+      <trans-unit id="HCnQCVB" resname="Veuillez confirmer votre adresse email en cliquant sur le lien suivant :">
+        <source>Veuillez confirmer votre adresse email en cliquant sur le lien suivant :</source>
+        <target>Veuillez confirmer votre adresse email en cliquant sur le lien suivant :</target>
+      </trans-unit>
+      <trans-unit id="ksW.gM2" resname="Confirmer mon email">
+        <source>Confirmer mon email</source>
+        <target>Confirmer mon email</target>
+      </trans-unit>
+      <trans-unit id="Y41Dr0j" resname="Ce lien expirera dans">
+        <source>Ce lien expirera dans</source>
+        <target>Ce lien expirera dans</target>
+      </trans-unit>
+      <trans-unit id="O_fQ8lM" resname="Si vous n'êtes pas à l'origine de cette opération, ne tenez pas comte de cet email.">
+        <source>Si vous n'êtes pas à l'origine de cette opération, ne tenez pas comte de cet email.</source>
+        <target>Si vous n'êtes pas à l'origine de cette opération, ne tenez pas comte de cet email.</target>
+      </trans-unit>
+      <trans-unit id="QykQI.B" resname="Au revoir !">
+        <source>Au revoir !</source>
+        <target>Au revoir !</target>
+      </trans-unit>
+      <trans-unit id="TOeybqj" resname="Veuillez confirmer votre email.">
+        <source>Veuillez confirmer votre email.</source>
+        <target>Veuillez confirmer votre email.</target>
+      </trans-unit>
+      <trans-unit id="x5X3y5s" resname="Un email de confirmation vous a été envoyé, cliquez dessus pour accéder à toutes les fonctionnalités du site.">
+        <source>Un email de confirmation vous a été envoyé, cliquez dessus pour accéder à toutes les fonctionnalités du site.</source>
+        <target>Un email de confirmation vous a été envoyé, cliquez dessus pour accéder à toutes les fonctionnalités du site.</target>
+      </trans-unit>
+      <trans-unit id="lwvp2Ed" resname="Un email de confirmation vous a été envoyé, cliquez dessus pour accéder à toutes les fonctionnalités du site internet.">
+        <source>Un email de confirmation vous a été envoyé, cliquez dessus pour accéder à toutes les fonctionnalités du site internet.</source>
+        <target>Un email de confirmation vous a été envoyé, cliquez dessus pour accéder à toutes les fonctionnalités du site internet.</target>
+      </trans-unit>
+      <trans-unit id="8tWp0pZ" resname="Votre e-mail a été vérifié.">
+        <source>Votre e-mail a été vérifié.</source>
+        <target>Votre e-mail a été vérifié.</target>
+      </trans-unit>
+      <trans-unit id="EUkIzZB" resname="Bonjour ! Veuillez confirmez votre email.">
+        <source>Bonjour ! Veuillez confirmez votre email.</source>
+        <target>Bonjour ! Veuillez confirmez votre email.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

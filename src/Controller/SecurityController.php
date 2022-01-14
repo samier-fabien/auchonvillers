@@ -21,11 +21,20 @@ class SecurityController extends AbstractController
     /**
      * @Route("/{locale}/connexion", name="app_login")
      */
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(string $locale = 'fr', AuthenticationUtils $authenticationUtils, Request $request): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
+        // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
+        if (!in_array($locale, $this->getParameter('app.locales'), true)) {
+            $request->getSession()->set('_locale', 'fr');
+            return $this->redirect("/");
+        }
+
+        if ($this->getUser()) {
+            $this->addFlash('notice', 'Vous êtes déja connecté, si vous voulez vous connecter avec un autre compte, déconnectez vous d\'abord.');
+            return $this->redirectToRoute('home', [
+                'locale' => $locale,
+            ]);
+        }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
