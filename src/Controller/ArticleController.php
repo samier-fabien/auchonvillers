@@ -104,14 +104,15 @@ class ArticleController extends AbstractController
             ]);
         }
 
+        $title = 'getArtTitle' . ucFirst($locale);
+        $content = 'getArtContent' . ucFirst($locale);
+
         // On organise les données
             $articleDatas = [
                 'id' => $article->getId(),
                 'createdAt' => $article->getArtCreatedAt(),
-                'contentFr' => htmlspecialchars_decode($article->getArtContentFr(), ENT_QUOTES),
-                'contentEn' => htmlspecialchars_decode($article->getArtContentEn(), ENT_QUOTES),
-                'titleFr' => htmlspecialchars_decode($article->getArtTitleFr(), ENT_QUOTES),
-                'titleEn' => htmlspecialchars_decode($article->getArtTitleEn(), ENT_QUOTES),
+                'title' => htmlspecialchars_decode($article->$title(), ENT_QUOTES),
+                'content' => htmlspecialchars_decode($article->$content(), ENT_QUOTES),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($article->getArtContentFr(), ENT_QUOTES)),
             ];
 

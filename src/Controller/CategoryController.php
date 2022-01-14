@@ -134,12 +134,22 @@ class CategoryController extends AbstractController
             ]);
         }
 
-        // Décodage des données
-        $category->setCatNameFr(htmlspecialchars_decode($category->getCatNameFr(), ENT_QUOTES))
-            ->setCatNameEn(htmlspecialchars_decode($category->getCatNameEn(), ENT_QUOTES))
-            ->setCatDescriptionFr(htmlspecialchars_decode($category->getCatDescriptionFr(), ENT_QUOTES))
-            ->setCatDescriptionEn(htmlspecialchars_decode($category->getCatDescriptionEn(), ENT_QUOTES))
-        ;
+        // // Décodage des données
+        // $category->setCatNameFr(htmlspecialchars_decode($category->getCatNameFr(), ENT_QUOTES))
+        //     ->setCatNameEn(htmlspecialchars_decode($category->getCatNameEn(), ENT_QUOTES))
+        //     ->setCatDescriptionFr(htmlspecialchars_decode($category->getCatDescriptionFr(), ENT_QUOTES))
+        //     ->setCatDescriptionEn(htmlspecialchars_decode($category->getCatDescriptionEn(), ENT_QUOTES))
+        // ;
+
+        $name = 'getCatName' . ucfirst($locale);
+        $description = 'getCatDescription' . ucfirst($locale);
+
+        $categoryDatas = [
+            'id' => $category->getId(),
+            'name' => htmlspecialchars_decode($category->$name(), ENT_QUOTES),
+            'description' => htmlspecialchars_decode($category->$description(), ENT_QUOTES),
+            'number' => $category->getCatOrderOfAppearance(),
+        ];
 
         // Recherche des articles par rapport a la catégorie
         $articles = $articleRepo->findBy(["category" => $category], ["art_order_of_appearance" => 'ASC']);
@@ -147,19 +157,20 @@ class CategoryController extends AbstractController
         // On organise les données
         $articlesDatas = [];
         foreach ($articles as $key => $value) {
+            $content = 'getArtContent' . ucfirst($locale);
+            $title = 'getArtTitle' . ucfirst($locale);
+
             $articlesDatas[$key] = [
                 'id' => $value->getId(),
                 'createdAt' => $value->getArtCreatedAt(),
-                'contentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getArtContentFr(), ENT_QUOTES)),
-                'contentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getArtContentEn(), ENT_QUOTES)),
-                'titleFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getArtTitleFr(), ENT_QUOTES)),
-                'titleEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getArtTitleEn(), ENT_QUOTES)),
+                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
+                'title' => $title = $regex->removeHtmlTags(htmlspecialchars_decode($value->$title(), ENT_QUOTES)),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getArtContentFr(), ENT_QUOTES)),
             ];
         }
 
         return $this->render('category/show.html.twig', [
-            'category' => $category,
+            'category' => $categoryDatas,
             'articles' => $articlesDatas,
         ]);
     }

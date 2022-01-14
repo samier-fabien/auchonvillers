@@ -43,9 +43,7 @@ class CategoryType extends AbstractType
             ->add('cat_name_en', TextType::class, [
                 'label' => $this->translator->trans(self::NAME_EN_LABEL),
                 'constraints' => [
-                    new NotBlank(),
                     new Length([
-                        'min' => 2,
                         'max' => 255,
                     ]),
                 ]
@@ -62,6 +60,7 @@ class CategoryType extends AbstractType
             ->add('cat_order_of_appearance', NumberType::class, [
                 'label' => $this->translator->trans(self::NUMBER_LABEL),
                 'constraints' => [
+                    new NotBlank(),
                     new PositiveOrZero(),
                     new Length([
                         'max' => 11,

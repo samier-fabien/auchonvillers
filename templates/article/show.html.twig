@@ -7,18 +7,10 @@
     <h1>{% trans %}Article{% endtrans %}</h1>
     <div>
         <h2>
-            {% if attribute(article, 'title'~app.request.locale|capitalize) is not empty %}
-                {{ attribute(article, 'title'~app.request.locale|capitalize)|raw }}
-            {% else %}
-                {{ article.titleFr|raw }}
-            {% endif %}
+            {{ article.title|capitalize }}
         </h2>
         <p>
-            {% if attribute(article, 'content'~app.request.locale|capitalize) is not empty %}
-                {{ attribute(article, 'content'~app.request.locale|capitalize)|raw }}
-            {% else %}
-                {{ article.contentFr|raw }}
-            {% endif %}
+            {{ article.content|raw }}
         </p>
     </div>
 </section>

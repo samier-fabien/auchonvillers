@@ -40,13 +40,14 @@ class EventsController extends AbstractController
         $events = $this->eventsRepo->findByPage($page, self::EVENTS_PER_PAGE);
         $eventsDatas = [];
         foreach ($events as $key => $value) {
+            $content = 'getEveContent' . ucFirst($locale);
+
             $eventsDatas[$key] = [
                 'id' => $value->getId(),
                 'createdAt' => $value->getEveCreatedAt(),
                 'begining' => $value->getEveBegining(),
                 'end' => $value->getEveEnd(),
-                'contentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getEveContentFr(), ENT_QUOTES)),
-                'contentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getEveContentEn(), ENT_QUOTES)),
+                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getEveContentFr(), ENT_QUOTES)),
             ];
         }
@@ -111,17 +112,8 @@ class EventsController extends AbstractController
         // Recherche de l'évènement avec l'id "x"
         $event = $this->eventsRepo->findOneBy(["id" => $id]);
 
-        // Si l'évènement est trouvée
-        if (!is_null($event)) {
-            // On en décode les contenus fr et en
-            $event->setEveContentFr(htmlspecialchars_decode($event->getEveContentFr()), ENT_QUOTES);
-            $event->setEveContentEn(htmlspecialchars_decode($event->getEveContentEn()), ENT_QUOTES);
-
-            return $this->render('events/show.html.twig', [
-                'event' => $event,
-            ]);
-        // Sinon, redirection vers la liste des évènements avec un message
-        } else {
+        // Si l'évènement n'existe pas, redirection vers la liste des évènements avec un message
+        if (is_null($event)) {
             $message = $translator->trans('L\'évènement que vous essayez de consulter n\'existe pas.');
             $this->addFlash('notice', $message);
             return $this->redirectToRoute('events_index', [
@@ -129,6 +121,20 @@ class EventsController extends AbstractController
                 'page' => 1,
             ]);
         }  
+
+        $content = 'getEveContent' . ucFirst($locale);
+
+        $eventsDatas = [
+            'id' => $event->getId(),
+            'createdAt' => $event->getEveCreatedAt(),
+            'begining' => $event->getEveBegining(),
+            'end' => $event->getEveEnd(),
+            'content' => htmlspecialchars_decode($event->$content(), ENT_QUOTES),
+        ];
+
+        return $this->render('events/show.html.twig', [
+            'event' => $eventsDatas,
+        ]);
     }
 
     /**

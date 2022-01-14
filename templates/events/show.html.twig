@@ -6,13 +6,9 @@
 <section>
     <h1>{% trans %}Evenement{% endtrans %}</h1>
     <div>
-        <p>{% trans %}Du{% endtrans %} {{ event.EveBegining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ event.EveEnd|date('Y-m-d') }}</p>
+        <p>{% trans %}Du{% endtrans %} {{ event.begining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ event.end|date('Y-m-d') }}</p>
         <p>
-            {% if attribute(event, 'EveContent'~app.request.locale|capitalize) is not empty %}
-                {{ attribute(event, 'EveContent'~app.request.locale|capitalize)|raw }}
-            {% else %}
-                {{ event.contentFr|raw }}
-            {% endif %}
+            {{ event.content|raw }}
         </p>
     </div>
 </section>

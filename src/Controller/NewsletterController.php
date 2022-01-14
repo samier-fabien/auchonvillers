@@ -45,23 +45,20 @@ class NewsletterController extends AbstractController
         $pages = (int) ceil($this->newsletterRepo->getnumber() / self::NEWSLETTERS_PER_PAGE);
 
         // Le tableau datas contient toutes les données des newsletters
-        // Utilité :
-        //  -retourne des données décodées vias htmlSpecialChars
-        //  -ajoute un thumbnail basé sur la première image trouvé dans la news fr (seule la version fr est obligatoire dans le formulaire)
-        //  -le texte est une version de "x" caractères (twig) sans les tags html créés avec ckeditor : pas besoin de 'titre' ni de 'chemin vers une image' en bdd
-        $newsDatas = [];
+        $newslettersDatas = [];
         foreach ($newsletters as $key => $value) {
-            $newsDatas[$key] = [
+            $content = 'getNewContent' . ucFirst($locale);
+
+            $newslettersDatas[$key] = [
                 'id' => $value->getId(),
-                'newCreatedAt' => $value->getNewCreatedAt(),
-                'newContentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES)),
-                'newContentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getNewContentEn(), ENT_QUOTES)),
+                'createdAt' => $value->getNewCreatedAt(),
+                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES)),
             ];
         }
 
         return $this->render('newsletter/index.html.twig', [
-            'newsletters' => $newsDatas,
+            'newsletters' => $newslettersDatas,
             'page' => $page,
             'pages' => $pages,
         ]);
@@ -78,20 +75,10 @@ class NewsletterController extends AbstractController
             return $this->redirect("/");
         }
         
-        // Recherche de la news avec l'id "x"
+        // Si la news n'est pas trouvée
         $newsletter = $this->newsletterRepo->findOneBy(["id" => $id]);
 
-        // Si la news est trouvée
-        if (!is_null($newsletter)) {
-            // On en décode les contenus fr et en
-            $newsletter->setNewContentFr(htmlspecialchars_decode($newsletter->getNewContentFr()), ENT_QUOTES);
-            $newsletter->setNewContentEn(htmlspecialchars_decode($newsletter->getNewContentEn()), ENT_QUOTES);
-
-            return $this->render('newsletter/show.html.twig', [
-                'newsletter' => $newsletter,
-            ]);
-        // Sinon, redirection vers la liste des actualités avec un message
-        } else {
+        if (is_null($newsletter)) {
             $message = $translator->trans('La nouvelle que vous essayez de consulter n\'existe pas.');
             $this->addFlash('notice', $message);
             return $this->redirectToRoute('newsletters_index', [
@@ -99,6 +86,18 @@ class NewsletterController extends AbstractController
                 'page' => 1,
             ]);
         }  
+
+        $content = 'getNewContent' . ucFirst($locale);
+        
+        $newslettersDatas = [
+            'id' => $newsletter->getId(),
+            'createdAt' => $newsletter->getNewCreatedAt(),
+            'content' => htmlspecialchars_decode($newsletter->$content(), ENT_QUOTES),
+        ];
+
+        return $this->render('newsletter/show.html.twig', [
+            'newsletter' => $newslettersDatas,
+        ]);
     }
 
     /**

@@ -40,17 +40,11 @@ class VotesType extends AbstractType
                 'label' => $this->translator->trans(self::BEGINING_LABEL),
                 'date_widget' => 'single_text',
                 'data' => new \DateTime(),
-                'constraints' => [
-                    new DateTime(),
-                ],
             ])
             ->add('vot_end', DateTimeType::class, [
                 'label' => $this->translator->trans(self::END_LABEL),
                 'date_widget' => 'single_text',
                 'data' => new \DateTime(),
-                'constraints' => [
-                    new DateTime(),
-                ],
             ])
             ->add('vot_content_fr', CKEditorType::class, [
                 'label' => $this->translator->trans(self::CONTENT_FR_LABEL),

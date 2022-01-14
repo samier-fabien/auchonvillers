@@ -11,13 +11,9 @@
 
         <img src="{{ asset(newsletter.thumb) | imagine_filter('my_thumb') }}" alt="{% trans %}Image introductive relative à la nouvelle.{% endtrans %}">
         
-        <h2>{% trans %}Publié le{% endtrans %} {{ newsletter.newCreatedAt|date('Y-m-d') }}</h2>
+        <h2>{% trans %}Publié le{% endtrans %} {{ newsletter.createdAt|date('Y-m-d') }}</h2>
         <p>
-            {% if attribute(newsletter, 'newContent'~app.request.locale|capitalize) is not empty %}
-                {{ attribute(newsletter, 'newContent'~app.request.locale|capitalize)|length > 25 ? attribute(newsletter, 'newContent'~app.request.locale|capitalize)|slice(0,25) ~ '...'|raw : attribute(newsletter, 'newContent'~app.request.locale|capitalize)|raw }}
-            {% else %}
-                {{ newsletter.newContentFr|length > 25 ? newsletter.newContentFr|slice(0,25) ~ '...' : newsletter.newContentFr }}
-            {% endif %}
+            {{ newsletter.content|length > 25 ? newsletter.content|slice(0,25) ~ '...' : newsletter.content }}
         </p>
 
         <a href="/{{ app.request.locale }}/actualite/{{ newsletter.id }}">{% trans %}Voir{% endtrans %}</a>

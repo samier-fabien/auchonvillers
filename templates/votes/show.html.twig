@@ -6,17 +6,12 @@
 <section>
     <h1>{% trans %}Vote{% endtrans %}</h1>
     <div>
-        <p>{% trans %}Du{% endtrans %} {{ vote.VotBegining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ vote.VotEnd|date('Y-m-d') }}</p>
+        <p>{% trans %}Du{% endtrans %} {{ vote.begining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ vote.end|date('Y-m-d') }}</p>
         <p>
-            {% if attribute(vote, 'VotContent'~app.request.locale|capitalize) is not empty %}
-                {{ attribute(vote, 'VotContent'~app.request.locale|capitalize)|raw }}
-            {% else %}
-                {{ vote.contentFr|raw }}
-            {% endif %}
+            {{ vote.content|raw }}
         </p>
     </div>
     <div>
-
         {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
             {{ form_label(form.bal_vote) }}
             {{ form_errors(form.bal_vote) }}

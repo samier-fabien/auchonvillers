@@ -69,16 +69,18 @@ class HomeController extends AbstractController
 
         // Le tableau datas contient toutes les données des newsletters
         // Utilité :
-        //  -retourne des données décodées vias htmlSpecialChars
+        //  -tri selon la langue avec appel de non de fonction dynamique
+        //  -retourne les données décodées vias htmlSpecialChars
         //  -ajoute un thumbnail basé sur la première image trouvé dans la news fr (seule la version fr est obligatoire dans le formulaire)
-        //  -le texte est une version de "x" caractères (twig) sans les tags html créés avec ckeditor : pas besoin de 'titre' ni de 'chemin vers une image' en bdd
-        $newsDatas = [];
+        //  -le texte est retourné sans les tags html créés avec ckeditor : pas besoin de 'titre' ni de 'chemin vers une image' en bdd
+        $newslettersDatas = [];
         foreach ($newsletters as $key => $value) {
-            $newsDatas[$key] = [
+            $content = 'getNewContent' . ucFirst($locale);
+
+            $newslettersDatas[$key] = [
                 'id' => $value->getId(),
-                'newCreatedAt' => $value->getNewCreatedAt(),
-                'newContentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES)),
-                'newContentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getNewContentEn(), ENT_QUOTES)),
+                'createdAt' => $value->getNewCreatedAt(),
+                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES)),
             ];
         }
@@ -87,13 +89,14 @@ class HomeController extends AbstractController
         $events = $this->eventsRepo->findLast(self::NUMBER_OF_ACTIVITIES);
         $eventsDatas = [];
         foreach ($events as $key => $value) {
+            $content = 'getEveContent' . ucFirst($locale);
+
             $eventsDatas[$key] = [
                 'id' => $value->getId(),
                 'createdAt' => $value->getEveCreatedAt(),
                 'begining' => $value->getEveBegining(),
                 'end' => $value->getEveEnd(),
-                'contentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getEveContentFr(), ENT_QUOTES)),
-                'contentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getEveContentEn(), ENT_QUOTES)),
+                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getEveContentFr(), ENT_QUOTES)),
                 'type' => 'evenement'
             ];
@@ -103,13 +106,14 @@ class HomeController extends AbstractController
         $surveys = $this->surveysRepo->findLast(self::NUMBER_OF_ACTIVITIES);
         $surveysDatas = [];
         foreach ($surveys as $key => $value) {
+            $content = 'getSurContent' . ucFirst($locale);
+
             $surveysDatas[$key] = [
                 'id' => $value->getId(),
                 'createdAt' => $value->getSurCreatedAt(),
                 'begining' => $value->getSurBegining(),
                 'end' => $value->getSurEnd(),
-                'contentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getSurContentFr(), ENT_QUOTES)),
-                'contentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getSurContentEn(), ENT_QUOTES)),
+                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getSurContentFr(), ENT_QUOTES)),
                 'type' => 'enquete'
             ];
@@ -119,13 +123,14 @@ class HomeController extends AbstractController
         $votes = $this->votesRepo->findLast(self::NUMBER_OF_ACTIVITIES);
         $votesDatas = [];
         foreach ($votes as $key => $value) {
+            $content = 'getVotContent' . ucFirst($locale);
+
             $votesDatas[$key] = [
                 'id' => $value->getId(),
                 'createdAt' => $value->getVotCreatedAt(),
                 'begining' => $value->getVotBegining(),
                 'end' => $value->getVotEnd(),
-                'contentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getVotContentFr(), ENT_QUOTES)),
-                'contentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getVotContentEn(), ENT_QUOTES)),
+                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getVotContentFr(), ENT_QUOTES)),
                 'type' => 'vote'
             ];
@@ -134,7 +139,7 @@ class HomeController extends AbstractController
         $activitiesDatas = $arraySort->sortLastsByDatetime(array_merge($eventsDatas, $surveysDatas, $votesDatas), self::NUMBER_OF_ACTIVITIES);
 
         return $this->render('home/home.html.twig', [
-            'newsletters' => $newsDatas,
+            'newsletters' => $newslettersDatas,
             'activities' => $activitiesDatas,
         ]);
     }

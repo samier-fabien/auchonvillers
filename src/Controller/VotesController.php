@@ -22,6 +22,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class VotesController extends AbstractController
 {
@@ -47,13 +48,14 @@ class VotesController extends AbstractController
         $votes = $this->votesRepo->findByPage($page, self::VOTES_PER_PAGE);
         $votesDatas = [];
         foreach ($votes as $key => $value) {
+            $content = 'getVotContent' . ucFirst($locale);
+
             $votesDatas[$key] = [
                 'id' => $value->getId(),
                 'createdAt' => $value->getVotCreatedAt(),
                 'begining' => $value->getVotBegining(),
                 'end' => $value->getVotEnd(),
-                'contentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getVotContentFr(), ENT_QUOTES)),
-                'contentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getVotContentEn(), ENT_QUOTES)),
+                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getVotContentFr(), ENT_QUOTES)),
             ];
         }
@@ -115,10 +117,10 @@ class VotesController extends AbstractController
             return $this->redirect("/");
         }
 
-        // Recherche de l'évènement avec l'id "x"
+        // Recherche du vote avec l'id "x"
         $vote = $this->votesRepo->findOneBy(["id" => $id]);
 
-        // Si l'évènement n'est pas trouvée
+        // Si le vote n'est pas trouvée
         if (is_null($vote)) {
             $message = $translator->trans('Le vote que vous essayez de consulter n\'existe pas.');
             $this->addFlash('notice', $message);
@@ -131,6 +133,17 @@ class VotesController extends AbstractController
         // On en décode les contenus fr et en
         $vote->setVotContentFr(htmlspecialchars_decode($vote->getVotContentFr()), ENT_QUOTES);
         $vote->setVotContentEn(htmlspecialchars_decode($vote->getVotContentEn()), ENT_QUOTES);
+
+        $content = 'getVotContent' . ucFirst($locale);
+
+        $votesDatas = [
+            'id' => $vote->getId(),
+            'createdAt' => $vote->getVotCreatedAt(),
+            'begining' => $vote->getVotBegining(),
+            'end' => $vote->getVotEnd(),
+            'content' => htmlspecialchars_decode($vote->$content(), ENT_QUOTES),
+        ];
+
 
         // Création du vote
         $ballot = new Ballots();
@@ -151,15 +164,18 @@ class VotesController extends AbstractController
 
         // Création du formulaire de vote
         //$form = $this->createForm(BallotsType::class, $ballot);
-        $questionLabel = ($locale == "en") ? $vote->getVotQuestionEn() : $vote->getVotQuestionFr();
-        $firstChoiceLabel = ($locale == "en") ? $vote->getVotFirstChoiceEn() : $vote->getVotFirstChoiceFr();
-        $secondChoiceLabel = ($locale == "en") ? $vote->getVotSecondChoiceEn() : $vote->getVotSecondChoiceFr();
+        $questionLabel = 'getVotQuestion' . $locale;
+        $firstChoiceLabel = 'getVotFirstChoice' . $locale;
+        $secondChoiceLabel = 'getVotSecondChoice' . $locale;
         $form = $this->createFormBuilder($ballot)
             ->add('bal_vote', ChoiceType::class, [
-                'label' => $questionLabel,
+                'label' => $vote->$questionLabel(),
                 'choices' => [
-                    $firstChoiceLabel.' ('.$firstChoice.')' => 0,
-                    $secondChoiceLabel.' ('.$secondChoice.')' => 1,
+                    $vote->$firstChoiceLabel().' ('.$firstChoice.')' => 0,
+                    $vote->$secondChoiceLabel().' ('.$secondChoice.')' => 1,
+                ],
+                'constraints' => [
+                    new NotBlank(),
                 ],
                 'expanded' => true,
                 'multiple' => false,
@@ -206,7 +222,7 @@ class VotesController extends AbstractController
         }
 
         return $this->render('votes/show.html.twig', [
-            'vote' => $vote,
+            'vote' => $votesDatas,
             'form' => $form->createView(),
         ]);
     }

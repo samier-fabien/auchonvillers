@@ -29,6 +29,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SurveysController extends AbstractController
 {
@@ -54,13 +55,14 @@ class SurveysController extends AbstractController
         $surveys = $this->surveysRepo->findByPage($page, self::SURVEYS_PER_PAGE);
         $surveysDatas = [];
         foreach ($surveys as $key => $value) {
+            $content = 'getSurContent' . ucFirst($locale);
+
             $surveysDatas[$key] = [
                 'id' => $value->getId(),
                 'createdAt' => $value->getSurCreatedAt(),
                 'begining' => $value->getSurBegining(),
                 'end' => $value->getSurEnd(),
-                'contentFr' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getSurContentFr(), ENT_QUOTES)),
-                'contentEn' => $regex->removeHtmlTags(htmlspecialchars_decode($value->getSurContentEn(), ENT_QUOTES)),
+                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getSurContentFr(), ENT_QUOTES)),
             ];
         }
@@ -135,9 +137,15 @@ class SurveysController extends AbstractController
             ]);
         }
 
-        // On en décode les contenus fr et en
-        $survey->setSurContentFr(htmlspecialchars_decode($survey->getSurContentFr()), ENT_QUOTES);
-        $survey->setSurContentEn(htmlspecialchars_decode($survey->getSurContentEn()), ENT_QUOTES);
+        $content = 'getSurContent' . $locale;
+
+        $surveysDatas = [
+            'id' => $survey->getId(),
+            'createdAt' => $survey->getSurCreatedAt(),
+            'begining' => $survey->getSurBegining(),
+            'end' => $survey->getSurEnd(),
+            'content' => htmlspecialchars_decode($survey->$content(), ENT_QUOTES),
+        ];
 
         // Création de l'enquête
         $opinion = new Opinions();
@@ -145,10 +153,13 @@ class SurveysController extends AbstractController
         $opinion->setSurvey($survey);
 
         // Création du formulaire d'enquête
-        $questionLabel = ($locale == "en") ? $survey->getSurQuestionEn() : $survey->getSurQuestionFr();
+        $questionLabel = 'getSurQuestion' . ucFirst($locale);
         $form = $this->createFormBuilder($opinion)
             ->add('opi_opinion', TextareaType::class, [
-                'label' => $questionLabel,
+                'label' => $survey->$questionLabel(),
+                'constraints' => [
+                    new NotBlank(),
+                ],
             ])
             ->getForm()
         ;
@@ -192,7 +203,7 @@ class SurveysController extends AbstractController
         }
 
         return $this->render('surveys/show.html.twig', [
-            'survey' => $survey,
+            'survey' => $surveysDatas,
             'form' => $form->createView(),
         ]);
     }

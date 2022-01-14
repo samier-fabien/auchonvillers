@@ -6,13 +6,9 @@
 <section>
     <h1>{% trans %}Enquête{% endtrans %}</h1>
     <div>
-        <p>{% trans %}Du{% endtrans %} {{ survey.SurBegining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ survey.SurEnd|date('Y-m-d') }}</p>
+        <p>{% trans %}Du{% endtrans %} {{ survey.begining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ survey.end|date('Y-m-d') }}</p>
         <p>
-            {% if attribute(survey, 'SurContent'~app.request.locale|capitalize) is not empty %}
-                {{ attribute(survey, 'SurContent'~app.request.locale|capitalize)|raw }}
-            {% else %}
-                {{ survey.contentFr|raw }}
-            {% endif %}
+            {{ survey.content|raw }}
         </p>
     </div>
     <div>

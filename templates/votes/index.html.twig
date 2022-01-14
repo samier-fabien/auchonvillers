@@ -13,11 +13,7 @@
         
         <p>{% trans %}Du{% endtrans %} {{ vote.begining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ vote.end|date('Y-m-d') }}</p>
         <p>
-            {% if attribute(vote, 'content'~app.request.locale|capitalize) is not empty %}
-                {{ attribute(vote, 'content'~app.request.locale|capitalize)|length > 25 ? attribute(vote, 'content'~app.request.locale|capitalize)|slice(0,25) ~ '...'|raw : attribute(vote, 'content'~app.request.locale|capitalize)|raw }}
-            {% else %}
-                {{ vote.contentFr|length > 25 ? vote.contentFr|slice(0,25) ~ '...' : vote.contentFr }}
-            {% endif %}
+            {{ vote.content|length > 25 ? vote.content|slice(0,25) ~ '...' : vote.content }}
         </p>
 
         <a href="/{{ app.request.locale }}/vote/{{ vote.id }}">{% trans %}Voir{% endtrans %}</a>
