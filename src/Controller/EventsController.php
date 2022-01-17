@@ -5,24 +5,32 @@ namespace App\Controller;
 use DateTime;
 use App\Entity\Events;
 use App\Service\Regex;
+use App\Entity\Attends;
 use App\Form\EventsType;
+use App\Repository\AttendsRepository;
 use App\Repository\EventsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Translation\Translator;
 
 class EventsController extends AbstractController
 {
     public const EVENTS_PER_PAGE = 4;
     private $eventsRepo;
+    private $translator;
 
-    public function __construct(EventsRepository $eventsRepo) {
+    public function __construct(EventsRepository $eventsRepo, TranslatorInterface $translator) {
         $this->eventsRepo = $eventsRepo;
+        $this->translator = $translator;
     }
 
     /**
@@ -74,6 +82,24 @@ class EventsController extends AbstractController
             return $this->redirect("/");
         }
 
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('events_index', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'page' => 1,
+            ]);
+        }
+
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('events_index', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'page' => 1,
+            ]);
+        }
+
         $event = new Events();
         $event->setEveCreatedAt(new DateTime());
         $event->setUser($this->getUser());
@@ -99,9 +125,9 @@ class EventsController extends AbstractController
     }
 
     /**
-     * @Route("/{locale}/evenement/{id<\d+>}", name="events_show", methods={"GET"})
+     * @Route("/{locale}/evenement/{id<\d+>}", name="events_show", methods={"GET", "POST"})
      */
-    public function show(string $locale, int $id, Request $request, TranslatorInterface $translator): Response
+    public function show(string $locale, int $id, Request $request, ManagerRegistry $doctrine, AttendsRepository $attendsRepo): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -114,13 +140,15 @@ class EventsController extends AbstractController
 
         // Si l'évènement n'existe pas, redirection vers la liste des évènements avec un message
         if (is_null($event)) {
-            $message = $translator->trans('L\'évènement que vous essayez de consulter n\'existe pas.');
+            $message = $this->translator->trans('L\'évènement que vous essayez de consulter n\'existe pas.');
             $this->addFlash('notice', $message);
             return $this->redirectToRoute('events_index', [
                 'locale' => $locale,
                 'page' => 1,
             ]);
         }  
+
+        $participations = count($attendsRepo->findBy(['event' => $event->getId()]));
 
         $content = 'getEveContent' . ucFirst($locale);
 
@@ -132,8 +160,80 @@ class EventsController extends AbstractController
             'content' => htmlspecialchars_decode($event->$content(), ENT_QUOTES),
         ];
 
+        $attend = new Attends();
+        $attend->setEvent($event);
+
+        $form = $this->createFormBuilder($attend)
+            ->add('save', SubmitType::class, [
+                'label' => $this->translator->trans('Participer à l\'évènement'),
+            ])
+            ->getForm()
+        ;
+
+        $form->handleRequest($request);
+
+        // Si le formulaire est bien rempli...
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // Si le csrf est invalide
+            if (!$this->isCsrfTokenValid('participate-item'.$event->getId(), $request->request->get('token'))) {
+                $this->addFlash('danger', $this->translator->trans('Formulaire non autorisé.'));
+                
+                return $this->redirectToRoute('events_show', [
+                    'locale'=> $request->getSession()->get('_locale'),
+                    'id' => $event->getId(),
+                ]);
+            }
+
+            // Si l'utilisateur n'est pas connecté
+            if (is_null($this->getUser())) {
+                $this->addFlash('notice', 'Vous devez être connecté pour indiquer votre participation à l\'évènement.');
+
+                return $this->redirectToRoute('events_show', [
+                    'locale'=> $request->getSession()->get('_locale'),
+                    'id' => $event->getId(),
+                ]);
+            }
+
+            // Si l'utilisateur n'est pas vérifié
+            if (!$this->getUser()->isVerified()) {
+                $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+                return $this->redirectToRoute('events_show', [
+                    'locale'=> $request->getSession()->get('_locale'),
+                    'id' => $id,
+                ]);
+            }
+
+            // Ajout de l'utilisateur
+            $attend->setUser($this->getUser());
+
+            // Si l'utilisateur participe déja
+            if (count($attendsRepo->findPerEventAndUser($id, $this->getUser()->getId())) >= 1) {
+                $this->addFlash('notice', 'Vous participez déja à l\'évènement.');
+
+                return $this->redirectToRoute('events_show', [
+                    'locale'=> $request->getSession()->get('_locale'),
+                    'id' => $event->getId(),
+                ]);
+            }
+
+            // Si tout est ok : on enregistre le vote
+            $doctrine->getManager()->persist($attend);
+            $doctrine->getManager()->flush();
+
+            // Ajout de message de succes et redirection vers la news qui vient d'être modifié
+            $this->addFlash('success', 'Vous avez indiqué participer à l\'évènement.');
+
+            return $this->redirectToRoute('events_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $event->getId(),
+            ]);
+        }
+
         return $this->render('events/show.html.twig', [
             'event' => $eventsDatas,
+            'form' => $form->createView(),
+            'participations' => $participations,
         ]);
     }
 
@@ -147,6 +247,24 @@ class EventsController extends AbstractController
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
             return $this->redirect("/");
+        }
+
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('events_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
+        }
+
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('events_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
         }
 
         // On va chercher l'evenement a modifier
@@ -203,6 +321,24 @@ class EventsController extends AbstractController
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
             return $this->redirect("/");
+        }
+
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('events_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
+        }
+
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('events_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
         }
 
         // On va chercher la newsletter a supprimer

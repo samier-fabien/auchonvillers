@@ -11,6 +11,14 @@
             {{ event.content|raw }}
         </p>
     </div>
+    <div>
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+            {{ form_row(form.save) }}
+            {{ form_errors(form) }}
+            <input type="hidden" name="token" value="{{ csrf_token('participate-item' ~ event.id) }}"/>
+        {{ form_end(form) }}
+    </div>
+    participations : {{ participations }}
 </section>
 
 {% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}

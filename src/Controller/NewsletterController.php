@@ -21,10 +21,12 @@ class NewsletterController extends AbstractController
 {
     public const NEWSLETTERS_PER_PAGE = 4;
     private $newsletterRepo;
+    private $translator;
 
-    public function __construct(NewsletterRepository $newsletterRepo)
+    public function __construct(NewsletterRepository $newsletterRepo, TranslatorInterface $translator)
     {
         $this->newsletterRepo = $newsletterRepo;
+        $this->translator = $translator;
     }
 
     /**
@@ -67,7 +69,7 @@ class NewsletterController extends AbstractController
     /**
      * @Route("/{locale}/actualite/{id<\d+>}", name="newsletter_show")
      */
-    public function show(string $locale, int $id, Request $request, TranslatorInterface $translator): Response
+    public function show(string $locale, int $id, Request $request): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -79,7 +81,7 @@ class NewsletterController extends AbstractController
         $newsletter = $this->newsletterRepo->findOneBy(["id" => $id]);
 
         if (is_null($newsletter)) {
-            $message = $translator->trans('La nouvelle que vous essayez de consulter n\'existe pas.');
+            $message = $this->translator->trans('La nouvelle que vous essayez de consulter n\'existe pas.');
             $this->addFlash('notice', $message);
             return $this->redirectToRoute('newsletters_index', [
                 'locale' => $locale,
@@ -110,6 +112,24 @@ class NewsletterController extends AbstractController
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
             return $this->redirect("/");
+        }
+
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('newsletters_index', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'page' => 1,
+            ]);
+        }
+
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('newsletters_index', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'page' => 1,
+            ]);
         }
         
         // Création d'un nouvel objet Newsletter qu'on pré-rempli avec la date actuelle et l'utilisateur actuel
@@ -152,6 +172,24 @@ class NewsletterController extends AbstractController
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
             return $this->redirect("/");
+        }
+
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('newsletter_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
+        }
+
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('newsletter_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
         }
         
         // On va chercher la newsletter a modifier
@@ -210,6 +248,24 @@ class NewsletterController extends AbstractController
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
             return $this->redirect("/");
+        }
+
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('newsletter_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
+        }
+        
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('newsletter_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
         }
 
         // On va chercher la newsletter a supprimer

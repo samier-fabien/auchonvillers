@@ -33,9 +33,11 @@ class ArticleController extends AbstractController
 {
     public const ARTICLES_PER_PAGE = 4;
     private $articleRepo;
+    private $translator;
 
-    public function __construct(ArticleRepository $articleRepo) {
+    public function __construct(ArticleRepository $articleRepo, TranslatorInterface $translator) {
         $this->articleRepo = $articleRepo;
+        $this->translator = $translator;
     }
 
     /**
@@ -50,6 +52,22 @@ class ArticleController extends AbstractController
             return $this->redirect("/");
         }
 
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('home', [
+                'locale'=> $request->getSession()->get('_locale'),
+            ]);
+        }
+
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('home', [
+                'locale'=> $request->getSession()->get('_locale'),
+            ]);
+        }
+        
         $article = new Article();
         $article->setUser($this->getUser())
             //->setCategory($categoryRepo->findOneBy(['id' => $themeId]))
@@ -84,7 +102,7 @@ class ArticleController extends AbstractController
     /**
      * @Route("/{locale}/article/{id<\d+>}", name="article_show", methods={"GET", "POST"})
      */
-    public function show(string $locale, int $id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine, Regex $regex, ArticleRepository $articleRepo): Response
+    public function show(string $locale, int $id, Request $request, ManagerRegistry $doctrine, Regex $regex, ArticleRepository $articleRepo): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -97,7 +115,7 @@ class ArticleController extends AbstractController
 
         // Si l'article n'est pas trouvée
         if (is_null($article)) {
-            $message = $translator->trans('L\'article que vous essayez de consulter n\'existe pas.');
+            $message = $this->translator->trans('L\'article que vous essayez de consulter n\'existe pas.');
             $this->addFlash('warning', $message);
             return $this->redirectToRoute('home', [
                 'locale' => $locale,
@@ -131,6 +149,15 @@ class ArticleController extends AbstractController
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
             return $this->redirect("/");
+        }
+
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('article_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
         }
 
         // On va chercher l'evenement a modifier
@@ -198,6 +225,23 @@ class ArticleController extends AbstractController
         // On va chercher la categorie à supprimer
         $article = $this->articleRepo->findOneBy(["id" => $id]);
 
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('category_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $article->getCategory(),
+            ]);
+        }
+
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('category_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
+        }
 
         if ($this->isCsrfTokenValid('delete'.$article->getId(), $request->request->get('_token'))) {
             // Suppression

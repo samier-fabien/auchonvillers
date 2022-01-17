@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class HomeController extends AbstractController
 {
@@ -21,13 +22,15 @@ class HomeController extends AbstractController
     private $eventsRepo;
     private $surveysRepo;
     private $votesRepo;
+    private $translator;
 
-    public function __construct(NewsletterRepository $newsletterRepo, EventsRepository $eventsRepo, SurveysRepository $surveysRepo, VotesRepository $votesRepo)
+    public function __construct(NewsletterRepository $newsletterRepo, EventsRepository $eventsRepo, SurveysRepository $surveysRepo, VotesRepository $votesRepo, TranslatorInterface $translator)
     {
         $this->newsletterRepo = $newsletterRepo;
         $this->eventsRepo = $eventsRepo;
         $this->surveysRepo = $surveysRepo;
         $this->votesRepo = $votesRepo;
+        $this->translator = $translator;
     }
 
     /**

@@ -18,6 +18,7 @@
             {{ form_errors(form.opi_opinion) }}
             {{ form_widget(form.opi_opinion) }}
             {{ form_errors(form) }}
+            <input type="hidden" name="token" value="{{ csrf_token('opinion-item' ~ survey.id) }}"/>
             <button type="submit" class="btn btn-primary">{% trans %}Donner son opinion{% endtrans %}</button>
         {{ form_end(form) }}
     </div>

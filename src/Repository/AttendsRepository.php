@@ -19,6 +19,21 @@ class AttendsRepository extends ServiceEntityRepository
         parent::__construct($registry, Attends::class);
     }
 
+    /**
+     * @return Events[] Returns an array of Events objects
+     */
+    public function findPerEventAndUser(int $event, int $user)
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.event = :event')
+            ->andWhere('b.user = :user')
+            ->setParameter('event', $event)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // /**
     //  * @return Attends[] Returns an array of Attends objects
     //  */

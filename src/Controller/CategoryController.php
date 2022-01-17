@@ -31,9 +31,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class CategoryController extends AbstractController
 {
     private $categoryRepo;
+    private $translator;
 
-    public function __construct(CategoryRepository $categoryRepo) {
+    public function __construct(CategoryRepository $categoryRepo, TranslatorInterface $translator) {
         $this->categoryRepo = $categoryRepo;
+        $this->translator = $translator;
     }
 
     // /**
@@ -84,6 +86,22 @@ class CategoryController extends AbstractController
             return $this->redirect("/");
         }
 
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('home', [
+                'locale'=> $request->getSession()->get('_locale'),
+            ]);
+        }
+
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('home', [
+                'locale'=> $request->getSession()->get('_locale'),
+            ]);
+        }
+
         $category = new Category();
 
         $form = $this->createForm(CategoryType::class, $category);
@@ -114,7 +132,7 @@ class CategoryController extends AbstractController
     /**
      * @Route("/{locale}/theme/{id<\d+>}", name="category_show", methods={"GET", "POST"})
      */
-    public function show(string $locale, int $id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine, Regex $regex, ArticleRepository $articleRepo): Response
+    public function show(string $locale, int $id, Request $request, ManagerRegistry $doctrine, Regex $regex, ArticleRepository $articleRepo): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -127,7 +145,7 @@ class CategoryController extends AbstractController
 
         // Si la catégorie n'est pas trouvée
         if (is_null($category)) {
-            $message = $translator->trans('Le thème que vous essayez de consulter n\'existe pas.');
+            $message = $this->translator->trans('Le thème que vous essayez de consulter n\'existe pas.');
             $this->addFlash('notice', $message);
             return $this->redirectToRoute('home', [
                 'locale' => $locale,
@@ -185,6 +203,25 @@ class CategoryController extends AbstractController
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
             return $this->redirect("/");
+        }
+
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('category_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
+        }
+
+
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('category_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
         }
 
         // On va chercher l'evenement a modifier
@@ -248,6 +285,22 @@ class CategoryController extends AbstractController
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
             return $this->redirect("/");
+        }
+
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('home', [
+                'locale'=> $request->getSession()->get('_locale'),
+            ]);
+        }
+
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('home', [
+                'locale'=> $request->getSession()->get('_locale'),
+            ]);
         }
 
         // On va chercher la categorie à supprimer

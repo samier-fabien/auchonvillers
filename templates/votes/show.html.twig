@@ -17,6 +17,7 @@
             {{ form_errors(form.bal_vote) }}
             {{ form_widget(form.bal_vote) }}
             {{ form_errors(form) }}
+            <input type="hidden" name="token" value="{{ csrf_token('referendum-item' ~ vote.id) }}"/>
             <button type="submit" class="btn btn-primary">{% trans %}Donner son avis{% endtrans %}</button>
         {{ form_end(form) }}
     </div>

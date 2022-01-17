@@ -28,9 +28,11 @@ class VotesController extends AbstractController
 {
     public const VOTES_PER_PAGE = 4;
     private $votesRepo;
+    private $translator;
 
-    public function __construct(VotesRepository $votesRepo) {
+    public function __construct(VotesRepository $votesRepo, TranslatorInterface $translator) {
         $this->votesRepo = $votesRepo;
+        $this->translator = $translator;
     }
 
     /**
@@ -82,6 +84,24 @@ class VotesController extends AbstractController
             return $this->redirect("/");
         }
 
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('votes_index', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'page' => 1,
+            ]);
+        }
+
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('votes_index', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'page' => 1,
+            ]);
+        }
+
         $vote = new Votes();
         $vote->setVotCreatedAt(new DateTime());
         $vote->setUser($this->getUser());
@@ -109,7 +129,7 @@ class VotesController extends AbstractController
     /**
      * @Route("/{locale}/vote/{id<\d+>}", name="votes_show", methods={"GET", "POST"})
      */
-    public function show(string $locale, int $id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine, BallotsRepository $ballotsRepo): Response
+    public function show(string $locale, int $id, Request $request, ManagerRegistry $doctrine, BallotsRepository $ballotsRepo): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -122,7 +142,7 @@ class VotesController extends AbstractController
 
         // Si le vote n'est pas trouvée
         if (is_null($vote)) {
-            $message = $translator->trans('Le vote que vous essayez de consulter n\'existe pas.');
+            $message = $this->translator->trans('Le vote que vous essayez de consulter n\'existe pas.');
             $this->addFlash('notice', $message);
             return $this->redirectToRoute('votes_index', [
                 'locale' => $locale,
@@ -188,6 +208,16 @@ class VotesController extends AbstractController
         // Si le formulaire est bien rempli...
         if ($form->isSubmitted() && $form->isValid()) {
 
+            // Si le csrf est invalide
+            if (!$this->isCsrfTokenValid('referendum-item'.$vote->getId(), $request->request->get('token'))) {
+                $this->addFlash('danger', $this->translator->trans('Formulaire non autorisé.'));
+                
+                return $this->redirectToRoute('votes_show', [
+                    'locale'=> $request->getSession()->get('_locale'),
+                    'id' => $vote->getId(),
+                ]);
+            }
+
             // Si l'utilisateur n'est pas connecté
             if (is_null($this->getUser())) {
                 $this->addFlash('notice', 'Vous devez être connecté pour donner votre avis');
@@ -195,6 +225,15 @@ class VotesController extends AbstractController
                 return $this->redirectToRoute('votes_show', [
                     'locale'=> $request->getSession()->get('_locale'),
                     'id' => $vote->getId(),
+                ]);
+            }
+
+            // Si l'utilisateur n'est pas vérifié
+            if (!$this->getUser()->isVerified()) {
+                $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+                return $this->redirectToRoute('votes_show', [
+                    'locale'=> $request->getSession()->get('_locale'),
+                    'id' => $id,
                 ]);
             }
 
@@ -237,6 +276,24 @@ class VotesController extends AbstractController
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
             return $this->redirect("/");
+        }
+
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('votes_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
+        }
+
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('votes_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
         }
 
         // On va chercher l'evenement a modifier
@@ -293,6 +350,24 @@ class VotesController extends AbstractController
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
             return $this->redirect("/");
+        }
+
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('votes_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
+        }
+
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('votes_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
         }
 
         // On va chercher la newsletter a supprimer

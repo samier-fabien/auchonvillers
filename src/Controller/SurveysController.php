@@ -35,9 +35,11 @@ class SurveysController extends AbstractController
 {
     public const SURVEYS_PER_PAGE = 4;
     private $surveysRepo;
+    private $translator;
 
-    public function __construct(SurveysRepository $surveysRepo) {
+    public function __construct(SurveysRepository $surveysRepo, TranslatorInterface $translator) {
         $this->surveysRepo = $surveysRepo;
+        $this->translator = $translator;
     }
 
     /**
@@ -89,6 +91,24 @@ class SurveysController extends AbstractController
             return $this->redirect("/");
         }
 
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('surveys_index', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'page' => 1,
+            ]);
+        }
+
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('surveys_index', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'page' => 1,
+            ]);
+        }
+
         $survey = new Surveys();
         $survey->setSurCreatedAt(new DateTime());
         $survey->setUser($this->getUser());
@@ -116,7 +136,7 @@ class SurveysController extends AbstractController
     /**
      * @Route("/{locale}/enquete/{id<\d+>}", name="surveys_show", methods={"GET", "POST"})
      */
-    public function show(string $locale, int $id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine, OpinionsRepository $opinionsRepo): Response
+    public function show(string $locale, int $id, Request $request, ManagerRegistry $doctrine, OpinionsRepository $opinionsRepo): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -129,7 +149,7 @@ class SurveysController extends AbstractController
 
         // Si l'évènement n'est pas trouvée
         if (is_null($survey)) {
-            $message = $translator->trans('L\'enquête que vous essayez de consulter n\'existe pas.');
+            $message = $this->translator->trans('L\'enquête que vous essayez de consulter n\'existe pas.');
             $this->addFlash('notice', $message);
             return $this->redirectToRoute('surveys_index', [
                 'locale' => $locale,
@@ -169,6 +189,16 @@ class SurveysController extends AbstractController
         // Si le formulaire est bien rempli...
         if ($form->isSubmitted() && $form->isValid()) {
 
+            // Si le csrf est invalide
+            if (!$this->isCsrfTokenValid('opinion-item'.$survey->getId(), $request->request->get('token'))) {
+                $this->addFlash('danger', $this->translator->trans('Formulaire non autorisé.'));
+                
+                return $this->redirectToRoute('surveys_show', [
+                    'locale'=> $request->getSession()->get('_locale'),
+                    'id' => $survey->getId(),
+                ]);
+            }
+
             // Si l'utilisateur n'est pas connecté
             if (is_null($this->getUser())) {
                 $this->addFlash('notice', 'Vous devez être connecté pour donner votre opinion');
@@ -176,6 +206,15 @@ class SurveysController extends AbstractController
                 return $this->redirectToRoute('surveys_show', [
                     'locale'=> $request->getSession()->get('_locale'),
                     'id' => $survey->getId(),
+                ]);
+            }
+
+            // Si l'utilisateur n'est pas vérifié
+            if (!$this->getUser()->isVerified()) {
+                $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+                return $this->redirectToRoute('surveys_show', [
+                    'locale'=> $request->getSession()->get('_locale'),
+                    'id' => $id,
                 ]);
             }
 
@@ -218,6 +257,24 @@ class SurveysController extends AbstractController
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
             return $this->redirect("/");
+        }
+
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('surveys_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
+        }
+
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('surveys_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
         }
 
         // On va chercher l'evenement a modifier
@@ -274,6 +331,24 @@ class SurveysController extends AbstractController
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 
             return $this->redirect("/");
+        }
+
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('surveys_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
+        }
+
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('surveys_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
         }
 
         // On va chercher la newsletter a supprimer
