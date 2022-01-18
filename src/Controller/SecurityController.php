@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Component\Mime\Email;
 use App\Repository\UserRepository;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -88,19 +89,14 @@ class SecurityController extends AbstractController
 
                 // Envoi du lien par e-mail
                 $subject = ($locale === "fr") ? "Récupération": "Recovery";
-                $text = ($locale === "fr") ?
-                "Bonjour. Vous trouverez ci-dessous le lien de récupération que vous avez demandé. Si vous n'êtes pas à l'origine de cette demande ou que vous avez fait une fausse manipulation, n'en tenez pas compte. " . $loginLinkDetails->getUrl() :
-                "Hello. Below is the recovery link you asked for. If you are not the one that initiated that request or you made a bad movement, ignore it. " . $loginLinkDetails->getUrl();
-                $email = (new Email())
+                $email = (new TemplatedEmail())
                     ->from('samierfabien@gmail.com')
                     ->to($user->getEmail())
-                    //->cc('cc@example.com')
-                    //->bcc('bcc@example.com')
-                    //->replyTo('fabien@example.com')
-                    //->priority(Email::PRIORITY_HIGH)
                     ->subject($subject)
-                    ->text($text);
-                    //->html('<p>See Twig integration for better HTML integration!</p>');
+                    ->htmlTemplate('security/recovery_email.html.twig')
+                    ->context([
+                        'loginLink' => $loginLinkDetails->getUrl(),
+                    ]);
         
                 try {
                     $mailer->send($email);
