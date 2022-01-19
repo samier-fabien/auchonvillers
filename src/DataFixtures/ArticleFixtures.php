@@ -186,7 +186,7 @@ class ArticleFixtures extends Fixture implements DependentFixtureInterface
                 ->setArtContentFr($value['content_fr'])
                 ->setArtContentEn($value['content_en'])
                 ->setArtOrderOfAppearance($value["order_of_appearance"])
-                ->setUser($this->getReference('mayor'))
+                ->setUser($this->getReference('user_1'))
                 ->setCategory($this->getReference('category_'. $value['category']))
             ;
 

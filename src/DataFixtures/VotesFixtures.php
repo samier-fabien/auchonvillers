@@ -39,7 +39,7 @@ class VotesFixtures extends Fixture implements DependentFixtureInterface
                 "first_choice_en" => "yes",
                 "second_choice_fr" => "non",
                 "second_choice_en" => "no",
-                "user" => "1",
+                "user" => "2",
             ],
         ];
 

@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% trans %}Préférences du compte{% endtrans %}{% endblock %}
+
+{% block body %}
+    <h1>{% trans %}Préférences du compte{% endtrans %}</h1>
+
+    {{ include('registration/_form_preferences.html.twig', {'button_label': 'Modifier'}) }}
+    
+{% endblock %}

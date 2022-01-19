@@ -47,9 +47,9 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: /admin, roles: ROLE_ADMIN }
-        - { path: /mayor, roles: ROLE_MAYOR }
+        - { path: /maire, roles: ROLE_MAYOR }
         - { path: /agent, roles: ROLE_AGENT }
-        - { path: ^/user, roles: ROLE_USER }
+        - { path: /membre, roles: ROLE_USER }
 
     role_hierarchy:
         ROLE_AGENT: ROLE_USER

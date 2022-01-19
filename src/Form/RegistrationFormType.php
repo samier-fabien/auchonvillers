@@ -19,6 +19,7 @@ class RegistrationFormType extends AbstractType
 {
     public const EMAIL_LABEL = 'Veuillez entrer votre email s\'il vous plait.';
     public const PASSWORD_LABEL = 'Veuillez entrer votre mot de passe s\'il vous plait.';
+    public const CONFIRM_PASSWORD_LABEL = 'Veuillez entrer une deuxième fois votre mot de passe s\'il vous plait.';
     public const RGPD_LABEL = 'En cochant ceci, vous acceptez nos conditions quant à l\'utilisation de vos données.';
     public const TERMS_OF_USE_LABEL = 'En cochant ceci, vous acceptez nos conditions générales d\'utilisation.';
     public const NEWSLETTER_LABEL = 'Cochez si vous voulez recevoir les actualités par email.';
@@ -53,6 +54,19 @@ class RegistrationFormType extends AbstractType
                     new Length([
                         'min' => 6,
                         'minMessage' => $this->translator->trans('Votre mot de passe doit être composé d\'au moins {{ limit }} caractères.'),//Your password should be at least {{ limit }} characters
+                        // max length allowed by Symfony for security reasons
+                        'max' => 4096,
+                    ]),
+                ],
+            ])
+            ->add('confirmPassword', PasswordType::class, [
+                'mapped' => false,
+                'label' => $this->translator->trans(self::CONFIRM_PASSWORD_LABEL),
+                'attr' => ['autocomplete' => 'new-password'],
+                'constraints' => [
+                    new NotBlank(),
+                    new Length([
+                        'min' => 6,
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),

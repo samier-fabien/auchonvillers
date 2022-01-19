@@ -65,12 +65,12 @@
                                     Gestion
                                 </a>
                                 <ul class="dropdown-menu mt-lg-3 mt-xl-3 mt-xxl-3" aria-labelledby="navGestionDrop">
-                                    <li class"dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/theme/agent/creer">{# <i class="bi-plus-circle-fill me-1" style="font-size: 1rem;"> #}</i>{% trans %}Créer un thème{% endtrans %}</a></li>
-                                    <li class"dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/article/agent/creer">{# <i class="bi-plus-circle-fill me-1" style="font-size: 1rem;"> #}</i>{% trans %}Créer un article{% endtrans %}</a></li>
-                                    <li class"dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/actualite/agent/creer">{# <i class="bi-plus-circle-fill me-1" style="font-size: 1rem;"> #}</i>{% trans %}Créer une actualité{% endtrans %}</a></li>
-                                    <li class"dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/evenement/agent/creer">{# <i class="bi-plus-circle-fill me-1" style="font-size: 1rem;"> #}</i>{% trans %}Créer un évènement{% endtrans %}</a></li>
-                                    <li class"dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/enquete/agent/creer">{# <i class="bi-plus-circle-fill me-1" style="font-size: 1rem;"> #}</i>{% trans %}Créer une enquête{% endtrans %}</a></li>
-                                    <li class"dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/vote/agent/creer">{# <i class="bi-plus-circle-fill me-1" style="font-size: 1rem;"> #}</i>{% trans %}Créer un vote{% endtrans %}</a></li>
+                                    <li class"dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/theme/agent/creer">{% trans %}Créer un thème{% endtrans %}</a></li>
+                                    <li class"dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/article/agent/creer">{% trans %}Créer un article{% endtrans %}</a></li>
+                                    <li class"dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/actualite/agent/creer">{% trans %}Créer une actualité{% endtrans %}</a></li>
+                                    <li class"dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/evenement/agent/creer">{% trans %}Créer un évènement{% endtrans %}</a></li>
+                                    <li class"dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/enquete/agent/creer">{% trans %}Créer une enquête{% endtrans %}</a></li>
+                                    <li class"dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/vote/agent/creer">{% trans %}Créer un vote{% endtrans %}</a></li>
                                     <li class"dropdown-item"><a class="nav-link" href="#">{% trans %}Voir les discussions{% endtrans %}</a></li>
                                     <li class"dropdown-item"><a class="nav-link" href="#">{% trans %}Voir les inscrits{% endtrans %}</a></li>
                                 </ul>
@@ -88,7 +88,7 @@
                                         {{ app.user.email }}
                                     </a>
                                     <ul class="dropdown-menu mt-lg-3 mt-xl-3 mt-xxl-3" aria-labelledby="navAccountDrop">
-                                        <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/compte{{ app.user.id }}">{% trans %}Mon compte{% endtrans %}</a></li>
+                                        <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/membre/compte">{% trans %}Mon compte{% endtrans %}</a></li>
                                         <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/deconnexion">{% trans %}Deconnexion{% endtrans %}</a></li>
                                     </ul>
                                 </li>

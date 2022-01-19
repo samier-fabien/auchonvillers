@@ -19,7 +19,7 @@ class OpinionsFixtures extends Fixture implements DependentFixtureInterface
             ],
             2 => [
                 "opinion" => "Je voudrais pouvoir m'y connecter avec des lunettes 3d et pouvoir déambuler dans la ville comme si j'y étais.",
-                "user" => "3",
+                "user" => "1",
                 "survey" => "1"
             ],
         ];

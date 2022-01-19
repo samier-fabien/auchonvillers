@@ -145,9 +145,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $isVerified = false;
 
     /**
-     * @ORM\OneToMany(targetEntity=Events::class, mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Events::class, mappedBy="user")
      */
-    private $events;
+    private $events;// , orphanRemoval=true
 
     /**
      * @ORM\OneToMany(targetEntity=Attends::class, mappedBy="user", orphanRemoval=true)
@@ -155,9 +155,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $attends;
 
     /**
-     * @ORM\OneToMany(targetEntity=Votes::class, mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Votes::class, mappedBy="user")
      */
-    private $votes;
+    private $votes;// , orphanRemoval=true
 
     /**
      * @ORM\OneToMany(targetEntity=Ballots::class, mappedBy="user", orphanRemoval=true)
@@ -165,9 +165,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $ballots;
 
     /**
-     * @ORM\OneToMany(targetEntity=Surveys::class, mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Surveys::class, mappedBy="user")
      */
-    private $surveys;
+    private $surveys;// , orphanRemoval=true
 
     /**
      * @ORM\OneToMany(targetEntity=Opinions::class, mappedBy="user", orphanRemoval=true)

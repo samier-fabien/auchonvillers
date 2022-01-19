@@ -6,6 +6,7 @@ use App\Service\Regex;
 use App\Repository\EventsRepository;
 use App\Repository\NewsletterRepository;
 use App\Repository\SurveysRepository;
+use App\Repository\UserRepository;
 use App\Repository\VotesRepository;
 use App\Service\ArraySort;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,14 +54,8 @@ class HomeController extends AbstractController
     /**
      * @Route("/{locale}", name="home")
      */
-    public function home(string $locale, Request $request, Regex $regex, ArraySort $arraySort): Response
+    public function home(string $locale, Request $request, Regex $regex, ArraySort $arraySort, UserRepository $userRepo): Response
     {
-        // A SUPPRIMER Test flash messages
-        // $this->addFlash('success', 'Message de succès');
-        // $this->addFlash('notice', 'Message de succès');
-        // $this->addFlash('warning', 'Message de succès');
-        // $this->addFlash('danger', 'Message de succès');
-
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
             $request->getSession()->set('_locale', 'fr'); 

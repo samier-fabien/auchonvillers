@@ -56,7 +56,7 @@ class EventsFixtures extends Fixture implements DependentFixtureInterface
                 "content_fr" => "Petite réunion entre voisins pour fêter l'anniversaire de Fabien",
                 "content_en" => "Little meeting with neighborhood for Fabien's birthday",
                 "location" => "48.852969 2.349903",
-                "user" => "1",
+                "user" => "2",
             ],
             6 => [
                 "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-15 09:00:00"),
@@ -65,7 +65,7 @@ class EventsFixtures extends Fixture implements DependentFixtureInterface
                 "content_fr" => "Petite réunion entre voisins pour fêter l'anniversaire de Fabien",
                 "content_en" => "Little meeting with neighborhood for Fabien's birthday",
                 "location" => "48.852969 2.349903",
-                "user" => "1",
+                "user" => "2",
             ],
             7 => [
                 "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-16 09:00:00"),
@@ -74,7 +74,7 @@ class EventsFixtures extends Fixture implements DependentFixtureInterface
                 "content_fr" => "Petite réunion entre voisins pour fêter l'anniversaire de Fabien",
                 "content_en" => "Little meeting with neighborhood for Fabien's birthday",
                 "location" => "48.852969 2.349903",
-                "user" => "1",
+                "user" => "2",
             ],
             8 => [
                 "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-17 09:00:00"),
@@ -83,7 +83,7 @@ class EventsFixtures extends Fixture implements DependentFixtureInterface
                 "content_fr" => "Petite réunion entre voisins pour fêter l'anniversaire de Fabien",
                 "content_en" => "Little meeting with neighborhood for Fabien's birthday",
                 "location" => "48.852969 2.349903",
-                "user" => "1",
+                "user" => "2",
             ],
             9 => [
                 "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-18 09:00:00"),
@@ -92,7 +92,7 @@ class EventsFixtures extends Fixture implements DependentFixtureInterface
                 "content_fr" => "Petite réunion entre voisins pour fêter l'anniversaire de Fabien",
                 "content_en" => "Little meeting with neighborhood for Fabien's birthday",
                 "location" => "48.852969 2.349903",
-                "user" => "1",
+                "user" => "2",
             ],
             10 => [
                 "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-19 09:00:00"),
@@ -101,7 +101,7 @@ class EventsFixtures extends Fixture implements DependentFixtureInterface
                 "content_fr" => "Petite réunion entre voisins pour fêter l'anniversaire de Fabien",
                 "content_en" => "Little meeting with neighborhood for Fabien's birthday",
                 "location" => "48.852969 2.349903",
-                "user" => "1",
+                "user" => "2",
             ],
         ];
 

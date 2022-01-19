@@ -1,0 +1,5 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{ form_row(form.email) }}
+    {{ form_errors(form) }}
+    <button type="submit" class="btn btn-primary">{{ button_label|trans }}</button>
+{{ form_end(form) }}

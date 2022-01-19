@@ -18,7 +18,7 @@ class BallotsFixtures extends Fixture implements DependentFixtureInterface
                 "response" => true,
             ],
             2 => [
-                "user" => "3",
+                "user" => "1",
                 "vote" => "1",
                 "response" => true,
             ],

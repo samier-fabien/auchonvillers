@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% trans %}Suppression de compte{% endtrans %}{% endblock %}
+
+{% block body %}
+    <h1>{% trans %}Suppression de compte{% endtrans %}</h1>
+
+    <p>
+        Vous vous apprêtez à supprimer votre compte. Notez que toute suppression est définitive et qu'aucune récupération des données ne sera possible.
+    </p>
+    <p>
+        {% trans %}
+        Toutes les données relatives à votre personne seront supprimées, cela inclut :<br>
+        <ul>
+            <li>les éventuelles indications de participations aux évènements</li>
+            <li>les résultats des votes auxquels vous avez pris part</li>
+            <li>les retours d'enquêtes auxquelles vous avez participé</li>
+            <li>les conversations que vous avez initiées et tous les messages associés</li>
+            <li>toutes les informations relatives à votre compte que vous nous avez fournies</li>
+        </ul>
+        {% endtrans %}
+    </p>
+    {{ include('registration/_form_delete.html.twig', {'button_label': 'Supprimer'}) }}
+    
+{% endblock %}

@@ -20,7 +20,7 @@ class ChatFixtures extends Fixture implements DependentFixtureInterface
                 "last_message" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-28 09:02:00")
             ],
             2 => [
-                "user" => "user_3",
+                "user" => "user_1",
                 "created_at" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-28 10:00:00"),
                 "resolved" => false,
                 "last_message" => Datetime::createFromFormat("Y-m-d H:i:s", "2021-11-28 10:02:00")

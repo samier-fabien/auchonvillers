@@ -1,0 +1,10 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{ form_row(form.first_name) }}
+    {{ form_row(form.last_name) }}
+    {{ form_row(form.newsletter) }}
+    {{ form_row(form.vote) }}
+    {{ form_row(form.event) }}
+    {{ form_row(form.survey) }}
+    {{ form_errors(form) }}
+    <button type="submit" class="btn btn-primary">{{ button_label|trans }}</button>
+{{ form_end(form) }}

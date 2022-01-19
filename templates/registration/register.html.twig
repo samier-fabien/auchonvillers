@@ -12,6 +12,7 @@
     {{ form_start(registrationForm, {'attr': {'novalidate': 'novalidate'}}) }}
         {{ form_row(registrationForm.email) }}
         {{ form_row(registrationForm.plainPassword) }}
+        {{ form_row(registrationForm.confirmPassword) }}
         {{ form_row(registrationForm.rgpd) }}
         {{ form_row(registrationForm.user_terms_of_use) }}
         {{ form_row(registrationForm.newsletter) }}
@@ -19,6 +20,6 @@
         {{ form_row(registrationForm.survey) }}
         {{ form_row(registrationForm.vote) }}
         {{ form_errors(registrationForm) }}
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-primary">{% trans %}Register{% endtrans %}</button>
     {{ form_end(registrationForm) }}
 {% endblock %}

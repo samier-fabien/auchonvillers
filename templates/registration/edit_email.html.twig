@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% trans %}Modification de l'email{% endtrans %}{% endblock %}
+
+{% block body %}
+    <h1>{% trans %}Modification de l'email{% endtrans %}</h1>
+
+    {{ include('registration/_form_email.html.twig', {'button_label': 'Modifier'}) }}
+    
+{% endblock %}
