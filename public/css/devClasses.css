@@ -1,0 +1,21 @@
+.custom-shape-divider-top-1642634634 {
+    /* position: absolute;
+    top: 200px; */
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    /* background-image: none, url('/images/ext.jpg'); */
+}
+
+.custom-shape-divider-top-1642634634 svg {
+    position: relative;
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 151px;
+}
+
+.custom-shape-divider-top-1642634634 .shape-fill {
+    fill: #F78427;
+
+}
