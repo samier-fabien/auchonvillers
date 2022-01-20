@@ -1,10 +1,12 @@
 .custom-shape-divider-top-1642634634 {
-    /* position: absolute;
-    top: 200px; */
+    /* position: absolute; */
+    position: relative;
+    top: -230px;
     left: 0;
     width: 100%;
     overflow: hidden;
     line-height: 0;
+    transform: rotate(180deg);
     /* background-image: none, url('/images/ext.jpg'); */
 }
 
@@ -12,10 +14,10 @@
     position: relative;
     display: block;
     width: calc(100% + 1.3px);
-    height: 151px;
+    height: 230px;
 }
 
 .custom-shape-divider-top-1642634634 .shape-fill {
-    fill: #F78427;
+    fill: white;
 
 }
