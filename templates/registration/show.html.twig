@@ -4,27 +4,29 @@
 
 {% block body %}
 <section>
-    <h1>{% trans %}Actualité{% endtrans %}</h1>
+    <h1>{% trans %}Mon compte{% endtrans %}</h1>
     <div>
-        <p>
-            Email : {{ user.email }}<br>
-            Etat(s) : {% for role in user.roles %}{{ role }} {% endfor %}<br>
-            Nom : {{ user.firstName }}<br>
-            Prénom : {{ user.lastName }}<br>
-            Recevoir les actualités par email : {{ user.newsletter == true ? 'oui'|trans : 'non'|trans }}<br>
-            Recevoir un email quand publication d'un nouveau vote : {{ user.vote == true ? 'oui'|trans : 'non'|trans }}<br>
-            Recevoir un email quand publication d'un nouvel évènement : {{ user.event == true ? 'oui'|trans : 'non'|trans }}<br>
-            Recevoir un email quand publication d'une nouvelle enquête : {{ user.survey == true ? 'oui'|trans : 'non'|trans }}<br>
-        </p>
+        <ul>
+            <li>Email : {{ user.email }}</li>
+            <li>Etat(s) : {% for role in user.roles %}{{ role }} {% endfor %}</li>
+            <li>Nom : {{ user.firstName }}</li>
+            <li>Prénom : {{ user.lastName }}</li>
+            <li>Recevoir les actualités par email : {{ user.newsletter == true ? 'oui'|trans : 'non'|trans }}</li>
+            <li>Recevoir un email quand publication d'un nouveau vote : {{ user.vote == true ? 'oui'|trans : 'non'|trans }}</li>
+            <li>Recevoir un email quand publication d'un nouvel évènement : {{ user.event == true ? 'oui'|trans : 'non'|trans }}</li>
+            <li>Recevoir un email quand publication d'une nouvelle enquête : {{ user.survey == true ? 'oui'|trans : 'non'|trans }}</li>
+        </ul>
     </div>
 </section>
 
 <a href="/{{ app.request.locale }}/membre/compte/preferences" class="text-light text-decoration-none"><button class="btn btn-primary">{% trans %}Modifier les préférences{% endtrans %}</button></a>
 <a href="/{{ app.request.locale }}/membre/compte/email" class="text-light text-decoration-none"><button class="btn btn-primary">{% trans %}Modifier l'email{% endtrans %}</button></a>
 <a href="/{{ app.request.locale }}/membre/compte/mot_de_passe" class="text-light text-decoration-none"><button class="btn btn-primary">{% trans %}Modifier le mot de passe{% endtrans %}</button></a>
+{% if not app.user.isVerified and not is_granted('ROLE_AGENT') and not is_granted('ROLE_MAYOR') and not is_granted('ROLE_ADMIN') %}
+    <a href="/{{ app.request.locale }}/membre/compte/renvoyer_confirmation" class="text-light text-decoration-none"><button class="btn btn-primary">{% trans %}Renvoyer un email de confirmation{% endtrans %}</button></a>
+{% endif %}
 {% if not is_granted('ROLE_MAYOR') %}
     <a href="/{{ app.request.locale }}/membre/compte/supprimer" class="text-light text-decoration-none"><button class="btn btn-primary">{% trans %}Supprimer le compte{% endtrans %}</button></a>
-    {# {{ include('newsletter/_delete_form.html.twig') }} #}
 {% endif %}
 
 {% endblock %}

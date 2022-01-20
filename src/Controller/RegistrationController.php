@@ -8,6 +8,7 @@ use App\Form\EmailType;
 use App\Form\PreferencesType;
 use App\Security\EmailVerifier;
 use App\Form\RegistrationFormType;
+use App\Repository\ChatRepository;
 use App\Repository\UserRepository;
 use App\Form\RegistrationEmailType;
 use App\Repository\VotesRepository;
@@ -18,14 +19,14 @@ use App\Repository\EventsRepository;
 use App\Repository\ArticleRepository;
 use App\Repository\AttendsRepository;
 use App\Repository\BallotsRepository;
+use App\Repository\MessageRepository;
 use App\Repository\SurveysRepository;
 use Symfony\Component\Form\FormError;
 use App\Form\RegistrationPasswordType;
-use App\Repository\ChatRepository;
-use App\Repository\MessageRepository;
 use App\Repository\OpinionsRepository;
 use App\Repository\NewsletterRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Form\RegistrationPreferencesType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
@@ -95,12 +96,9 @@ class RegistrationController extends AbstractController
             //         ->subject($this->translator->trans('Veuillez confirmer votre email.'))
             //         ->htmlTemplate('registration/confirmation_email.html.twig')
             // );
-            if (!$this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-            (new TemplatedEmail())
-                ->from(new Address('samierfabien@gmail.com', $this->translator->trans('Le site web d\'Auchonvillers')))
-                ->to($user->getEmail())
-                ->subject($this->translator->trans('Veuillez confirmer votre email.'))
-                ->htmlTemplate('registration/confirmation_email.html.twig')))
+
+            // Si erreur lors de l'envoi de l'email
+            if (!$this->sendConfirmation($user))
             {
                 $this->addFlash('danger', $this->translator->trans('Une erreur est survenue lors de l\'envoi d\'un email de confirmation, veuillez recommencer.'));
                 return $this->redirectToRoute('app_register', [
@@ -108,6 +106,7 @@ class RegistrationController extends AbstractController
                 ]);
             }
 
+            // Si tout ok, ajout message plus authentification
             $this->addFlash('success', $this->translator->trans('Un email de confirmation vous a été envoyé, cliquez dessus pour accéder à toutes les fonctionnalités du site internet.'));
 
             return $userAuthenticator->authenticateUser(
@@ -300,20 +299,7 @@ class RegistrationController extends AbstractController
                     )
                 );
 
-            // Envoi d'email de confirmation
-            // $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-            //     (new TemplatedEmail())
-            //         ->from(new Address('samierfabien@gmail.com', $this->translator->trans('Le site web d\'Auchonvillers')))
-            //         ->to($user->getEmail())
-            //         ->subject($this->translator->trans('Veuillez confirmer votre email.'))
-            //         ->htmlTemplate('registration/confirmation_email.html.twig')
-            // );
-            if (!$this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-            (new TemplatedEmail())
-                ->from(new Address('samierfabien@gmail.com', $this->translator->trans('Le site web d\'Auchonvillers')))
-                ->to($user->getEmail())
-                ->subject($this->translator->trans('Veuillez confirmer votre email.'))
-                ->htmlTemplate('registration/confirmation_email.html.twig')))
+            if (!$this->sendConfirmation($user))
             {
                 $this->addFlash('danger', $this->translator->trans('Une erreur est survenue lors de l\'envoi d\'un email de confirmation, veuillez recommencer.'));
                 return $this->redirectToRoute('app_password', [
@@ -389,12 +375,7 @@ class RegistrationController extends AbstractController
             //         ->subject($this->translator->trans('Veuillez confirmer votre email.'))
             //         ->htmlTemplate('registration/confirmation_email.html.twig')
             // );
-            if (!$this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-            (new TemplatedEmail())
-                ->from(new Address('samierfabien@gmail.com', $this->translator->trans('Le site web d\'Auchonvillers')))
-                ->to($user->getEmail())
-                ->subject($this->translator->trans('Veuillez confirmer votre email.'))
-                ->htmlTemplate('registration/confirmation_email.html.twig')))
+            if (!$this->sendConfirmation($user))
             {
                 $this->addFlash('danger', $this->translator->trans('Une erreur est survenue lors de l\'envoi d\'un email de confirmation, veuillez recommencer.'));
                 return $this->redirectToRoute('app_email', [
@@ -541,6 +522,73 @@ class RegistrationController extends AbstractController
         return $this->render('registration/delete.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @IsGranted("ROLE_USER")
+     * @Route("/{locale}/membre/compte/renvoyer_confirmation", name="app_renvoyer_confirmation")
+     */
+    public function renvoyerConfirmation(string $locale = 'fr', Request $request, ManagerRegistry $doctrine): Response
+    {
+        // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
+        if (!in_array($locale, $this->getParameter('app.locales'), true)) {
+            $request->getSession()->set('_locale', 'fr');
+            return $this->redirect("/");
+        }
+
+        // Si l'utilisateur est vérifié, redirection
+        if ($this->getUser()->isVerified()) {
+            $this->addFlash('notice', $this->translator->trans('Cete procédure est réservée aux personnes dont l\'email doit être vérifié.'));
+            return $this->redirectToRoute('home', [
+                'locale'=> $request->getSession()->get('_locale'),
+            ]);
+        }
+
+        // Calcul du temps depuis envoi dernier mail de confirmation
+        $user = $this->userRepo->findOneBy(['id' => $this->getUser()->getId()]);
+        $interval = $user->getLastModification()->diff(new DateTime());
+        $intervalInMinutes = $interval->format('%R%i');
+
+        // Si < 10 minutes, redirection shoow avec message
+        if ($intervalInMinutes < 10) {
+            //dd("moins d'une heure : $intervalInMinutes minutes");
+            $this->addFlash('warning', $this->translator->trans('Un email de confirmation ne peut être envoyé que toutes les dix minutes. Le dernier date d\'il y a') . ' ' . $intervalInMinutes . ' ' . $this->translator->trans('minutes.'));
+
+            return $this->redirectToRoute('app_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+            ]);
+        }
+
+        if (!$this->sendConfirmation($this->getUser())) {
+            $this->addFlash('danger', $this->translator->trans('Une erreur est survenue lors de l\'envoi d\'un email de confirmation, veuillez recommencer.'));
+            
+            return $this->redirectToRoute('app_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+            ]);
+        }
+
+        $user->setLastModification(new DateTime());
+
+        $doctrine->getManager()->persist($user);
+        $doctrine->getManager()->flush();
+
+        $this->addFlash('success', $this->translator->trans('Un email de confirmation vous a été envoyé, cliquez dessus pour accéder à toutes les fonctionnalités du site internet.'));
+
+        return $this->redirectToRoute('app_show', [
+            'locale'=> $request->getSession()->get('_locale'),
+        ]);
+    }
+
+
+    public function sendConfirmation(User $user)
+    {
+        return $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+            (new TemplatedEmail())
+                ->from(new Address('samierfabien@gmail.com', $this->translator->trans('Le site web d\'Auchonvillers')))
+                ->to($user->getEmail())
+                ->subject($this->translator->trans('Veuillez confirmer votre email.'))
+                ->htmlTemplate('registration/confirmation_email.html.twig'))
+        ;
     }
 
 
