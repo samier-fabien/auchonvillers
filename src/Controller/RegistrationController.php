@@ -43,6 +43,8 @@ use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
 class RegistrationController extends AbstractController
 {
+    public const CONFIRMATION_MAIL_DELAY = 10;// en minutes
+
     private EmailVerifier $emailVerifier;
     private $translator;
     private $userRepo;
@@ -550,7 +552,7 @@ class RegistrationController extends AbstractController
         $intervalInMinutes = $interval->format('%R%i');
 
         // Si < 10 minutes, redirection shoow avec message
-        if ($intervalInMinutes < 10) {
+        if ($intervalInMinutes < self::CONFIRMATION_MAIL_DELAY) {
             //dd("moins d'une heure : $intervalInMinutes minutes");
             $this->addFlash('warning', $this->translator->trans('Un email de confirmation ne peut être envoyé que toutes les dix minutes. Le dernier date d\'il y a') . ' ' . $intervalInMinutes . ' ' . $this->translator->trans('minutes.'));
 
