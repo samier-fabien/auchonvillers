@@ -22,7 +22,7 @@
 <a href="/{{ app.request.locale }}/membre/compte/preferences" class="text-light text-decoration-none"><button class="btn btn-primary">{% trans %}Modifier les préférences{% endtrans %}</button></a>
 <a href="/{{ app.request.locale }}/membre/compte/email" class="text-light text-decoration-none"><button class="btn btn-primary">{% trans %}Modifier l'email{% endtrans %}</button></a>
 <a href="/{{ app.request.locale }}/membre/compte/mot_de_passe" class="text-light text-decoration-none"><button class="btn btn-primary">{% trans %}Modifier le mot de passe{% endtrans %}</button></a>
-{% if not app.user.isVerified and not is_granted('ROLE_AGENT') and not is_granted('ROLE_MAYOR') and not is_granted('ROLE_ADMIN') %}
+{% if not app.user.isVerified %}
     <a href="/{{ app.request.locale }}/membre/compte/renvoyer_confirmation" class="text-light text-decoration-none"><button class="btn btn-primary">{% trans %}Renvoyer un email de confirmation{% endtrans %}</button></a>
 {% endif %}
 {% if not is_granted('ROLE_MAYOR') %}

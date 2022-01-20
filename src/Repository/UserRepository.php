@@ -62,6 +62,45 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         ;
     }
 
+    /**
+     * @return User[] Returns an array of User objects
+     */
+    public function findByRoleAndPage(string $role, int $page = 1, int $numberPerPage)
+    {
+        return $this->createQueryBuilder('u')
+        ->andWhere('u.roles LIKE :role')
+        ->orderBy('u.created_at', 'DESC')
+        ->setFirstResult(($page * $numberPerPage) - $numberPerPage)
+        ->setMaxResults($numberPerPage)
+        ->setParameter('role', '%'.$role.'%')
+        ->getQuery()
+        ->getResult()
+        ;
+    }
+
+    /**
+     * @return User[] Returns an array of User objects
+     */
+    public function findByPage(int $page = 1, int $numberPerPage)
+    {
+        return $this->createQueryBuilder('a')
+            ->orderBy('a.created_at', 'DESC')
+            ->setFirstResult(($page * $numberPerPage) - $numberPerPage)
+            ->setMaxResults($numberPerPage)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function getnumber()
+    {
+        return $this->createQueryBuilder('a')
+            ->select('count(a.id)')
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+    }
+
     // /**
     //  * @return User[] Returns an array of User objects
     //  */

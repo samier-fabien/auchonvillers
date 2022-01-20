@@ -79,6 +79,7 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setCreatedAt(new DateTime())
                 ->setLastModification(new DateTime())
+                ->setRoles(['ROLE_USER'])
                 // encode the plain password
                 ->setPassword(
                     $userPasswordHasher->hashPassword(

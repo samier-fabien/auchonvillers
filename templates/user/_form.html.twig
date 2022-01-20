@@ -1,0 +1,14 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{ form_row(form.vot_begining) }}
+    {{ form_row(form.vot_end) }}
+    {{ form_row(form.vot_content_fr) }}
+    {{ form_row(form.vot_content_en) }}
+    {{ form_row(form.vot_question_fr) }}
+    {{ form_row(form.vot_question_en) }}
+    {{ form_row(form.vot_first_choice_fr) }}
+    {{ form_row(form.vot_first_choice_en) }}
+    {{ form_row(form.vot_second_choice_fr) }}
+    {{ form_row(form.vot_second_choice_en) }}
+    {{ form_errors(form) }}
+    <button type="submit" class="btn btn-primary">{{ button_label|trans }}</button>
+{{ form_end(form) }}

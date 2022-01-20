@@ -1,0 +1,165 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des membres{% endblock %}
+
+{% block body %}
+<section>
+    <h1>{% trans %}Liste des membres{% endtrans %}</h1>
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <th scope="col">#</th>
+                <th scope="col">Email</th>
+                <th scope="col">{% trans %}Statut(s){% endtrans %}</th>
+                <th scope="col">{% trans %}Nom{% endtrans %}</th>
+                <th scope="col">{% trans %}Prénom{% endtrans %}</th>
+                <th scope="col">{% trans %}Compte vérifié{% endtrans %}</th>
+                <th scope="col">{% trans %}Conditions utilisateurs{% endtrans %}</th>
+                <th scope="col">{% trans %}Conditions employés{% endtrans %}</th>
+                <th scope="col">{% trans %}Créé le{% endtrans %}</th>
+                <th scope="col">{% trans %}Dernière modification{% endtrans %}</th>
+                <th scope="col">{% trans %}Actions possibles{% endtrans %}</th>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ user.email }}</td>
+                        <td>
+                        {% for role in user.roles %}
+                            {{role}}
+                        {% endfor %}
+                        </td>
+                        <td>{{ user.firstName }}</td>
+                        <td>{{ user.lastName }}</td>
+                        <td>{{ user.isVerified }}</td>
+                        <td>{{ user.user_terms_of_use }}</td>
+                        <td>{{ user.employee_terms_of_use }}</td>
+                        <td>{{ user.created_at|date('Y-m-d') }}</td>
+                        <td>{{ user.last_modification|date('Y-m-d') }}</td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <button class="btn btn-outline-success">{% trans %}Promouvoir{% endtrans %}</button>
+                                <button class="btn btn-outline-warning">{% trans %}Déstituer{% endtrans %}</button>
+                                <button class="btn btn-outline-danger">{% trans %}Supprimer{% endtrans %}</button>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+<div>
+    {% set url = '/'~app.request.locale~'/agent/inscrits/utilisateurs/' %}
+    {% set page = page %}
+    {% set pages = pages %}
+    {% set nearby = 4 %}
+
+    {% apply spaceless %}
+        {% if pages > 1 %}
+            {% if page > 1 %}
+                <a href="{{ (url ~ (page-1))|e }}/">&laquo;</a>
+            {% endif %}
+
+            {% for i in 1..pages %}
+                {% if 0 == (page - nearby) - loop.index %}
+                    <a href="{{ (url ~ 1)|e }}/">1</a>
+                    {% if 1 != loop.index %}
+                        <a href="#">...</a>
+                    {% endif %}
+                {% elseif 0 == (page + nearby) - loop.index  and (page + nearby) < pages %}
+                    <a href="#">...</a>
+                {% elseif 0 < (page - nearby) - loop.index %}
+                    <!-- #1 -->
+                {% elseif 0 > (page + nearby) - loop.index %}
+                    <!-- #2 -->
+                {% else %}
+                        {% if page == loop.index  %}
+                            <strong><a href="#">{{ loop.index }}</a></strong>
+                        {% else %}
+                            {% if loop.index == 1 %}
+                                <a href="{{ (url ~ 1)|e }}">{{ loop.index }}</a>
+                            {% else %}
+                                <a href="{{ url ~ loop.index }}/">{{ loop.index }}</a>
+                            {% endif %}
+                        {% endif %}
+                {% endif %}
+            {% endfor %}
+            {% if page != pages  and (page + nearby) < pages %}
+                <a href="{{ (url ~ pages)|e }}/">{{ pages }}</a>
+            {% endif %}
+            {% if page < pages %}
+                <a href="{{ (url ~ (page+1))|e }}/">&raquo;</a>
+            {% endif %}
+        {% endif %}
+    {% endapply %}
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    {# <h1>Events index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Eve_created_at</th>
+                <th>Eve_begining</th>
+                <th>Eve_end</th>
+                <th>Eve_content_fr</th>
+                <th>Eve_content_en</th>
+                <th>Eve_location_osm</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for event in events %}
+            <tr>
+                <td>{{ event.id }}</td>
+                <td>{{ event.eveCreatedAt ? event.eveCreatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ event.eveBegining ? event.eveBegining|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ event.eveEnd ? event.eveEnd|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ event.eveContentFr }}</td>
+                <td>{{ event.eveContentEn }}</td>
+                <td>{{ event.eveLocationOsm }}</td>
+                <td>
+                    <a href="{{ path('events_show', {'id': event.id}) }}">show</a>
+                    <a href="{{ path('events_edit', {'id': event.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('events_new') }}">Create new</a> #}
+{% endblock %}

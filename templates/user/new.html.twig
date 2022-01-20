@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Creation de vote{% endblock %}
+
+{% block body %}
+    <h1>Creation de vote</h1>
+
+    {{ include('votes/_form.html.twig', {'button_label': 'Créer'}) }}
+
+{% endblock %}

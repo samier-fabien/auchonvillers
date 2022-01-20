@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vote{% endblock %}
+
+{% block body %}
+<section>
+    <h1>{% trans %}Vote{% endtrans %}</h1>
+    <div>
+        <p>{% trans %}Du{% endtrans %} {{ vote.begining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ vote.end|date('Y-m-d') }}</p>
+        <p>
+            {{ vote.content|raw }}
+        </p>
+    </div>
+    <div>
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+            {{ form_label(form.bal_vote) }}
+            {{ form_errors(form.bal_vote) }}
+            {{ form_widget(form.bal_vote) }}
+            {{ form_errors(form) }}
+            <input type="hidden" name="token" value="{{ csrf_token('referendum-item' ~ vote.id) }}"/>
+            <button type="submit" class="btn btn-primary">{% trans %}Donner son avis{% endtrans %}</button>
+        {{ form_end(form) }}
+    </div>
+</section>
+
+{% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
+    <a href="/{{ app.request.locale }}/vote/{{ vote.id }}/agent/editer" class="text-light text-decoration-none"><button class="btn btn-primary">{% trans %}Editer{% endtrans %}</button></a>
+    {{ include('votes/_delete_form.html.twig') }}
+{% endif %}
+
+    
+{% endblock %}
