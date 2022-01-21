@@ -21,7 +21,7 @@
                 let ticking = false;
 
                 function doSomething(scroll_pos) {
-                    if (scroll_pos > 200) {
+                    if (scroll_pos > 50) {
                         document.getElementById("mainNavbar").classList.remove("bg-opacity-10");
                     } else {
                         document.getElementById("mainNavbar").classList.add("bg-opacity-10");
@@ -59,7 +59,7 @@
 
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" id="navCategoryDrop" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-reference="parent">
-                                    Plus sur
+                                    {% trans %}Plus sur{% endtrans %}
                                 </a>
                                 <ul class="dropdown-menu mt-lg-3 mt-xl-3 mt-xxl-3" aria-labelledby="navCategoryDrop">
                                     {% for navcat in navcats.list %}
@@ -88,7 +88,7 @@
                             {% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" id="navGestionDrop" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Gestion
+                                    {% trans %}Gestion{% endtrans %}
                                 </a>
                                 <ul class="dropdown-menu mt-lg-3 mt-xl-3 mt-xxl-3" aria-labelledby="navGestionDrop">
                                     <li class"dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/theme/agent/creer">{% trans %}Créer un thème{% endtrans %}</a></li>
