@@ -65,7 +65,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     /**
      * @return User[] Returns an array of User objects
      */
-    public function findByRoleAndPage(string $role, int $page = 1, int $numberPerPage)
+    public function findByRoleAndPage(string $role, int $page = 1, int $numberPerPage = 20)
     {
         return $this->createQueryBuilder('u')
         ->andWhere('u.roles LIKE :role')
@@ -101,7 +101,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     //     ;
     // }
 
-    public function getnumber(string $role)
+    public function countByRole(string $role)
     {
         return $this->createQueryBuilder('a')
             ->select('count(a.id)')

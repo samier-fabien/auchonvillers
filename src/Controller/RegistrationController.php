@@ -446,73 +446,11 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // On trouve le maire
-            $mayorId = $this->userRepo->findOneByRole('ROLE_MAYOR');
-
-            // I SUPPRESSION DES DONNEES UTILISATEUR
-            // 1-recherche dans chat, pour chaque chat créé par l'utilisateur on supprime les messages. Ensuite on supprime le chat.
-            foreach ($chatRepo->findBy(['user' => $this->getUser()->getId()]) as $key1 => $chat) {
-                $messages = $messageRepo->findBy([
-                    'user' => $this->getUser()->getId(),
-                    'chat' => $chat->getId(),
-                ]);
-                foreach ($messages as $key2 => $message)
-                {
-                    $doctrine->getManager()->remove($message);
-                }
-                $doctrine->getManager()->remove($chat);
-            }
-
-            // 2-recherche dans les tables [attends, opinions, ballots], pour chaque ligne créée par l'utilisateur, suppression de la ligne
-            foreach ($attendsRepo->findBy(['user' => $this->getUser()->getId()]) as $key3 => $attend) {
-                $doctrine->getManager()->remove($attend);
-            }
-            foreach ($ballotsRepo->findBy(['user' => $this->getUser()->getId()]) as $key4 => $ballot) {
-                $doctrine->getManager()->remove($ballot);
-            }
-            foreach ($opinionsRepo->findBy(['user' => $this->getUser()->getId()]) as $key5 => $opinion) {
-                $doctrine->getManager()->remove($opinion);
-            }
-
-            // II MODIFICATION DES DONNEES CREEES PAR LES AGENTS
-            // 1-recherche dans les tables [article, events, surveys, votes, newsletter], pour chaque ligne créée par l'utilisateur, modifier user = maire
-            foreach ($articleRepo->findBy(['user' => $this->getUser()->getId()]) as $key6 => $article) {
-                $article->setUser($mayorId);
-                $doctrine->getManager()->persist($article);
-            }
-            foreach ($eventsRepo->findBy(['user' => $this->getUser()->getId()]) as $key7 => $event) {
-                $event->setUser($mayorId);
-                $doctrine->getManager()->persist($event);
-            }
-            foreach ($surveysRepo->findBy(['user' => $this->getUser()->getId()]) as $key8 => $survey) {
-                $survey->setUser($mayorId);
-                $doctrine->getManager()->persist($survey);
-            }
-            foreach ($votesRepo->findBy(['user' => $this->getUser()->getId()]) as $key9 => $vote) {
-                $vote->setUser($mayorId);
-                $doctrine->getManager()->persist($vote);
-            }
-            foreach ($newsletterRepo->findBy(['user' => $this->getUser()->getId()]) as $key10 => $newsletter) {
-                $newsletter->setUser($mayorId);
-                $doctrine->getManager()->persist($newsletter);
-            }
-
-            $doctrine->getManager()->flush();
-
-            // 2-recherche dans message, pour chaque ligne créée par l'utilisateur, modifier user = maire
-            foreach ($messageRepo->findBy(['user' => $this->getUser()->getId()]) as $key11 => $message) {
-                $message->setUser($mayorId);
-                $doctrine->getManager()->persist($message);
-            }
-
-            $doctrine->getManager()->flush();
-
-            // III SUPPRESSION UTILISATEUR
             $user = $this->getUser();
-            $this->container->get('security.token_storage')->setToken(null);
 
-            $doctrine->getManager()->remove($user);
-            $doctrine->getManager()->flush();
+            $this->deleteDatasFromUser($user, $doctrine, $attendsRepo, $ballotsRepo, $opinionsRepo, $articleRepo, $eventsRepo, $surveysRepo, $votesRepo, $newsletterRepo, $chatRepo, $messageRepo);
+
+            $this->container->get('security.token_storage')->setToken(null);
 
             // Ceci ne fonctionne pas avec la création d'une nouvelle session !
             $this->addFlash('success', 'Votre compte utilisateur a bien été supprimé !'); 
@@ -582,7 +520,6 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-
     public function sendConfirmation(User $user)
     {
         return $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
@@ -592,6 +529,74 @@ class RegistrationController extends AbstractController
                 ->subject($this->translator->trans('Veuillez confirmer votre email.'))
                 ->htmlTemplate('registration/confirmation_email.html.twig'))
         ;
+    }
+
+    public function deleteDatasFromUser(User $user, ManagerRegistry $doctrine, AttendsRepository $attendsRepo, BallotsRepository $ballotsRepo, OpinionsRepository $opinionsRepo, ArticleRepository $articleRepo, EventsRepository $eventsRepo, SurveysRepository $surveysRepo, VotesRepository $votesRepo, NewsletterRepository $newsletterRepo, ChatRepository $chatRepo, MessageRepository $messageRepo)
+    {
+        // On trouve le maire
+        $mayorId = $this->userRepo->findOneByRole('ROLE_MAYOR');
+
+        // I SUPPRESSION DES DONNEES UTILISATEUR
+        // 1-recherche dans chat, pour chaque chat créé par l'utilisateur on supprime les messages. Ensuite on supprime le chat.
+        foreach ($chatRepo->findBy(['user' => $user->getId()]) as $key1 => $chat) {
+            $messages = $messageRepo->findBy([
+                'user' => $user->getId(),
+                'chat' => $chat->getId(),
+            ]);
+            foreach ($messages as $key2 => $message)
+            {
+                $doctrine->getManager()->remove($message);
+            }
+            $doctrine->getManager()->remove($chat);
+        }
+
+        // 2-recherche dans les tables [attends, opinions, ballots], pour chaque ligne créée par l'utilisateur, suppression de la ligne
+        foreach ($attendsRepo->findBy(['user' => $user->getId()]) as $key3 => $attend) {
+            $doctrine->getManager()->remove($attend);
+        }
+        foreach ($ballotsRepo->findBy(['user' => $user->getId()]) as $key4 => $ballot) {
+            $doctrine->getManager()->remove($ballot);
+        }
+        foreach ($opinionsRepo->findBy(['user' => $user->getId()]) as $key5 => $opinion) {
+            $doctrine->getManager()->remove($opinion);
+        }
+
+        // II MODIFICATION DES DONNEES CREEES PAR LES AGENTS
+        // 1-recherche dans les tables [article, events, surveys, votes, newsletter], pour chaque ligne créée par l'utilisateur, modifier user = maire
+        foreach ($articleRepo->findBy(['user' => $user->getId()]) as $key6 => $article) {
+            $article->setUser($mayorId);
+            $doctrine->getManager()->persist($article);
+        }
+        foreach ($eventsRepo->findBy(['user' => $user->getId()]) as $key7 => $event) {
+            $event->setUser($mayorId);
+            $doctrine->getManager()->persist($event);
+        }
+        foreach ($surveysRepo->findBy(['user' => $user->getId()]) as $key8 => $survey) {
+            $survey->setUser($mayorId);
+            $doctrine->getManager()->persist($survey);
+        }
+        foreach ($votesRepo->findBy(['user' => $user->getId()]) as $key9 => $vote) {
+            $vote->setUser($mayorId);
+            $doctrine->getManager()->persist($vote);
+        }
+        foreach ($newsletterRepo->findBy(['user' => $user->getId()]) as $key10 => $newsletter) {
+            $newsletter->setUser($mayorId);
+            $doctrine->getManager()->persist($newsletter);
+        }
+
+        $doctrine->getManager()->flush();
+
+        // 2-recherche dans message, pour chaque ligne créée par l'utilisateur, modifier user = maire
+        foreach ($messageRepo->findBy(['user' => $user->getId()]) as $key11 => $message) {
+            $message->setUser($mayorId);
+            $doctrine->getManager()->persist($message);
+        }
+
+        $doctrine->getManager()->flush();
+
+        // III SUPPRESSION UTILISATEUR
+        $doctrine->getManager()->remove($user);
+        $doctrine->getManager()->flush();
     }
 
 

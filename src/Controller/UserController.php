@@ -6,24 +6,36 @@ use DateTime;
 use App\Entity\Votes;
 use App\Entity\Events;
 use App\Service\Regex;
+use App\Service\Roles;
 use App\Entity\Ballots;
 use App\Form\VotesType;
 use App\Form\EventsType;
 use App\Form\BallotsType;
-use App\Repository\BallotsRepository;
+use App\Service\RolesChecker;
+use App\Repository\ChatRepository;
+use App\Repository\UserRepository;
 use App\Repository\VotesRepository;
 use App\Repository\EventsRepository;
-use App\Repository\UserRepository;
+use App\Repository\ArticleRepository;
+use App\Repository\AttendsRepository;
+use App\Repository\BallotsRepository;
+use App\Repository\MessageRepository;
+use App\Repository\SurveysRepository;
+use App\Repository\OpinionsRepository;
+use App\Repository\NewsletterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class UserController extends AbstractController
 {
@@ -31,9 +43,12 @@ class UserController extends AbstractController
     public const TITLE_USERS = 'Liste des utilisateurs';
     public const TITLE_AGENTS = 'Liste des agents';
     public const TITLE_MAYOR = 'Maire';
-    public const TYPE_USERS = 'utilisateurs';
-    public const TYPE_AGENTS = 'agents';
-    public const TYPE_MAYOR = 'maire';
+    public const URL_TYPE_USERS = 'utilisateurs';
+    public const URL_TYPE_AGENTS = 'agents';
+    public const URL_TYPE_MAYOR = 'maire';
+    public const DB_TYPE_USER = 'ROLE_USER';
+    public const DB_TYPE_AGENT = 'ROLE_AGENT';
+    public const DB_TYPE_MAYOR = 'ROLE_MAYOR';
 
     private $userRepo;
     private $translator;
@@ -47,7 +62,7 @@ class UserController extends AbstractController
      * @IsGranted("ROLE_AGENT")
      * @Route("/{locale}/agent/inscrits/{type}/{page<\d+>}", requirements={"type": "utilisateurs|agents|maire"}, name="user_index", methods={"GET", "POST"})
      */
-    public function index(string $locale, string $type = 'utilisateur', int $page = 1, Request $request, Regex $regex): Response
+    public function index(string $locale, string $type = 'utilisateurs', int $page = 1, Request $request): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -55,21 +70,38 @@ class UserController extends AbstractController
             return $this->redirect("/");
         }
 
-        // Création de la liste déroulante
+        $user = $this->userRepo->findOneBy(['id' => $this->getUser()->getId()]);
+        $role = new RolesChecker($user->getRoles());
+        $askedRole = RolesChecker::DB_USER;
+
+        // On détermine quel est le role recherché pour les afficher
+        switch ($type) {
+            case RolesChecker::URL_MAYOR:
+                $askedRole = RolesChecker::DB_MAYOR;
+                break;
+
+            case RolesChecker::URL_AGENTS:
+                $askedRole = RolesChecker::DB_AGENT;
+                break;
+
+            default:
+                $askedRole = RolesChecker::URL_USERS;
+                break;
+        }
+
+        // Création de la liste déroulante du formulaire
         $form = $this->createFormBuilder()
             ->add('type', ChoiceType::class, [
                 'mapped' => false,
                 'label' => $this->translator->trans('Type de membre à afficher'),
                 'choices' => [
-                    $this->translator->trans('Utilisateur') => self::TYPE_USERS,
-                    $this->translator->trans('Agents') => self::TYPE_AGENTS,
-                    $this->translator->trans('Maire') => self::TYPE_MAYOR,
+                    $this->translator->trans(RolesChecker::URL_USERS) => RolesChecker::URL_USERS,
+                    $this->translator->trans(RolesChecker::URL_AGENTS) => RolesChecker::URL_AGENTS,
+                    $this->translator->trans(RolesChecker::URL_MAYOR) => RolesChecker::URL_MAYOR,
                 ],
                 'constraints' => [
                     new NotBlank(),
                 ],
-                // 'expanded' => true,
-                // 'multiple' => false,
             ])
             ->getForm()
         ;
@@ -86,7 +118,7 @@ class UserController extends AbstractController
                 return $this->redirectToRoute('user_index', [
                     'locale'=> $request->getSession()->get('_locale'),
                     'page' => 1,
-                    'type' => self::TYPE_USERS,
+                    'type' => RolesChecker::URL_USERS,
                 ]);
             }
 
@@ -94,90 +126,61 @@ class UserController extends AbstractController
                 return $this->redirectToRoute('user_index', [
                     'locale'=> $request->getSession()->get('_locale'),
                     'page' => 1,
-                    'type' => self::TYPE_MAYOR,
+                    'type' => RolesChecker::URL_MAYOR,
                 ]);
             } elseif ($form->get('type')->getData() === 'agents') {
                 return $this->redirectToRoute('user_index', [
                     'locale'=> $request->getSession()->get('_locale'),
                     'page' => 1,
-                    'type' => self::TYPE_AGENTS,
+                    'type' => RolesChecker::URL_AGENTS,
                 ]);
             } else {
                 return $this->redirectToRoute('user_index', [
                     'locale'=> $request->getSession()->get('_locale'),
                     'page' => 1,
-                    'type' => self::TYPE_USERS,
+                    'type' => RolesChecker::URL_USERS,
                 ]);
             }
         }
-
-        // 
-        $requestParameters = [
-            self::TYPE_USERS => [
-                'role' => 'ROLE_USER',
-                'title' => self::TITLE_USERS,
-            ],
-            self::TYPE_AGENTS => [
-                'role' => 'ROLE_AGENT',
-                'title' => self::TITLE_AGENTS,
-            ],
-            self::TYPE_MAYOR => [
-                'role' => 'ROLE_MAYOR',
-                'title' => self::TITLE_MAYOR,
-            ],
-        ];
         
         // Recherche des evenements dans la bdd
-        $users = $this->userRepo->findByRoleAndPage($requestParameters[$type]['role'], $page, self::ACCOUNTS_PER_PAGE);
+        $users = $this->userRepo->findByRoleAndPage($askedRole, $page, self::ACCOUNTS_PER_PAGE);
 
         $userDatas = [];
-        foreach ($users as $key => $user) {
+        foreach ($users as $key => $userFromList) {
             $userDatas[$key] = [
-                'id' => $user->getId(),
-                'email' => $user->getEmail(),
-                'firstName' => $fisrtName = ($user->getFirstName() == "") ? '?' : $user->getFirstName(),
-                'lastName' => $lastName = ($user->getLastName() == "") ? '?' : $user->getLastName(),
-                'isVerified' => $isverified = ($user->isVerified()) ? 'oui' : 'non',
-                'user_terms_of_use' => $user_terms_of_use = ($user->getUserTermsOfUse()) ? 'oui' : 'non',
-                'employee_terms_of_use' => $employee_terms_of_use = ($user->getEmployeeTermsOfUse()) ? 'oui' : 'non',
-                'created_at' => $user->getCreatedAt(),
-                'last_modification' => $user->getLastModification(),
+                'id' => $userFromList->getId(),
+                'email' => $userFromList->getEmail(),
+                'firstName' => $firstName = ($userFromList->getFirstName() == "") ? '?' : $userFromList->getFirstName(),
+                'lastName' => $lastName = ($userFromList->getLastName() == "") ? '?' : $userFromList->getLastName(),
+                'isVerified' => $isverified = ($userFromList->isVerified()) ? 'oui' : 'non',
+                'user_terms_of_use' => $user_terms_of_use = ($userFromList->getUserTermsOfUse()) ? 'oui' : 'non',
+                'employee_terms_of_use' => $employee_terms_of_use = ($userFromList->getEmployeeTermsOfUse()) ? 'oui' : 'non',
+                'created_at' => $userFromList->getCreatedAt(),
+                'last_modification' => $userFromList->getLastModification(),
             ];
- 
-            foreach ($user->getRoles() as $roleKey => $role) {
-                switch ($role) {
-                    case 'ROLE_USER': $userDatas[$key]['roles'][$roleKey] = 'Utilisateur';
-                        break;
-    
-                    case 'ROLE_AGENT': $userDatas[$key]['roles'][$roleKey] = 'Agent';
-                        break;
-    
-                    case 'ROLE_MAYOR': $userDatas[$key]['roles'][$roleKey] = 'Maire';
-                    break;
-    
-                    case 'ROLE_ADMIN': $userDatas[$key]['roles'][$roleKey] = 'Administrateur';
-                        break;
-                }
-            }
+
+            $roleChecker = new RolesChecker($userFromList->getRoles());
+            $userDatas[$key]['roles'] = $roleChecker->getRoles();
         }
 
         // Calcul du nombres de pages en fonction du nombre d'evenements par page
-        $pages = (int) ceil($this->userRepo->getnumber($requestParameters[$type]['role']) / self::ACCOUNTS_PER_PAGE);
-        
+        $pages = (int) ceil($this->userRepo->countByRole($askedRole) / self::ACCOUNTS_PER_PAGE);
+
         return $this->render('user/index.html.twig', [
             'form' => $form->createView(),
             'users' => $userDatas,
             'page' => $page,
             'pages' => $pages,
-            'title' => $requestParameters[$type]['title'],
+            'title' => $role->getTitle(),
         ]);
     }
 
     /**
      * @IsGranted("ROLE_AGENT")
-     * @Route("/{locale}agent/inscrit/{id<\d+>}/promouvoir", name="user_promote", methods={"GET", "POST"})
+     * @Route("/{locale}/agent/inscrit/{id<\d+>}/promouvoir", name="user_promote", methods={"GET", "POST"})
      */
-    public function promote(string $locale, Request $request, ManagerRegistry $doctrine): Response
+    public function promote(string $locale, int $id, Request $request, ManagerRegistry $doctrine, MailerInterface $mailer): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -188,7 +191,7 @@ class UserController extends AbstractController
         // Si l'utilisateur n'est pas vérifié
         if (!$this->getUser()->isVerified()) {
             $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
-            return $this->redirectToRoute('votes_index', [
+            return $this->redirectToRoute('user_index', [
                 'locale'=> $request->getSession()->get('_locale'),
                 'page' => 1,
             ]);
@@ -197,28 +200,75 @@ class UserController extends AbstractController
         // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
         if (!$this->getUser()->getEmployeeTermsOfUse()) {
             $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
-            return $this->redirectToRoute('votes_index', [
+            return $this->redirectToRoute('user_index', [
                 'locale'=> $request->getSession()->get('_locale'),
                 'page' => 1,
             ]);
         }
 
-        // Si user est juste un ROLE_USER : Ajouter ROLE_AGENT
-        // Envoi d'email
-        // flash : a bien ete promu
+        // Recherche utilisateur
+        $userToPromote = $this->userRepo->findOneBy(['id' => $id]);
 
-        // ! pas possible si maire !
+        // Recherche role
+        $roleChecker = new RolesChecker($userToPromote->getRoles());
 
-        return $this->render('votes/new.html.twig', [
-            'form' => $form->createView(),
+        // Si role différent de user (donc si agent, maire ou admin)
+        if (!($roleChecker->getRole() === RolesChecker::DB_USER)) {
+            $this->addFlash('danger', $this->translator->trans('Les agents et maires ne peuvent pas être promus en tant qu\'agent.'));
+
+            $url = $request->headers->get('referer');
+            // Si la page précédente existe on y retourne. 
+            if (!is_null($url)) {
+                return $this->redirect($url);
+            }
+
+            // Sinon on redirige vers la page de liste d'inscrits
+            return $this->redirectToRoute('user_index', [
+                'locale' => $locale,
+                'type' => 'utilisateurs',
+                'page' => 1,
+            ]);
+        }
+
+        // Ajout ROLE_AGENT
+        $userToPromote->setRoles(["ROLE_USER", "ROLE_AGENT"]);
+
+        // Enregistrement
+        $doctrine->getManager()->persist($userToPromote);
+        $doctrine ->getManager()->flush();
+
+        // Message succès
+        $this->addFlash('success', $this->translator->trans('L\'utilisateur a désormais le role d\'agent.'));
+
+        // Envoi du lien par e-mail
+        $email = (new TemplatedEmail())
+            ->from('samierfabien@gmail.com')
+            ->to($userToPromote->getEmail())
+            ->subject('Promotion')
+            ->htmlTemplate('email/promotion_email.html.twig')
+            ->context([
+                'userEmail' => $userToPromote->getEmail(),
+            ]);
+
+        try {
+            $mailer->send($email);
+            $this->addFlash('notice', $this->translator->trans('Un email contenant les détails a été envoyé à ') . $userToPromote->getEmail() . '.');
+        } catch (TransportExceptionInterface $e) {
+            $this->addFlash('warning', $this->translator->trans('L\'email n\'a pas été envoyé à ') . $userToPromote->getEmail() . '.');
+        }
+
+        return $this->redirectToRoute('user_index', [
+            'locale' => $locale,
+            'type' => 'utilisateurs',
+            'page' => 1,
         ]);
     }
 
     /**
      * @IsGranted("ROLE_AGENT")
-     * @Route("/{locale}agent/inscrit/{id<\d+>}/destituer", name="user_dismiss", methods={"GET", "POST"})
+     * @Route("/{locale}/agent/inscrit/{id<\d+>}/destituer", name="user_dismiss", methods={"GET", "POST"})
      */
-    public function dismiss(string $locale, Request $request, ManagerRegistry $doctrine): Response
+    public function dismiss(string $locale, int $id, Request $request, ManagerRegistry $doctrine, MailerInterface $mailer): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -229,7 +279,7 @@ class UserController extends AbstractController
         // Si l'utilisateur n'est pas vérifié
         if (!$this->getUser()->isVerified()) {
             $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
-            return $this->redirectToRoute('votes_index', [
+            return $this->redirectToRoute('user_index', [
                 'locale'=> $request->getSession()->get('_locale'),
                 'page' => 1,
             ]);
@@ -238,28 +288,91 @@ class UserController extends AbstractController
         // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
         if (!$this->getUser()->getEmployeeTermsOfUse()) {
             $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
-            return $this->redirectToRoute('votes_index', [
+            return $this->redirectToRoute('user_index', [
                 'locale'=> $request->getSession()->get('_locale'),
                 'page' => 1,
             ]);
         }
 
-        // Si user est ROLE_AGENT : retirer ROLE_AGENT
-        // Envoi d'email
-        // message flash : a bien ete destitué
+        // Recherche utilisateur
+        $userToDismiss = $this->userRepo->findOneBy(['id' => $id]);
 
-        // ! pas possible si maire !
+        // Recherche role
+        $roleChecker = new RolesChecker($userToDismiss->getRoles());
 
-        return $this->render('votes/new.html.twig', [
-            'form' => $form->createView(),
+
+        // Si rôle différent d'agent (si utilisateur ou maire)
+        if (!($roleChecker->getRole() == RolesChecker::DB_AGENT)) {
+            $this->addFlash('danger', $this->translator->trans('Les utilisateurs et maire ne peuvent pas être destitués.'));
+
+            // $tab = [
+            //     $roleChecker->getRole(),
+            //     RolesChecker::DB_USER,
+            //     'ça passe pas',
+            // ];
+            // dd($tab);
+
+            $url = $request->headers->get('referer');
+            // Si la page précédente existe on y retourne. 
+            if (!is_null($url)) {
+                return $this->redirect($url);
+            }
+
+            // Sinon on redirige vers la page de liste d'inscrits
+            return $this->redirectToRoute('user_index', [
+                'locale' => $locale,
+                'type' => 'utilisateurs',
+                'page' => 1,
+            ]);
+        }
+
+        // $tab = [
+        //     $roleChecker->getRole(),
+        //     RolesChecker::DB_USER,
+        //     'ça passe !',
+        // ];
+        // dd($tab);
+
+        // Retrait ROLE_AGENT
+        $userToDismiss->setRoles(["ROLE_USER"]);
+        $userToDismiss->setEmployeeTermsOfUse(false);
+
+        // Enregistrement
+        $doctrine->getManager()->persist($userToDismiss);
+        $doctrine ->getManager()->flush();
+
+        // Message succès
+        $this->addFlash('success', $this->translator->trans('L\'utilisateur a désormais le role d\'utilisateur.'));
+
+        // Envoi du lien par e-mail
+        $email = (new TemplatedEmail())
+            ->from('samierfabien@gmail.com')
+            ->to($userToDismiss->getEmail())
+            ->subject('Rétrogradation')
+            ->htmlTemplate('email/dismissal_email.html.twig')
+            ->context([
+                'userEmail' => $userToDismiss->getEmail(),
+            ]);
+
+        try {
+            $mailer->send($email);
+            $this->addFlash('notice', $this->translator->trans('Un email contenant les détails a été envoyé à ') . $userToDismiss->getEmail() . '.');
+        } catch (TransportExceptionInterface $e) {
+            $this->addFlash('warning', $this->translator->trans('L\'email n\'a pas été envoyé à ') . $userToDismiss->getEmail() . '.');
+        }
+
+        return $this->redirectToRoute('user_index', [
+            'locale' => $locale,
+            'type' => 'utilisateurs',
+            'page' => 1,
         ]);
     }
 
     /**
      * @IsGranted("ROLE_AGENT")
-     * @Route("/{locale}agent/inscrit/{id<\d+>}/supprimer", name="user_remove", methods={"GET", "POST"})
+     * @Route("/{locale}/agent/inscrit/{id<\d+>}/supprimer", name="user_remove", methods={"GET", "POST"})
      */
-    public function remove(string $locale, Request $request, ManagerRegistry $doctrine): Response
+    public function remove(string $locale, int $id, Request $request, ManagerRegistry $doctrine, MailerInterface $mailer, RegistrationController $registrationController, AttendsRepository $attendsRepo, BallotsRepository $ballotsRepo, OpinionsRepository $opinionsRepo, ArticleRepository $articleRepo, EventsRepository $eventsRepo, SurveysRepository $surveysRepo, VotesRepository $votesRepo, NewsletterRepository $newsletterRepo, ChatRepository $chatRepo, MessageRepository $messageRepo): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -270,7 +383,7 @@ class UserController extends AbstractController
         // Si l'utilisateur n'est pas vérifié
         if (!$this->getUser()->isVerified()) {
             $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
-            return $this->redirectToRoute('votes_index', [
+            return $this->redirectToRoute('user_index', [
                 'locale'=> $request->getSession()->get('_locale'),
                 'page' => 1,
             ]);
@@ -279,27 +392,71 @@ class UserController extends AbstractController
         // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
         if (!$this->getUser()->getEmployeeTermsOfUse()) {
             $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
-            return $this->redirectToRoute('votes_index', [
+            return $this->redirectToRoute('user_index', [
                 'locale'=> $request->getSession()->get('_locale'),
                 'page' => 1,
             ]);
         }
 
-        // Envoi d'email
-        // message flash : a bien ete supprime
+        // Recherche utilisateur
+        $userToDelete = $this->userRepo->findOneBy(['id' => $id]);
 
-        // ! pas possible si maire !
+        // Recherche role
+        $roleChecker = new RolesChecker($userToDelete->getRoles());
 
-        return $this->render('votes/new.html.twig', [
-            'form' => $form->createView(),
+        // Si rôle différent de maire (si utilisateur ou agent)
+        if ($roleChecker->getRole() === RolesChecker::DB_MAYOR) {
+            $this->addFlash('danger', $this->translator->trans('Le compte du maire ne peut pas être supprimé.'));
+
+            $url = $request->headers->get('referer');
+            // Si la page précédente existe on y retourne. 
+            if (!is_null($url)) {
+                return $this->redirect($url);
+            }
+
+            // Sinon on redirige vers la page de liste d'inscrits
+            return $this->redirectToRoute('user_index', [
+                'locale' => $locale,
+                'type' => 'utilisateurs',
+                'page' => 1,
+            ]);
+        }
+
+        // Suppression du compte
+        $registrationController->deleteDatasFromUser($userToDelete, $doctrine, $attendsRepo, $ballotsRepo, $opinionsRepo, $articleRepo, $eventsRepo, $surveysRepo, $votesRepo, $newsletterRepo, $chatRepo, $messageRepo);
+
+        // Message succès
+        $this->addFlash('success', 'Le compte a bien été supprimé !');
+
+        // Envoi du lien par e-mail
+        $email = (new TemplatedEmail())
+            ->from('samierfabien@gmail.com')
+            ->to($userToDelete->getEmail())
+            ->subject('Suppression')
+            ->htmlTemplate('email/dismissal_email.html.twig')
+            ->context([
+                'userEmail' => $userToDelete->getEmail(),
+            ]);
+
+        try {
+            $mailer->send($email);
+            $this->addFlash('notice', $this->translator->trans('Un email contenant les détails a été envoyé à ') . $userToDelete->getEmail() . '.');
+        } catch (TransportExceptionInterface $e) {
+            $this->addFlash('warning', $this->translator->trans('L\'email n\'a pas été envoyé à ') . $userToDelete->getEmail() . '.');
+        }
+
+        return $this->redirectToRoute('user_index', [
+            'locale' => $locale,
+            'type' => 'utilisateurs',
+            'page' => 1,
         ]);
     }
 
     /**
      * @IsGranted("ROLE_AGENT")
-     * @Route("/{locale}agent/inscrit/{id<\d+>}/elire", name="user_elect", methods={"GET", "POST"})
+     * @Route("/{locale}/agent/inscrit/{id<\d+>}/elire", name="user_elect", methods={"GET", "POST"})
      */
-    public function elect(string $locale, Request $request, ManagerRegistry $doctrine): Response
+    public function elect(string $locale, int $id, Request $request, ManagerRegistry $doctrine, MailerInterface $mailer): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -310,7 +467,7 @@ class UserController extends AbstractController
         // Si l'utilisateur n'est pas vérifié
         if (!$this->getUser()->isVerified()) {
             $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
-            return $this->redirectToRoute('votes_index', [
+            return $this->redirectToRoute('user_index', [
                 'locale'=> $request->getSession()->get('_locale'),
                 'page' => 1,
             ]);
@@ -319,7 +476,7 @@ class UserController extends AbstractController
         // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
         if (!$this->getUser()->getEmployeeTermsOfUse()) {
             $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
-            return $this->redirectToRoute('votes_index', [
+            return $this->redirectToRoute('user_index', [
                 'locale'=> $request->getSession()->get('_locale'),
                 'page' => 1,
             ]);
@@ -332,8 +489,65 @@ class UserController extends AbstractController
 
         // ! pas possible si maire !
 
-        return $this->render('votes/new.html.twig', [
-            'form' => $form->createView(),
+        // Recherche utilisateur
+        $user = $this->userRepo->findOneBy(['id' => $this->getUser()->getId()]);
+        $userToElect = $this->userRepo->findOneBy(['id' => $id]);
+
+        // Recherche role
+        $roleChecker = new RolesChecker($user->getRoles());
+
+        // Si rôle différent de maire (si utilisateur ou maire)
+        if (!($roleChecker->getRole() === RolesChecker::DB_MAYOR)) {
+            $this->addFlash('danger', $this->translator->trans('Seul le maire peut en désigner un autre.'));
+
+            $url = $request->headers->get('referer');
+            // Si la page précédente existe on y retourne. 
+            if (!is_null($url)) {
+                return $this->redirect($url);
+            }
+
+            // Sinon on redirige vers la page de liste d'inscrits
+            return $this->redirectToRoute('user_index', [
+                'locale' => $locale,
+                'type' => 'utilisateurs',
+                'page' => 1,
+            ]);
+        }
+
+        // Ajout ROLE_MAYOR
+        $userToElect->setRoles(["ROLE_USER", "ROLE_AGENT", "ROLE_MAYOR"]);
+        // Retrait ROLE_MAYOR
+        $user->setRoles((["ROLE_USER", "ROLE_AGENT"]));
+
+        // Enregistrement
+        $doctrine->getManager()->persist($userToElect);
+        $doctrine->getManager()->persist($user);
+        $doctrine ->getManager()->flush();
+
+        // Message succès
+        $this->addFlash('success', $this->translator->trans('La passation a bien été effectuée.'));
+
+        // Envoi du lien par e-mail
+        $email = (new TemplatedEmail())
+            ->from('samierfabien@gmail.com')
+            ->to($userToElect->getEmail())
+            ->subject('Election')
+            ->htmlTemplate('email/election_email.html.twig')
+            ->context([
+                'userEmail' => $userToElect->getEmail(),
+            ]);
+
+        try {
+            $mailer->send($email);
+            $this->addFlash('notice', $this->translator->trans('Un email contenant les détails a été envoyé à ') . $userToElect->getEmail() . '.');
+        } catch (TransportExceptionInterface $e) {
+            $this->addFlash('warning', $this->translator->trans('L\'email n\'a pas été envoyé à ') . $userToElect->getEmail() . '.');
+        }
+
+        return $this->redirectToRoute('user_index', [
+            'locale' => $locale,
+            'type' => 'utilisateurs',
+            'page' => 1,
         ]);
     }
 }

@@ -4,17 +4,23 @@
 
 {% block body %}
 <section>
-    <h1>{{ title|trans }}</h1>
-
-    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'my-5'}}) }}
-        <div class="row d-flex justify-content-center">
-            <div class="col-auto p-1">{{ form_label(form.type) }}</div>
-            <div class="col-auto">{{ form_widget(form.type) }}</div>
-            <div class="col-auto"><button type="submit" class="btn btn-primary">Ok</button></div>
+    <div class="container-fluid">
+        <div class="col6"><h1>{{ title|trans }}</h1></div>
+        <div class="col6">
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'my-5'}}) }}
+                <div class="row d-flex justify-content-center">
+                    <div class="col-auto p-1">{{ form_label(form.type) }}</div>
+                    <div class="col-auto">{{ form_widget(form.type) }}</div>
+                    <div class="col-auto"><button type="submit" class="btn btn-primary">Ok</button></div>
+                </div>
+                <input type="hidden" name="token" value="{{ csrf_token('user-item' ~ app.user.id) }}"/>
+                {{ form_errors(form) }}
+            {{ form_end(form) }}
         </div>
-        <input type="hidden" name="token" value="{{ csrf_token('user-item' ~ app.user.id) }}"/>
-        {{ form_errors(form) }}
-    {{ form_end(form) }}
+    </div>
+    
+
+    
 
     <div class="table-responsive">
         <table class="table align-middle">
@@ -36,11 +42,7 @@
                     <tr>
                         <th scope="row">{{ loop.index }}</th>
                         <td>{{ user.email }}</td>
-                        <td>
-                        {% for role in user.roles %}
-                            {{role}}
-                        {% endfor %}
-                        </td>
+                        <td>{{ user.roles|trans }}</td>
                         <td>{{ user.firstName }}</td>
                         <td>{{ user.lastName }}</td>
                         <td>{{ user.isVerified }}</td>
@@ -50,10 +52,10 @@
                         <td>{{ user.last_modification|date('Y-m-d') }}</td>
                         <td>
                             <div class="btn-group" role="group" aria-label="Basic example">
-                                <a href="/{{ app.request.locale }}/agent/inscrit/{{ user.id }}/promouvoir"><button class="btn btn-outline-success"><i class="bi-chevron-double-up" style="font-size: 1.25rem;" aria-label="{% trans %}Succès{% endtrans %}"></i></button></a>
-                                <a href="/{{ app.request.locale }}/agent/inscrit/{{ user.id }}/destituer"><button class="btn btn-outline-warning"><i class="bi-chevron-double-down" style="font-size: 1.25rem;" aria-label="{% trans %}Succès{% endtrans %}"></i></button></a>
-                                <a href="/{{ app.request.locale }}/agent/inscrit/{{ user.id }}/supprimer"><button class="btn btn-outline-danger"><i class="bi-x-lg" style="font-size: 1.25rem;" aria-label="{% trans %}Succès{% endtrans %}"></i></button></a>
-                                <a href="/{{ app.request.locale }}/agent/inscrit/{{ user.id }}/supprimer"><button class="btn btn-outline-primary"><i class="bi-person-check-fill" style="font-size: 1.25rem;" aria-label="{% trans %}Succès{% endtrans %}"></i></button></a>
+                                <a href="/{{ app.request.locale }}/agent/inscrit/{{ user.id }}/promouvoir" onclick="return confirm('{% trans %}Etes-vous sure de vouloir promouvoir cette personne ?{% endtrans %}');"><button class="btn btn-outline-success"><i class="bi-chevron-double-up" style="font-size: 1.25rem;" aria-label="{% trans %}Succès{% endtrans %}"></i></button></a>
+                                <a href="/{{ app.request.locale }}/agent/inscrit/{{ user.id }}/destituer" onclick="return confirm('{% trans %}Etes-vous sure de vouloir destituer cette personne ?{% endtrans %}');"><button class="btn btn-outline-warning"><i class="bi-chevron-double-down" style="font-size: 1.25rem;" aria-label="{% trans %}Succès{% endtrans %}"></i></button></a>
+                                <a href="/{{ app.request.locale }}/agent/inscrit/{{ user.id }}/supprimer" onclick="return confirm('{% trans %}Etes-vous sure de vouloir supprimer ce compte ?{% endtrans %}');"><button class="btn btn-outline-danger"><i class="bi-x-lg" style="font-size: 1.25rem;" aria-label="{% trans %}Succès{% endtrans %}"></i></button></a>
+                                <a href="/{{ app.request.locale }}/agent/inscrit/{{ user.id }}/elire" onclick="return confirm('{% trans %}Etes-vous sure de vouloir élire cette personne ?{% endtrans %}');"><button class="btn btn-outline-primary"><i class="bi-person-check-fill" style="font-size: 1.25rem;" aria-label="{% trans %}Succès{% endtrans %}"></i></button></a>
                             </div>
                         </td>
                     </tr>
