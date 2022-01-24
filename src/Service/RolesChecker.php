@@ -57,11 +57,29 @@ class RolesChecker
         }
     }
 
+    public static function urlToTitle($url)
+    {
+        switch ($url) {
+            case self::URL_USERS:
+                return self::TITLE_USER;
+                break;
+            case self::URL_AGENTS:
+                return self::TITLE_AGENT;
+                break;
+            case self::URL_MAYOR:
+                return self::TITLE_MAYOR;
+                break;
+            case self::URL_ADMIN:
+                return self::TITLE_ADMIN;
+                break;
+        }
+    }
+
     public function setUser()
     {
         $this->setRoles(self::USER);
         $this->setRole(self::DB_USER);
-        $this->setTitle(self::USER);
+        $this->setTitle(self::TITLE_USER);
         $this->setUrl(self::URL_USERS);
     }
 
@@ -69,7 +87,7 @@ class RolesChecker
     {
         $this->setRoles(self::AGENT);
         $this->setRole(self::DB_AGENT);
-        $this->setTitle(self::AGENT);
+        $this->setTitle(self::TITLE_AGENT);
         $this->setUrl(self::URL_AGENTS);
     }
 
@@ -77,7 +95,7 @@ class RolesChecker
     {
         $this->setRoles(self::MAYOR);
         $this->setRole(self::DB_MAYOR);
-        $this->setTitle(self::MAYOR);
+        $this->setTitle(self::TITLE_MAYOR);
         $this->setUrl(self::URL_MAYOR);
     }
 
@@ -85,7 +103,7 @@ class RolesChecker
     {
         $this->setRoles(self::ADMIN);
         $this->setRole(self::DB_ADMIN);
-        $this->setTitle(self::ADMIN);
+        $this->setTitle(self::TITLE_ADMIN);
         $this->setUrl(self::URL_ADMIN);
     }
 

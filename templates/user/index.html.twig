@@ -4,23 +4,18 @@
 
 {% block body %}
 <section>
-    <div class="container-fluid">
-        <div class="col6"><h1>{{ title|trans }}</h1></div>
-        <div class="col6">
-            {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'my-5'}}) }}
-                <div class="row d-flex justify-content-center">
-                    <div class="col-auto p-1">{{ form_label(form.type) }}</div>
-                    <div class="col-auto">{{ form_widget(form.type) }}</div>
-                    <div class="col-auto"><button type="submit" class="btn btn-primary">Ok</button></div>
-                </div>
-                <input type="hidden" name="token" value="{{ csrf_token('user-item' ~ app.user.id) }}"/>
-                {{ form_errors(form) }}
-            {{ form_end(form) }}
-        </div>
-    </div>
     
+    <h1>{{ title|trans }}</h1>
 
-    
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'my-5'}}) }}
+        <div class="row d-flex justify-content-center">
+            <div class="col-auto p-1">{{ form_label(form.type) }}</div>
+            <div class="col-auto">{{ form_widget(form.type) }}</div>
+            <div class="col-auto"><button type="submit" class="btn btn-primary">Ok</button></div>
+        </div>
+        <input type="hidden" name="token" value="{{ csrf_token('user-item' ~ app.user.id) }}"/>
+        {{ form_errors(form) }}
+    {{ form_end(form) }}
 
     <div class="table-responsive">
         <table class="table align-middle">
@@ -42,7 +37,7 @@
                     <tr>
                         <th scope="row">{{ loop.index }}</th>
                         <td>{{ user.email }}</td>
-                        <td>{{ user.roles|trans }}</td>
+                        <td>{{ user.roles }}</td>
                         <td>{{ user.firstName }}</td>
                         <td>{{ user.lastName }}</td>
                         <td>{{ user.isVerified }}</td>

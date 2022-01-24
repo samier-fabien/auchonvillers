@@ -62,7 +62,7 @@ class UserController extends AbstractController
      * @IsGranted("ROLE_AGENT")
      * @Route("/{locale}/agent/inscrits/{type}/{page<\d+>}", requirements={"type": "utilisateurs|agents|maire"}, name="user_index", methods={"GET", "POST"})
      */
-    public function index(string $locale, string $type = 'utilisateurs', int $page = 1, Request $request): Response
+    public function index(string $locale, string $type, int $page = 1, Request $request): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -70,24 +70,25 @@ class UserController extends AbstractController
             return $this->redirect("/");
         }
 
-        $user = $this->userRepo->findOneBy(['id' => $this->getUser()->getId()]);
-        $role = new RolesChecker($user->getRoles());
-        $askedRole = RolesChecker::DB_USER;
-
-        // On détermine quel est le role recherché pour les afficher
-        switch ($type) {
-            case RolesChecker::URL_MAYOR:
-                $askedRole = RolesChecker::DB_MAYOR;
-                break;
-
-            case RolesChecker::URL_AGENTS:
-                $askedRole = RolesChecker::DB_AGENT;
-                break;
-
-            default:
-                $askedRole = RolesChecker::URL_USERS;
-                break;
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('home', [
+                'locale'=> $request->getSession()->get('_locale'),
+            ]);
         }
+
+        // Si l'utilisateur n'a pas accepté les conditions d'utilisation pour les employés
+        if (!$this->getUser()->getEmployeeTermsOfUse()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir accepté les conditions d\'utilisation pour les employés.'));
+            return $this->redirectToRoute('user_index', [
+                'locale'=> $request->getSession()->get('_locale'),
+            ]);
+        }
+
+        $user = $this->userRepo->findOneBy(['id' => $this->getUser()->getId()]);
+        $askedRole = null;
+
 
         // Création de la liste déroulante du formulaire
         $form = $this->createFormBuilder()
@@ -107,7 +108,8 @@ class UserController extends AbstractController
         ;
 
         $form->handleRequest($request);
-        
+
+        //dd($form->get('type')->getData());
 
         // Si le formulaire est bien rempli...
         if ($form->isSubmitted() && $form->isValid()) {
@@ -122,13 +124,13 @@ class UserController extends AbstractController
                 ]);
             }
 
-            if ($form->get('type')->getData() === 'maire') {
+            if ($form->get('type')->getData() === RolesChecker::URL_MAYOR) {
                 return $this->redirectToRoute('user_index', [
                     'locale'=> $request->getSession()->get('_locale'),
                     'page' => 1,
                     'type' => RolesChecker::URL_MAYOR,
                 ]);
-            } elseif ($form->get('type')->getData() === 'agents') {
+            } elseif ($form->get('type')->getData() === RolesChecker::URL_AGENTS) {
                 return $this->redirectToRoute('user_index', [
                     'locale'=> $request->getSession()->get('_locale'),
                     'page' => 1,
@@ -142,8 +144,27 @@ class UserController extends AbstractController
                 ]);
             }
         }
-        
-        // Recherche des evenements dans la bdd
+
+        // On détermine quel est le role recherché pour les afficher
+        switch ($type) {
+            case RolesChecker::URL_MAYOR:
+                $askedRole = RolesChecker::DB_MAYOR;
+                break;
+
+            case RolesChecker::URL_AGENTS:
+                $askedRole = RolesChecker::DB_AGENT;
+                break;
+
+            case RolesChecker::URL_USERS:
+                $askedRole = RolesChecker::DB_USER;
+                break;
+
+            default:
+                $askedRole = RolesChecker::DB_USER;
+                break;
+        }
+
+        // Recherche des users par role et page
         $users = $this->userRepo->findByRoleAndPage($askedRole, $page, self::ACCOUNTS_PER_PAGE);
 
         $userDatas = [];
@@ -160,8 +181,8 @@ class UserController extends AbstractController
                 'last_modification' => $userFromList->getLastModification(),
             ];
 
-            $roleChecker = new RolesChecker($userFromList->getRoles());
-            $userDatas[$key]['roles'] = $roleChecker->getRoles();
+            $listRoleChecker = new RolesChecker($userFromList->getRoles());
+            $userDatas[$key]['roles'] = $listRoleChecker->getRoles();
         }
 
         // Calcul du nombres de pages en fonction du nombre d'evenements par page
@@ -172,7 +193,7 @@ class UserController extends AbstractController
             'users' => $userDatas,
             'page' => $page,
             'pages' => $pages,
-            'title' => $role->getTitle(),
+            'title' => RolesChecker::urlToTitle($type),
         ]);
     }
 
@@ -305,13 +326,6 @@ class UserController extends AbstractController
         if (!($roleChecker->getRole() == RolesChecker::DB_AGENT)) {
             $this->addFlash('danger', $this->translator->trans('Les utilisateurs et maire ne peuvent pas être destitués.'));
 
-            // $tab = [
-            //     $roleChecker->getRole(),
-            //     RolesChecker::DB_USER,
-            //     'ça passe pas',
-            // ];
-            // dd($tab);
-
             $url = $request->headers->get('referer');
             // Si la page précédente existe on y retourne. 
             if (!is_null($url)) {
@@ -325,13 +339,6 @@ class UserController extends AbstractController
                 'page' => 1,
             ]);
         }
-
-        // $tab = [
-        //     $roleChecker->getRole(),
-        //     RolesChecker::DB_USER,
-        //     'ça passe !',
-        // ];
-        // dd($tab);
 
         // Retrait ROLE_AGENT
         $userToDismiss->setRoles(["ROLE_USER"]);
