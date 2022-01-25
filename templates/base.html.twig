@@ -29,13 +29,13 @@
                         <ul class="navbar-nav me-auto">
 
                             <li class="nav-item dropdown">
-                                <a class="  nav-link py-4" id="navCategoryDrop" href="#" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-reference="parent">
+                                <a class="nav-link py-4" id="navCategoryDrop" href="#" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-reference="parent">
                                     {% trans %}Plus sur{% endtrans %}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
                                         <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
                                     </svg>
                                 </a>
-                                <ul class="dropdown-menu mt-lg-3 mt-xl-3 mt-xxl-3" aria-labelledby="navCategoryDrop">
+                                <ul class="dropdown-menu" aria-labelledby="navCategoryDrop">
                                     {% for navcat in navcats.list %}
                                         {% if attribute(navcat, 'catName'~app.request.locale) is not empty %}
                                             <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/theme/{{ navcat.id }}">{{ attribute(navcat, 'catName'~app.request.locale|capitalize) }}</a></li>
@@ -57,7 +57,7 @@
                                         <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
                                     </svg>
                                 </a>
-                                <ul class="dropdown-menu mt-lg-3 mt-xl-3 mt-xxl-3" aria-labelledby="navActivityDrop">
+                                <ul class="dropdown-menu " aria-labelledby="navActivityDrop">
                                     <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/evenements/1">{% trans %}Evènements{% endtrans %}</a></li>
                                     <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/votes/1">{% trans %}Votes{% endtrans %}</a></li>
                                     <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/enquetes/1">{% trans %}Enquêtes{% endtrans %}</a></li>
@@ -72,7 +72,7 @@
                                         <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
                                     </svg>
                                 </a>
-                                <ul class="dropdown-menu mt-lg-3 mt-xl-3 mt-xxl-3" aria-labelledby="navGestionDrop">
+                                <ul class="dropdown-menu" aria-labelledby="navGestionDrop">
                                     <li class"dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/theme/agent/creer">{% trans %}Créer un thème{% endtrans %}</a></li>
                                     <li class"dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/article/agent/creer">{% trans %}Créer un article{% endtrans %}</a></li>
                                     <li class"dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/actualite/agent/creer">{% trans %}Créer une actualité{% endtrans %}</a></li>
@@ -99,7 +99,7 @@
                                         <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
                                     </svg>
                                     </a>
-                                    <ul class="dropdown-menu mt-lg-3 mt-xl-3 mt-xxl-3" aria-labelledby="navAccountDrop">
+                                    <ul class="dropdown-menu" aria-labelledby="navAccountDrop">
                                         <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/membre/compte">{% trans %}Mon compte{% endtrans %}</a></li>
                                         <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/deconnexion">{% trans %}Deconnexion{% endtrans %}</a></li>
                                     </ul>
@@ -117,7 +117,7 @@
                                         <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
                                     </svg>
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end mt-lg-3 mt-xl-3 mt-xxl-3" aria-labelledby="navLangDrop">
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navLangDrop">
                                     {% for locale in locales|filter(locale => locale != app.request.locale) -%}
                                         <li class="dropdown-item"><a class="nav-link" href="/langue/{{ locale }}">{{ locale }}</a></li>
                                     {% endfor %}
