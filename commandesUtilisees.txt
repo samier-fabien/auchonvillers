@@ -107,12 +107,57 @@ symfony console assets:install public
 composer require helios-ag/fm-elfinder-bundle
 symfony console elfinder:install
 
+// Webpack encore
+composer require symfony/webpack-encore-bundle 
+
+// Installer node.js + npm @see https://github.com/nodesource/distributions
+cd ~
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+// Ajouter npm à symfony
+npm install
+
+// Mise à jour npm
+sudo npm install -g npm@8.3.2
+
+// Affichage des vulnérabilités npm
+npm audit fix
+
+// Correction des vulnérabilités
+npm audit fix --force
+
+// installation de assets
+composer require symfony/asset
+
+// Créer les éléments dont encore a besoin @see https://symfony.com/doc/5.4/frontend/encore/simple-example.html
+npm run watch
+
+// Créer une serveur dev qui peut mettre à jour le code sans rafraichir la page
+npm run dev-serveur
+
+// Compiler les assests une seule fois
+npm run dev
+
+// Au déploiement, créée une version de production
+npm run build
+
+// Installation vuejs @see https://github.com/SymfonyCasts/vue/tree/master/sfcasts/ep1
+npm i vue@next
+npm i vue-loader@^16.7.0
+npm i @vue/compiler-sfc
+
+npm i vue@2.5.17
+npm install vue-template-compiler --save-dev
+npm i vue-loader@^15.9.5 
+
+npm install vue@^2.5 vue-loader@^15.9.5 vue-template-compiler --save-dev
+
+// Ajout du support de JSX >> obligé d'installer un plugin Babel pour utiliser JSX avec Vue
+npm install @vue/babel-preset-jsx @vue/babel-helper-vue-jsx-merge-props --save-dev
 
 
-// Correspondance bootstrap tailles polices
-$h1-font-size:                $font-size-base * 2.5;
-$h2-font-size:                $font-size-base * 2;
-$h3-font-size:                $font-size-base * 1.75;
-$h4-font-size:                $font-size-base * 1.5;
-$h5-font-size:                $font-size-base * 1.25;
-$h6-font-size:                $font-size-base;
+rechercher : 
+
+delimiters: >> pour les trouver, sinon 
+compilerOptions: { >> je ne sais pas ce que ca donne

@@ -2,7 +2,19 @@
 
 {% block title %}{% trans %}Accueil{% endtrans %}{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('home') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('home') }}
+{% endblock %}
+
 {% block body %}
+<div id="app"></div>
+
 <div class="container-fluid mb-5 py-5">
 	<section class="container">
 		<h1 class="text-center mb-4">{% trans %}Dernières actualités{% endtrans %}</h1>  
