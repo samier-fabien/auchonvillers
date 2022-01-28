@@ -2,18 +2,20 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Service\Regex;
-use App\Repository\EventsRepository;
-use App\Repository\NewsletterRepository;
-use App\Repository\SurveysRepository;
+use App\Service\ArraySort;
 use App\Repository\UserRepository;
 use App\Repository\VotesRepository;
-use App\Service\ArraySort;
+use App\Repository\EventsRepository;
+use App\Repository\SurveysRepository;
+use App\Repository\NewsletterRepository;
+use Liip\ImagineBundle\Service\FilterService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class HomeController extends AbstractController
 {
@@ -54,7 +56,7 @@ class HomeController extends AbstractController
     /**
      * @Route("/{locale}", name="home")
      */
-    public function home(string $locale, Request $request, Regex $regex, ArraySort $arraySort, UserRepository $userRepo): Response
+    public function home(string $locale, Request $request, Regex $regex, ArraySort $arraySort, UserRepository $userRepo, FilterService $imagine): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -67,7 +69,7 @@ class HomeController extends AbstractController
 
         // Le tableau datas contient toutes les données des newsletters
         // Utilité :
-        //  -tri selon la langue avec appel de non de fonction dynamique
+        //  -tri selon la langue avec appel de no de fonction dynamique
         //  -retourne les données décodées vias htmlSpecialChars
         //  -ajoute un thumbnail basé sur la première image trouvé dans la news fr (seule la version fr est obligatoire dans le formulaire)
         //  -le texte est retourné sans les tags html créés avec ckeditor : pas besoin de 'titre' ni de 'chemin vers une image' en bdd
@@ -75,11 +77,33 @@ class HomeController extends AbstractController
         foreach ($newsletters as $key => $value) {
             $content = 'getNewContent' . ucFirst($locale);
 
+            // Runtime configuration
+            $runtimeConfig = [
+                'thumbnail' => [
+                    'size' => [400, 400],
+                    'mode' => 'outbound',
+                ],
+            ];
+            $resourcePath = $imagine->getUrlOfFilteredImageWithRuntimeFilters(
+                $regex->findFirstImage(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES)),
+                'my_thumb',
+                [
+                    'thumbnail' => [
+                        'size' => [400, 400],
+                        'mode' => 'outbound',
+                    ]
+                ]
+            );
+
+            $date = $value->getNewCreatedAt()->format('c');
+
             $newslettersDatas[$key] = [
                 'id' => $value->getId(),
-                'createdAt' => $value->getNewCreatedAt(),
-                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
-                'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES)),
+                'createdAt' => $date,
+                'content' => substr($regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)), 0, 60),
+                'thumb' => $resourcePath,
+                'alt' => $this->translator->trans('Image introductive relative à la nouvelle'),
+                'button' => $this->translator->trans('Voir'),
             ];
         }
 
@@ -139,6 +163,7 @@ class HomeController extends AbstractController
         return $this->render('home/home.html.twig', [
             'newsletters' => $newslettersDatas,
             'activities' => $activitiesDatas,
+            'jsonnewsletters' => json_encode($newslettersDatas),
         ]);
     }
 
