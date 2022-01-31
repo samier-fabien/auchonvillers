@@ -91,7 +91,7 @@ class HomeController extends AbstractController
             
             $newslettersDatas[$key] = [
                 'id' => $value->getId(),
-                'createdAt' => $value->getNewCreatedAt()->format('Y-m-d H:i:s'),
+                'createdAt' => $value->getNewCreatedAt()->format('Y-m-d'),
                 'content' => substr($regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)), 0, 60),
                 'thumb' => $resourcePath,
                 'alt' => $this->translator->trans('Image introductive relative à la nouvelle'),
