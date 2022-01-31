@@ -1,17 +1,17 @@
 <template>
 <div class="col mb-4">
-    <article class="col card  bg-light text-dark">
+    <article class="col card bg-light text-dark shadow">
         <img class="card-img p-0" :src="image" :alt="alt">
         <div class="card-img-overlay p-4 d-flex flex-column flex-grow hidden-background">
             <div class="mt-auto">
-                <h5 class="card-title fs-4">{{ date | dateConvert }}</h5>
+                <h5 class="card-title fs-4">{{ date }}</h5>
                 <p class="card-text fs-5">{{ content }}</p>
             </div>
         </div>
 
         <div class="card-img-overlay p-4 d-flex flex-column flex-grow flex align-items-center">
-            <div class="mt-auto mb-auto text-center">
-                <a class="hidden-button btn btn-lg btn-outline-dark px-5 fs-2 fw-bolder" :href="'/app.request.locale/actualite/' + id">{{ button }}</a>
+            <div class="text-center">
+                <a class="hidden-button btn btn-lg btn-outline-dark px-5 fs-2 fw-bolder" :href="link">{{ button }}</a>
             </div>
         </div>
     </article>
@@ -20,7 +20,7 @@
 
 <style scoped>
 .hidden-button {
-    /* border: 3px solid; */
+    margin-top: 50%;
     border-radius: 30px;
     opacity: 0;
     transform: translateY(50px);
@@ -35,7 +35,18 @@
     transform: translateY(0px);
 }
 .card:hover .hidden-background {
-    background-color: rgba(247, 132, 39, 0.7);
+    background-color: rgba(246,144,0,0.7);
+    --bs-bg-opacity: 0.5;
+    transition: all 0.8s;
+}
+
+/* Version mobile */
+.card:active .hidden-button {
+    opacity: 1;
+    transform: translateY(0px);
+}
+.card:active .hidden-background {
+    background-color: rgba(246,144,0,0.7);
     --bs-bg-opacity: 0.5;
     transition: all 0.8s;
 }
@@ -63,13 +74,17 @@
                 required: true,
             },
             date: {
-                type: Date,
+                type: String,
                 required: true,
             },
             button: {
                 type: String,
                 required: true,
             },
+            link: {
+                type: String,
+                required: true,
+            }
         },
     }
 </script>

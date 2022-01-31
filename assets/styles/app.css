@@ -1,33 +1,3 @@
-.custom-shape-divider-top-1642634634 {
-    position: relative;
-    top: -230px;
-    left: 0;
-    width: 100%;
-    overflow: hidden;
-    line-height: 0;
-    transform: rotate(180deg);
-    margin-bottom: -100px;
-    /* background-image: none, url('/images/ext.jpg'); */
-}
-
-.custom-shape-divider-top-1642634634 svg {
-    position: relative;
-    display: block;
-    width: calc(100% + 1.3px);
-    height: 230px;
-}
-
-.custom-shape-divider-top-1642634634 .shape-fill {
-    fill: white;
-}
-
-
-/* Elements de la navbar quand survolé */
-/* .navbar .navbar-nav .nav-link:hover {
-    background-color: #b2fefa;
-    color: #000000;
-} */
-
 #mainNavbar {
   transition: all 0.8s;
 }
@@ -41,39 +11,78 @@
     il faut enlever les "dropdown-toggle" et s'assurer que data-toggle="dropdown est bien présent dans la même balise.
     On peut remplacer l'icone disparue par une autre rajoutée manuellement.
 */
+#mainNavbar {
+  background:
+    linear-gradient(90deg, rgba(246,144,0,1) 0%, rgba(172,66,255,1) 100%);
+}
+
 .navbar .navbar-nav .nav-link:hover {
   color: #000000;
-  }
-  @media only screen and (min-width: 992px) {
-    .navbar .navbar-nav .nav-link {
-      padding: 1em 0.7em;
-    }
-    .navbar {
-      padding: 0;
-    }
-    .navbar .navbar-brand {
-      padding: 0 0.7em;
-    }
-  }
-  .navbar .navbar-nav .nav-link {
-    position: relative;
-  }
-  .navbar .navbar-nav .nav-link::after {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    background-color: #000000;
-    color: transparent;
-    width: 0%;
-    content: '';
-    height: 3px;
-    transition: all 0.3s;
-  }
+}
 
-  @media screen and (min-width: 992px) {
-    .navbar .navbar-nav .nav-link:hover::after {
-        width: 100%;
-      }
+@media only screen and (min-width: 992px) {
+  .navbar .navbar-nav .nav-link {
+    padding: 1em 0.7em;
   }
+  .navbar {
+    padding: 0;
+  }
+  .navbar .navbar-brand {
+    padding: 0 0;
+  }
+}
+
+.navbar .navbar-nav .nav-link {
+  position: relative;
+}
+.navbar .navbar-nav .nav-link::after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  background-color: #000000;
+  color: transparent;
+  width: 0%;
+  content: '';
+  height: 3px;
+  transition: all 0.3s;
+}
+@media screen and (min-width: 992px) {
+  .navbar .navbar-nav .nav-link:hover::after {
+      width: 100%;
+    }
+}
+
+
+.header-main {
+  padding-bottom: 200px;
+  background:
+    no-repeat url("/public/images/path_header.png"),
+    linear-gradient(90deg, rgba(246,144,0,1) 0%, rgba(172,66,255,1) 100%);
+  background-position: 50% 50%;
+}
+
+.custom-shape-divider-top-1642634634 {
+  position: relative;
+  top: -230px;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  transform: rotate(180deg);
+  margin-bottom: -100px;
+}
+
+.custom-shape-divider-top-1642634634 svg {
+  position: relative;
+  display: block;
+  width: calc(100% + 1.3px);
+  height: 230px;
+}
+
+.custom-shape-divider-top-1642634634 .shape-fill {
+  fill: white;
+}
+
+

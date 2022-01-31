@@ -1,0 +1,54 @@
+/* Relatif au composant title a supprimer quand tous le twig aura été converti en vue.js */
+.title-section {
+    border-radius: 20px 20px 0% 0%;
+    border: 0;
+  }
+  .title-section::before {
+  content: "";
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    border-right: 1rem solid rgba(246,144,0,1);
+    border-left: 0.5rem solid rgba(246,144,0,1);
+    margin-right: 10px;
+  }
+  .title-section::after {
+  content: "";
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    border-left: 1rem solid rgba(246,144,0,1);
+    border-right: 0.5rem solid rgba(246,144,0,1);
+    margin-left: 10px;
+  }
+  
+  /* Relatif au composant carte a supprimer quand tous le twig aura été converti en vue.js */
+  .hidden-button {
+    margin-top: 50%;
+    border-radius: 30px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.4s;
+  }
+  .hidden-background {
+    background-color: rgba(247, 132, 39, 0);
+    --bs-bg-opacity: 0;
+  }
+  .card:hover .hidden-button {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+  .card:hover .hidden-background {
+    background-color: rgba(246,144,0,0.7);
+    --bs-bg-opacity: 0.5;
+    transition: all 0.8s;
+  }
+  
+  /* Version mobile */
+  .card:active .hidden-button {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+  .card:active .hidden-background {
+    background-color: rgba(246,144,0,0.7);
+    --bs-bg-opacity: 0.5;
+    transition: all 0.8s;
+  }

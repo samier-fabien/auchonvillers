@@ -77,13 +77,7 @@ class HomeController extends AbstractController
         foreach ($newsletters as $key => $value) {
             $content = 'getNewContent' . ucFirst($locale);
 
-            // Runtime configuration
-            $runtimeConfig = [
-                'thumbnail' => [
-                    'size' => [400, 400],
-                    'mode' => 'outbound',
-                ],
-            ];
+            // Config pour thumbnail
             $resourcePath = $imagine->getUrlOfFilteredImageWithRuntimeFilters(
                 $regex->findFirstImage(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES)),
                 'my_thumb',
@@ -94,18 +88,18 @@ class HomeController extends AbstractController
                     ]
                 ]
             );
-
-            $date = $value->getNewCreatedAt()->format('c');
-
+            
             $newslettersDatas[$key] = [
                 'id' => $value->getId(),
-                'createdAt' => $date,
+                'createdAt' => $value->getNewCreatedAt()->format('Y-m-d H:i:s'),
                 'content' => substr($regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)), 0, 60),
                 'thumb' => $resourcePath,
                 'alt' => $this->translator->trans('Image introductive relative à la nouvelle'),
                 'button' => $this->translator->trans('Voir'),
+                'link' => "\/" . $locale . "\/actualite\/" . $value->getId(),
             ];
         }
+
 
         // Recherche des "x" derniers evenements dans la bdd
         $events = $this->eventsRepo->findLast(self::NUMBER_OF_ACTIVITIES);
@@ -164,6 +158,7 @@ class HomeController extends AbstractController
             'newsletters' => $newslettersDatas,
             'activities' => $activitiesDatas,
             'jsonnewsletters' => json_encode($newslettersDatas),
+            'newslettersTitle' => $this->translator->trans('Dernières actualités'),
         ]);
     }
 

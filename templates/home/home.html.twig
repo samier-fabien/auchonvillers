@@ -15,78 +15,38 @@
 {% block body %}
 {# {% verbatim %} #}
 	<div id="app"
-		data-name="{{ app.user.email is defined ? 'connecté' : 'pas connecté'}}"
 		data-newsletters="{{ jsonnewsletters }}"
+		data-newsletters-title="{{ newslettersTitle }}"
 	></div>
 {# {% endverbatim %} #}
 
-
-<div class="container-fluid mb-5 py-5">
+<div class="container-fluid py-5" style="background-color: #EED6FF;">
 	<section class="container">
-		<h1 class="text-center mb-4">{% trans %}Dernières actualités{% endtrans %}</h1>  
+		<div class="mb-5">
+			<h1 class="text-center text-dark title-section">{% trans %}Dernières activités{% endtrans %}</h1>
+		</div>
 		<div class="row row-cols-1 row-cols-xs-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-3">
-			{% for newsletter in newsletters %}
-				<div class="col mb-4">
-					<article class="card text-dark bg-light shadow">
-						<img class="card-img-top" src="{{ asset(newsletter.thumb) | imagine_filter('my_thumb') }}" alt="{% trans %}Image introductive relative à la nouvelle.{% endtrans %}">
-						<div class="card-body">
-							<div class="container-fluid mb-3">
-								<div class="row align-items-center">
-									<div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-3 text-center fw-bold fs-4 bg-warning text-dark bg-opacity-50">
-										{# <span class="badge bg-dark bg-opacity-25 text-light text-opacity-50 rounded-pill"> #}
-											{{ newsletter.createdAt|date('d') }}</br>
-											{{ newsletter.createdAt|date('m') }}</br>
-											{{ newsletter.createdAt|date('Y') }}</br>
-										{# </span> #}
-									</div>
-									<div class="col-sm-8 col-md-8 col-lg-8 col-xl-8 col-xxl-9">
-										<span class="fs-5" style="text-align: justify">
-											{{ newsletter.content|length > 60 ? newsletter.content|slice(0,60) ~ ' ...' : newsletter.content }}
-										</span>
-									</div>
-								</div>
-							</div>
-							<p class="text-center">
-								<a class="card-link btn btn-primary px-5" href="/{{ app.request.locale }}/actualite/{{ newsletter.id }}">{% trans %}Voir{% endtrans %}</a>
-							</p>
+
+			{% for activity in activities %}
+			<div class="col mb-4">
+				<article class="col card bg-light text-dark shadow">
+					<img class="card-img p-0" src="{{ asset(activity.thumb) | imagine_filter('my_thumb') }}" alt="{% trans %}Image introductive relative à l'évènement.{% endtrans %}">
+					<div class="card-img-overlay p-4 d-flex flex-column flex-grow hidden-background">
+						<div class="mt-auto">
+							<h5 class="card-title fs-4">{% trans %}Du {% endtrans %}{{ activity.begining|date('d-m-Y') }}<br>{% trans %} au {% endtrans %}{{ activity.end|date('d-m-Y') }}</h5>
+							<p class="card-text fs-5">{{ activity.content|length > 60 ? activity.content|slice(0,60) ~ '...' : activity.content }}</p>
 						</div>
-					</article>
-				</div>
+					</div>
+
+					<div class="card-img-overlay p-4 d-flex flex-column flex-grow flex align-items-center">
+						<div class="text-center">
+							<a class="hidden-button btn btn-lg btn-outline-dark px-5 fs-2 fw-bolder" href="/{{ app.request.locale }}/{{ activity.type }}/{{ activity.id }}">{% trans %}Voir{% endtrans %}</a>
+						</div>
+					</div>
+				</article>
+			</div>
 			{% endfor %}
-		</div>
-		<div class="text-center fs-2">
-			<a class="btn btn-primary btn-lg px-5" href="/{{ app.request.locale }}/actualites/{{ 1 }}">{% trans %}Tout voir{% endtrans %}</a>
-		</div>
-	</section>
-</div>
 
-<div class="container-fluid mb-5 py-5">
-	<section class="container">
-		<h1 class="text-center mb-4">{% trans %}Dernières activités{% endtrans %}</h1>  
-		<div class="row row-cols-1 row-cols-xs-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-3">
-		{% for activity in activities %}
-				<div class="col mb-4">
-					<article class="card text-dark bg-light shadow">
-						<img class="card-img-top" src="{{ asset(activity.thumb) | imagine_filter('my_thumb') }}" alt="{% trans %}Image introductive relative à l'évènement.{% endtrans %}">
-						<div class="card-body">
-							<div class="container-fluid mb-3">
-								<div class="row align-items-center">
-									<span class"text-muted">Du {{ activity.begining|date('d-m-Y') }} au {{ activity.end|date('d-m-Y') }}</span></br>
-									<span class="fs-5" style="text-align: justify">
-										{{ activity.content|length > 60 ? activity.content|slice(0,60) ~ '...' : activity.content }}
-									</span>
-								</div>
-							</div>
-							<p class="text-center">
-								<a class="card-link btn btn-primary px-5" href="/{{ app.request.locale }}/{{ activity.type }}/{{ activity.id }}">{% trans %}Voir{% endtrans %}</a>
-							</p>
-						</div>
-					</article>
-				</div>
-		{% endfor %}
-		</div>
-		<div class="text-center fs-2">
-			<a class="btn btn-primary btn-lg px-5" href="/{{ app.request.locale }}/evenements/{{ 1 }}">{% trans %}Tout voir{% endtrans %}</a>
 		</div>
 	</section>
 </div>
