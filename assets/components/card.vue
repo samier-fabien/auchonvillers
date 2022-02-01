@@ -1,6 +1,6 @@
 <template>
-<div class="col mb-4">
-    <article class="col card bg-light text-dark shadow">
+<div class="col mb-4 d-flex">
+    <article class="col card bg-light text-dark shadow align-self-stretch">
         <img class="card-img p-0" :src="image" :alt="alt">
 
         <div class="card-img-overlay p-4 d-flex flex-column flex-grow hidden-background">

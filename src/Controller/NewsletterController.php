@@ -54,7 +54,7 @@ class NewsletterController extends AbstractController
             $newslettersDatas[$key] = [
                 'id' => $value->getId(),
                 'createdAt' => $value->getNewCreatedAt(),
-                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
+                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)), 58),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES)),
             ];
         }

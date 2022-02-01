@@ -1,0 +1,61 @@
+<nav class="d-flex justify-content-center my-5" aria-label="Pagination">
+    {% set url = '/'~app.request.locale~'/actualites/' %}
+    {% set page = page %}
+    {% set pages = pages %}
+    {% set nearby = 3 %}
+
+    {% apply spaceless %}
+    <ul class="pagination">
+        {% if pages > 1 %}
+            {% if page > 1 %}
+                {# Page Précédente #}
+                <li class="page-item">
+                    <a class="page-link" href="{{ (url ~ (page-1))|e }}/" aria-label="Page précédente">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for i in 1..pages %}
+                {% if 0 == (page - nearby) - loop.index %}
+                    {# Page numéro 1 #}
+                    <li class="page-item"><a class="page-link" href="{{ (url ~ 1)|e }}/">1</a></li>
+                    {% if 1 != loop.index %}
+                        <li class="page-item"><a class="page-link" href="#">...</a></li>
+                    {% endif %}
+                {% elseif 0 == (page + nearby) - loop.index  and (page + nearby) < pages %}
+                    <li class="page-item"><a class="page-link" href="#">...</a></li>
+                {% elseif 0 < (page - nearby) - loop.index %}
+                    <!-- #1 -->
+                {% elseif 0 > (page + nearby) - loop.index %}
+                    <!-- #2 -->
+                {% else %}
+                        {% if page == loop.index  %}
+                            {# Page actuelle #}
+                            <li class="page-item"><a class="page-link" href="#"><strong>{{ loop.index }}</strong></a></li>
+                        {% else %}
+                            {% if loop.index == 1 %}
+                                <li class="page-item"><a class="page-link" href="{{ (url ~ 1)|e }}">{{ loop.index }}</a></li>
+                            {% else %}
+                                {# <a href="{{ url ~ loop.index }}/">{{ loop.index }}</a> #}
+                                <li class="page-item"><a class="page-link" href="{{ url ~ loop.index }}/">{{ loop.index }}</a></li>
+                            {% endif %}
+                        {% endif %}
+                {% endif %}
+            {% endfor %}
+            {% if page != pages  and (page + nearby) < pages %}
+                {# <a href="{{ (url ~ pages)|e }}/">{{ pages }}</a> #}
+                <li class="page-item"><a class="page-link" href="{{ (url ~ pages)|e }}/">{{ pages }}</a></li>
+            {% endif %}
+            {% if page < pages %}
+                {# Page Suivante #}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ (url ~ (page+1))|e }}/" aria-label="Page suivante">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+            {% endif %}
+        {% endif %}
+    </ul>
+    {% endapply %}
+</nav>

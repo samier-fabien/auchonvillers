@@ -65,3 +65,15 @@ article.card img {
     --bs-bg-opacity: 0.5;
     transition: all 0.8s;
 }
+
+
+
+/* Relatif à la pagination */
+.page-link {
+  padding: 1rem;
+}
+@media screen and (max-width: 576px) {
+  .page-link {
+    padding: 0.6rem;
+  }
+}

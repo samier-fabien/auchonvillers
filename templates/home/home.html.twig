@@ -25,11 +25,10 @@
 		<div class="my-5">
 			<h1 class="text-center text-dark title-section">{% trans %}Dernières activités{% endtrans %}</h1>
 		</div>
-		<div class="row row-cols-1 row-cols-xs-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-3">
-
+		<div class="row row-cols-1 row-cols-xs-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-4">
 			{% for activity in activities %}
-			<div class="col mb-4">
-				<article class="col card bg-light text-dark shadow">
+			<div class="col mb-4 d-flex">
+				<article class="col card bg-light text-dark shadow align-self-stretch">
 					<img class="card-img p-0" src="{{ asset(activity.thumb) | imagine_filter('my_thumb') }}" alt="{% trans %}Image introductive relative à l'évènement.{% endtrans %}">
 
 					<div class="card-img-overlay p-4 d-flex flex-column flex-grow hidden-background">
@@ -45,7 +44,6 @@
 				</article>
 			</div>
 			{% endfor %}
-
 		</div>
 	</section>
 </div>
