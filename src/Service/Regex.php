@@ -15,10 +15,21 @@ class Regex
         return $path;
     }
 
-    public function removeHtmlTags(string $text)
+    public function removeHtmlTags(string $text): string
     {
         $result = preg_replace(self::HTML_TAGS, "", $text);
 
         return $result;
+    }
+
+    public function textTruncate(string $text, int $maxCharacters): string
+    {
+        // Si nombre de caracteres > $characters on tronque à $characters - 3 on ajoute "..." et on retourne le resultat
+        // Sinon on retourne $text
+        if (strlen($text) > $maxCharacters) {
+            return substr($text, 0, $maxCharacters - 3) . "...";
+        } else {
+            return $text;
+        }
     }
 }

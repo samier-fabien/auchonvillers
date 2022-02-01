@@ -7,7 +7,6 @@ new Vue({
         return h(App, {
           props: {
             newsletters: JSON.parse(this.$el.getAttribute('data-newsletters')),
-            newslettersTitle: this.$el.getAttribute('data-newsletters-title')
           },
         })
       },

@@ -35,11 +35,11 @@
                         <ul class="navbar-nav me-auto">
 
                             <li class="nav-item dropdown">
-                                <a class="nav-link py-4" id="navCategoryDrop" href="#" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-reference="parent">
+                                <a class="nav-link py-4 fw-bold" id="navCategoryDrop" href="#" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-reference="parent">
                                     {% trans %}Plus sur{% endtrans %}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
-                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
-                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+  <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+</svg>
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navCategoryDrop">
                                     {% for navcat in navcats.list %}
@@ -53,14 +53,14 @@
                             </li>
 
                             <li class"nav-item">
-                                <a class="  nav-link py-4" href="/{{ app.request.locale }}/actualites/1">{% trans %}Actualités{% endtrans %}</a>
+                                <a class="  nav-link py-4  fw-bold" href="/{{ app.request.locale }}/actualites/1">{% trans %}Actualités{% endtrans %}</a>
                             </li>
 
                             <li class="nav-item dropdown">
-                                <a class="  nav-link py-4" id="navActivityDrop" href="#" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="  nav-link py-4  fw-bold" id="navActivityDrop" href="#" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                     Activités
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
-                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                        <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
                                     </svg>
                                 </a>
                                 <ul class="dropdown-menu " aria-labelledby="navActivityDrop">
@@ -72,10 +72,10 @@
 
                             {% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
                             <li class="nav-item dropdown">
-                                <a class="  nav-link py-4" id="navGestionDrop" href="#" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="  nav-link py-4 fw-bold" id="navGestionDrop" href="#" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                     {% trans %}Gestion{% endtrans %}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
-                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                        <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
                                     </svg>
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navGestionDrop">
@@ -99,11 +99,11 @@
                             {# Si l'utilisateur est connecté on affiche son email et le lien vers deconnexion sinon le lien vers connexion #}
                             {% if is_granted('ROLE_USER') or is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
                                 <li class="nav-item dropdown d-flex">
-                                    <a class="  nav-link py-4" id="navAccountDrop" href="#" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a class="  nav-link py-4 fw-bold" id="navAccountDrop" href="#" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                         {{ app.user.email }}
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
-                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
-                                    </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                            <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                                        </svg>
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navAccountDrop">
                                         <li class="dropdown-item"><a class="nav-link" href="/{{ app.request.locale }}/membre/compte">{% trans %}Mon compte{% endtrans %}</a></li>
@@ -111,16 +111,16 @@
                                     </ul>
                                 </li>
                             {% else %}
-                                <li class"nav-item d-flex"><a class="  nav-link py-4" href="/{{ app.request.locale }}/inscription">{% trans %}Inscription{% endtrans %}</a></li>
-                                <li class"nav-item d-flex"><a class="  nav-link py-4" href="/{{ app.request.locale }}/connexion">{% trans %}Connexion{% endtrans %}</a></li>
+                                <li class"nav-item d-flex"><a class="  nav-link py-4 fw-bold" href="/{{ app.request.locale }}/inscription">{% trans %}Inscription{% endtrans %}</a></li>
+                                <li class"nav-item d-flex"><a class="  nav-link py-4 fw-bold" href="/{{ app.request.locale }}/connexion">{% trans %}Connexion{% endtrans %}</a></li>
                             {% endif %}
 
                             {# Liste dans la variable globale - définie dans services.yaml et envoyée dans la vue par twig.yaml - celles qui ne sont pas la langue active #}
                              <li class="nav-item dropdown">
-                                <a class="  nav-link py-4" id="navLangDrop" href="#" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="  nav-link py-4 fw-bold" id="navLangDrop" href="#" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                     {{ app.request.locale }}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
-                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                        <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
                                     </svg>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navLangDrop">

@@ -2,17 +2,16 @@
 <div class="col mb-4">
     <article class="col card bg-light text-dark shadow">
         <img class="card-img p-0" :src="image" :alt="alt">
+
         <div class="card-img-overlay p-4 d-flex flex-column flex-grow hidden-background">
-            <div class="mt-auto">
-                <h5 class="card-title fs-4">{{ date }}</h5>
-                <p class="card-text fs-5">{{ content }}</p>
+            <div class="mb-auto mt-auto text-center">
+                <a class="hidden-button btn btn-lg btn-outline-dark px-5 fs-2 fw-bolder" :href="link">{{ button }}</a>
             </div>
         </div>
 
-        <div class="card-img-overlay p-4 d-flex flex-column flex-grow flex align-items-center">
-            <div class="text-center">
-                <a class="hidden-button btn btn-lg btn-outline-dark px-5 fs-2 fw-bolder" :href="link">{{ button }}</a>
-            </div>
+        <div class="card-body">
+            <h5 class="card-title fs-4">{{ date }}</h5>
+            <p class="card-text fs-5">{{ content }}</p>
         </div>
     </article>
 </div>
@@ -20,7 +19,6 @@
 
 <style scoped>
 .hidden-button {
-    margin-top: 50%;
     border-radius: 30px;
     opacity: 0;
     transform: translateY(50px);
@@ -30,6 +28,17 @@
     background-color: rgba(247, 132, 39, 0);
     --bs-bg-opacity: 0;
 }
+.card, .card-img-overlay{
+    border-radius: 1rem;
+}
+article.card img {
+    border-radius: 1rem 1rem 0rem 0rem;
+}
+.card-body {
+    z-index: 1;
+}
+
+/* Au survol */
 .card:hover .hidden-button {
     opacity: 1;
     transform: translateY(0px);
@@ -40,7 +49,7 @@
     transition: all 0.8s;
 }
 
-/* Version mobile */
+/* Version mobile : au toucher */
 .card:active .hidden-button {
     opacity: 1;
     transform: translateY(0px);
@@ -50,7 +59,6 @@
     --bs-bg-opacity: 0.5;
     transition: all 0.8s;
 }
-
 </style>
 
 <script>

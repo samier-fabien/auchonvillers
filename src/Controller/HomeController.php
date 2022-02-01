@@ -73,7 +73,12 @@ class HomeController extends AbstractController
         //  -retourne les données décodées vias htmlSpecialChars
         //  -ajoute un thumbnail basé sur la première image trouvé dans la news fr (seule la version fr est obligatoire dans le formulaire)
         //  -le texte est retourné sans les tags html créés avec ckeditor : pas besoin de 'titre' ni de 'chemin vers une image' en bdd
-        $newslettersDatas = [];
+        $newslettersDatas = [
+            'newslettersTitle' => $this->translator->trans('Dernières actualités'),
+            'newslettersButton' => $this->translator->trans('Toutes les actualités'),
+            'newslettersButtonAlt' => $this->translator->trans('Lien vers la liste des actualités'),
+            'newslettersButtonPath' => "/" . $locale . "/actualites/1",
+        ];
         foreach ($newsletters as $key => $value) {
             $content = 'getNewContent' . ucFirst($locale);
 
@@ -89,14 +94,14 @@ class HomeController extends AbstractController
                 ]
             );
             
-            $newslettersDatas[$key] = [
+            $newslettersDatas['newslettersList'][$key] = [
                 'id' => $value->getId(),
-                'createdAt' => $value->getNewCreatedAt()->format('Y-m-d'),
-                'content' => substr($regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)), 0, 60),
+                'createdAt' => $this->translator->trans('Le ') . $value->getNewCreatedAt()->format('d-m-Y'),
+                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)), 58),
                 'thumb' => $resourcePath,
                 'alt' => $this->translator->trans('Image introductive relative à la nouvelle'),
                 'button' => $this->translator->trans('Voir'),
-                'link' => "\/" . $locale . "\/actualite\/" . $value->getId(),
+                'link' => "/" . $locale . "/actualite/" . $value->getId(),
             ];
         }
 
@@ -159,6 +164,7 @@ class HomeController extends AbstractController
             'activities' => $activitiesDatas,
             'jsonnewsletters' => json_encode($newslettersDatas),
             'newslettersTitle' => $this->translator->trans('Dernières actualités'),
+            ''
         ]);
     }
 

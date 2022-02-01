@@ -16,13 +16,13 @@
 {# {% verbatim %} #}
 	<div id="app"
 		data-newsletters="{{ jsonnewsletters }}"
-		data-newsletters-title="{{ newslettersTitle }}"
+		{# data-newsletters-title="{{ newslettersTitle }}" #}
 	></div>
 {# {% endverbatim %} #}
 
-<div class="container-fluid py-5" style="background-color: #EED6FF;">
+<div class="container-fluid py-5" style="background-color: #F1F3F8;">
 	<section class="container">
-		<div class="mb-5">
+		<div class="my-5">
 			<h1 class="text-center text-dark title-section">{% trans %}Dernières activités{% endtrans %}</h1>
 		</div>
 		<div class="row row-cols-1 row-cols-xs-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-3">
@@ -31,17 +31,16 @@
 			<div class="col mb-4">
 				<article class="col card bg-light text-dark shadow">
 					<img class="card-img p-0" src="{{ asset(activity.thumb) | imagine_filter('my_thumb') }}" alt="{% trans %}Image introductive relative à l'évènement.{% endtrans %}">
+
 					<div class="card-img-overlay p-4 d-flex flex-column flex-grow hidden-background">
-						<div class="mt-auto">
-							<h5 class="card-title fs-4">{% trans %}Du {% endtrans %}{{ activity.begining|date('d-m-Y') }}<br>{% trans %} au {% endtrans %}{{ activity.end|date('d-m-Y') }}</h5>
-							<p class="card-text fs-5">{{ activity.content|length > 60 ? activity.content|slice(0,60) ~ '...' : activity.content }}</p>
+						<div class="mb-auto mt-auto text-center">
+							<a class="hidden-button btn btn-lg btn-outline-dark px-5 fs-2 fw-bolder" href="/{{ app.request.locale }}/{{ activity.type }}/{{ activity.id }}">{% trans %}Voir{% endtrans %}</a>
 						</div>
 					</div>
 
-					<div class="card-img-overlay p-4 d-flex flex-column flex-grow flex align-items-center">
-						<div class="text-center">
-							<a class="hidden-button btn btn-lg btn-outline-dark px-5 fs-2 fw-bolder" href="/{{ app.request.locale }}/{{ activity.type }}/{{ activity.id }}">{% trans %}Voir{% endtrans %}</a>
-						</div>
+					<div class="card-body">
+						<h5 class="card-title fs-4">{% trans %}Du {% endtrans %}{{ activity.begining|date('d-m-Y') }}<br>{% trans %} au {% endtrans %}{{ activity.end|date('d-m-Y') }}</h5>
+						<p class="card-text fs-5">{{ activity.content|length > 60 ? activity.content|slice(0,60) ~ '...' : activity.content }}</p>
 					</div>
 				</article>
 			</div>
