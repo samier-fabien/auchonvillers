@@ -1,34 +1,27 @@
-#mainNavbar {
-  transition: all 0.8s;
-}
-
-.dropdown-menu {
-  transition: all 0.8s;
-}
-
 /*
     Pour pouvoir appliquer le style avec la barre qui apparait quand on passe avec la souris sur les dropdown menu,
     il faut enlever les "dropdown-toggle" et s'assurer que data-toggle="dropdown est bien présent dans la même balise.
     On peut remplacer l'icone disparue par une autre rajoutée manuellement.
 */
+
 #mainNavbar {
   background:
     linear-gradient(90deg, rgba(246,144,0,1) 0%, rgba(172,66,255,1) 100%);
+    transition: all 0.8s;
 }
-
 .navbar .navbar-nav .nav-link:hover {
-  color: #000000;
+  color: rgba(0,0,0,.55);
 }
 
 @media only screen and (min-width: 992px) {
   .navbar .navbar-nav .nav-link {
     padding: 1em 0.7em;
   }
-  .navbar {
+  .navbar, .navbar {
     padding: 0;
   }
-  .navbar .navbar-brand {
-    padding: 0 0;
+  .navbar .navbar-nav .nav-link:hover::after {
+    width: 100%;
   }
 }
 
@@ -41,17 +34,12 @@
   left: 0;
   right: 0;
   margin: auto;
-  background-color: #000000;
+  background-color: rgba(0,0,0,.55);
   color: transparent;
   width: 0%;
   content: '';
   height: 3px;
   transition: all 0.3s;
-}
-@media screen and (min-width: 992px) {
-  .navbar .navbar-nav .nav-link:hover::after {
-      width: 100%;
-    }
 }
 
 

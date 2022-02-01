@@ -55,6 +55,11 @@ class SurveysController extends AbstractController
 
         // Recherche des evenements dans la bdd
         $surveys = $this->surveysRepo->findByPage($page, self::SURVEYS_PER_PAGE);
+
+        // Calcul du nombres de pages en fonction du nombre d'éléments par page
+        $pages = (int) ceil($this->surveysRepo->getnumber() / self::SURVEYS_PER_PAGE);
+
+        // Le tableau datas contient toutes les données des surveys
         $surveysDatas = [];
         foreach ($surveys as $key => $value) {
             $content = 'getSurContent' . ucFirst($locale);
@@ -64,18 +69,16 @@ class SurveysController extends AbstractController
                 'createdAt' => $value->getSurCreatedAt(),
                 'begining' => $value->getSurBegining(),
                 'end' => $value->getSurEnd(),
-                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
+                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)), 58),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getSurContentFr(), ENT_QUOTES)),
             ];
         }
-
-        // Calcul du nombres de pages en fonction du nombre d'evenements par page
-        $pages = (int) ceil($this->surveysRepo->getnumber() / self::SURVEYS_PER_PAGE);
         
         return $this->render('surveys/index.html.twig', [
             'surveys' => $surveysDatas,
             'page' => $page,
             'pages' => $pages,
+            'paginationPath' => 'enquetes',
         ]);
     }
 

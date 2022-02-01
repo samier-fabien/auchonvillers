@@ -46,6 +46,11 @@ class EventsController extends AbstractController
 
         // Recherche des evenements dans la bdd
         $events = $this->eventsRepo->findByPage($page, self::EVENTS_PER_PAGE);
+
+        // Calcul du nombres de pages en fonction du nombre d'éléments par page
+        $pages = (int) ceil($this->eventsRepo->getnumber() / self::EVENTS_PER_PAGE);
+        
+        // Le tableau datas contient toutes les données des events
         $eventsDatas = [];
         foreach ($events as $key => $value) {
             $content = 'getEveContent' . ucFirst($locale);
@@ -55,18 +60,16 @@ class EventsController extends AbstractController
                 'createdAt' => $value->getEveCreatedAt(),
                 'begining' => $value->getEveBegining(),
                 'end' => $value->getEveEnd(),
-                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
+                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)), 58),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getEveContentFr(), ENT_QUOTES)),
             ];
         }
 
-        // Calcul du nombres de pages en fonction du nombre d'evenements par page
-        $pages = (int) ceil($this->eventsRepo->getnumber() / self::EVENTS_PER_PAGE);
-        
         return $this->render('events/index.html.twig', [
             'events' => $eventsDatas,
             'page' => $page,
             'pages' => $pages,
+            'paginationPath' => 'evenements',
         ]);
     }
 

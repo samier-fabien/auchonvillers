@@ -63,6 +63,7 @@ class NewsletterController extends AbstractController
             'newsletters' => $newslettersDatas,
             'page' => $page,
             'pages' => $pages,
+            'paginationPath' => 'actualites',
         ]);
     }
 

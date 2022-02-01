@@ -3,133 +3,32 @@
 {% block title %}Enquêtes{% endblock %}
 
 {% block body %}
-<section>
-    <h1>{% trans %}Enquêtes{% endtrans %}</h1>
+<div class="container-fluid py-5">
+	<section class="container">
+		<div class="mb-5">
+			<h1 class="text-center text-dark title-section">{% trans %}Enquêtes{% endtrans %}</h1>
+		</div>
+		<div class="row row-cols-1 row-cols-xs-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-4">
+			{% for survey in surveys %}
+			<div class="col mb-4 d-flex">
+				<article class="col card bg-light text-dark shadow align-self-stretch">
+					<img class="card-img p-0" src="{{ asset(survey.thumb) | imagine_filter('my_thumb') }}" alt="{% trans %}Image introductive relative à l'évènement.{% endtrans %}">
 
-    {% for survey in surveys %}
-    <article>
+					<div class="card-img-overlay p-4 d-flex flex-column flex-grow hidden-background">
+						<div class="mb-auto mt-auto text-center">
+							<a class="hidden-button btn btn-lg btn-outline-dark px-5 fs-2 fw-bolder" href="/{{ app.request.locale }}/enquete/{{ survey.id }}">{% trans %}Voir{% endtrans %}</a>
+						</div>
+					</div>
 
-        <img src="{{ asset(survey.thumb) | imagine_filter('my_thumb') }}" alt="{% trans %}Image introductive relative à l'enquête.{% endtrans %}">
-        
-        <p>{% trans %}Du{% endtrans %} {{ survey.begining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ survey.end|date('Y-m-d') }}</p>
-        <p>
-            {{ survey.content|length > 25 ? survey.content|slice(0,25) ~ '...' : survey.content }}
-        </p>
-
-        <a href="/{{ app.request.locale }}/enquete/{{ survey.id }}">{% trans %}Voir{% endtrans %}</a>
-    
-    </article>
-    {% endfor %}
-</section>
-<div>
-    {% set url = '/'~app.request.locale~'/enquetes/' %}
-    {% set page = page %}
-    {% set pages = pages %}
-    {% set nearby = 4 %}
-
-    {% apply spaceless %}
-        {% if pages > 1 %}
-            {% if page > 1 %}
-                <a href="{{ (url ~ (page-1))|e }}/">&laquo;</a>
-            {% endif %}
-
-            {% for i in 1..pages %}
-                {% if 0 == (page - nearby) - loop.index %}
-                    <a href="{{ (url ~ 1)|e }}/">1</a>
-                    {% if 1 != loop.index %}
-                        <a href="#">...</a>
-                    {% endif %}
-                {% elseif 0 == (page + nearby) - loop.index  and (page + nearby) < pages %}
-                    <a href="#">...</a>
-                {% elseif 0 < (page - nearby) - loop.index %}
-                    <!-- #1 -->
-                {% elseif 0 > (page + nearby) - loop.index %}
-                    <!-- #2 -->
-                {% else %}
-                        {% if page == loop.index  %}
-                            <strong><a href="#">{{ loop.index }}</a></strong>
-                        {% else %}
-                            {% if loop.index == 1 %}
-                                <a href="{{ (url ~ 1)|e }}">{{ loop.index }}</a>
-                            {% else %}
-                                <a href="{{ url ~ loop.index }}/">{{ loop.index }}</a>
-                            {% endif %}
-                        {% endif %}
-                {% endif %}
-            {% endfor %}
-            {% if page != pages  and (page + nearby) < pages %}
-                <a href="{{ (url ~ pages)|e }}/">{{ pages }}</a>
-            {% endif %}
-            {% if page < pages %}
-                <a href="{{ (url ~ (page+1))|e }}/">&raquo;</a>
-            {% endif %}
-        {% endif %}
-    {% endapply %}
+					<div class="card-body">
+						<h5 class="card-title fs-4">{% trans %}Du{% endtrans %} {{ survey.begining|date('d-m-Y') }}<br>{% trans %}au{% endtrans %} {{ survey.end|date('d-m-Y') }}</h5>
+						<p class="card-text fs-5">{{ survey.content}}</p>
+					</div>
+				</article>
+			</div>
+			{% endfor %}
+		</div>
+	</section>
+    {{ include('components/pagination.html.twig') }}
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    {# <h1>Events index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Eve_created_at</th>
-                <th>Eve_begining</th>
-                <th>Eve_end</th>
-                <th>Eve_content_fr</th>
-                <th>Eve_content_en</th>
-                <th>Eve_location_osm</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for event in events %}
-            <tr>
-                <td>{{ event.id }}</td>
-                <td>{{ event.eveCreatedAt ? event.eveCreatedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ event.eveBegining ? event.eveBegining|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ event.eveEnd ? event.eveEnd|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ event.eveContentFr }}</td>
-                <td>{{ event.eveContentEn }}</td>
-                <td>{{ event.eveLocationOsm }}</td>
-                <td>
-                    <a href="{{ path('events_show', {'id': event.id}) }}">show</a>
-                    <a href="{{ path('events_edit', {'id': event.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('events_new') }}">Create new</a> #}
 {% endblock %}

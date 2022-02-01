@@ -48,6 +48,11 @@ class VotesController extends AbstractController
 
         // Recherche des evenements dans la bdd
         $votes = $this->votesRepo->findByPage($page, self::VOTES_PER_PAGE);
+
+        // Calcul du nombres de pages en fonction du nombre d'éléments par page
+        $pages = (int) ceil($this->votesRepo->getnumber() / self::VOTES_PER_PAGE);
+
+        // Le tableau datas contient toutes les données des votes
         $votesDatas = [];
         foreach ($votes as $key => $value) {
             $content = 'getVotContent' . ucFirst($locale);
@@ -57,18 +62,16 @@ class VotesController extends AbstractController
                 'createdAt' => $value->getVotCreatedAt(),
                 'begining' => $value->getVotBegining(),
                 'end' => $value->getVotEnd(),
-                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
+                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)), 58),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getVotContentFr(), ENT_QUOTES)),
             ];
         }
-
-        // Calcul du nombres de pages en fonction du nombre d'evenements par page
-        $pages = (int) ceil($this->votesRepo->getnumber() / self::VOTES_PER_PAGE);
         
         return $this->render('votes/index.html.twig', [
             'votes' => $votesDatas,
             'page' => $page,
             'pages' => $pages,
+            'paginationPath' => 'votes',
         ]);
     }
 
