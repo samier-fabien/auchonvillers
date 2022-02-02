@@ -3,11 +3,11 @@
 namespace App\Controller;
 
 use DateTime;
+use App\Service\Regex;
+use App\Service\Imagine;
 use App\Entity\Newsletter;
 use App\Form\NewsletterType;
-use App\Service\LocaleCheck;
 use App\Repository\NewsletterRepository;
-use App\Service\Regex;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +15,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class NewsletterController extends AbstractController
 {
@@ -32,7 +31,7 @@ class NewsletterController extends AbstractController
     /**
      * @Route("/{locale}/actualites/{page<\d+>}", name="newsletters_index")
      */
-    public function index(string $locale, int $page = 1, Request $request, Regex $regex): Response
+    public function index(string $locale, int $page = 1, Request $request, Regex $regex, Imagine $imagine): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -40,30 +39,44 @@ class NewsletterController extends AbstractController
             return $this->redirect("/");
         }
 
-        // Recherche des newsletters dans la bdd
+        // Liste des newsletters
         $newsletters = $this->newsletterRepo->findByPage($page, self::NEWSLETTERS_PER_PAGE);
 
-        // Calcul du nombres de pages en fonction du nombre de news par page
-        $pages = (int) ceil($this->newsletterRepo->getnumber() / self::NEWSLETTERS_PER_PAGE);
+        // Si liste vide retour avec flash message
+        if (empty($newsletters)) {
+            $this->addFlash('notice', $this->translator->trans('La page que vous essayez de consulter n\'existe pas.'));
+            return $this->redirectToRoute('newsletters_index', [
+                'locale' => $locale,
+                'page' => 1,
+            ]);
+        }
 
         // Le tableau datas contient toutes les données des newsletters
-        $newslettersDatas = [];
-        foreach ($newsletters as $key => $value) {
-            $content = 'getNewContent' . ucFirst($locale);
+        $datas = [];
 
-            $newslettersDatas[$key] = [
+        // Pagination : calcul du nombres de pages en fonction du nombre d'éléments par page
+        $datas['pagination']['pages'] = (int) ceil($this->newsletterRepo->getnumber() / self::NEWSLETTERS_PER_PAGE);
+
+        // Pagination : ajout numéro page courante pour la pagination
+        $datas['pagination']['page'] = $page;
+
+        // Pagination : ajout d'url
+        $datas['pagination']['url'] = 'actualites';
+
+        foreach ($newsletters as $key => $value) {
+            $getContent = 'getNewContent' . ucFirst($locale);
+
+            $datas['cards'][$key] = [
                 'id' => $value->getId(),
                 'createdAt' => $value->getNewCreatedAt(),
-                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)), 58),
-                'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES)),
+                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$getContent(), ENT_QUOTES)), 58),
+                'image' => $imagine->toSquareFourHundreds($regex->findFirstImage(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES))),
+                'url' => 'actualite',
             ];
         }
 
         return $this->render('newsletter/index.html.twig', [
-            'newsletters' => $newslettersDatas,
-            'page' => $page,
-            'pages' => $pages,
-            'paginationPath' => 'actualites',
+            'datas' => $datas,
         ]);
     }
 

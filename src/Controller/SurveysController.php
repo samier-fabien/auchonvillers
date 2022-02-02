@@ -3,33 +3,22 @@
 namespace App\Controller;
 
 use DateTime;
-use App\Entity\Votes;
-use App\Entity\Events;
 use App\Service\Regex;
-use App\Entity\Ballots;
 use App\Entity\Surveys;
-use App\Form\VotesType;
 use App\Entity\Opinions;
-use App\Form\EventsType;
-use App\Form\BallotsType;
+use App\Service\Imagine;
 use App\Form\SurveysType;
-use App\Repository\VotesRepository;
-use App\Repository\EventsRepository;
-use App\Repository\BallotsRepository;
 use App\Repository\SurveysRepository;
 use App\Repository\OpinionsRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SurveysController extends AbstractController
 {
@@ -45,7 +34,7 @@ class SurveysController extends AbstractController
     /**
      * @Route("/{locale}/enquetes/{page<\d+>}", name="surveys_index", methods={"GET"})
      */
-    public function index(string $locale, int $page = 1, Request $request, Regex $regex): Response
+    public function index(string $locale, int $page = 1, Request $request, Regex $regex, Imagine $imagine): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -53,32 +42,48 @@ class SurveysController extends AbstractController
             return $this->redirect("/");
         }
 
-        // Recherche des evenements dans la bdd
+        // Liste des surveys
         $surveys = $this->surveysRepo->findByPage($page, self::SURVEYS_PER_PAGE);
 
-        // Calcul du nombres de pages en fonction du nombre d'éléments par page
-        $pages = (int) ceil($this->surveysRepo->getnumber() / self::SURVEYS_PER_PAGE);
+        // Si liste vide retour avec flash message
+        if (empty($surveys)) {
+            $this->addFlash('notice', $this->translator->trans('La page que vous essayez de consulter n\'existe pas.'));
+            return $this->redirectToRoute('surveys_index', [
+                'locale' => $locale,
+                'page' => 1,
+            ]);
+        }
 
         // Le tableau datas contient toutes les données des surveys
-        $surveysDatas = [];
-        foreach ($surveys as $key => $value) {
-            $content = 'getSurContent' . ucFirst($locale);
+        $datas = [];
 
-            $surveysDatas[$key] = [
+        // Calcul du nombres de pages en fonction du nombre d'éléments par page
+        $datas['pagination']['pages'] = (int) ceil($this->surveysRepo->getnumber() / self::SURVEYS_PER_PAGE);
+
+        // Pagination : ajout numéro page courante pour la pagination
+        $datas['pagination']['page'] = $page;
+
+        // Pagination : ajout d'url
+        $datas['pagination']['url'] = 'enquetes';
+
+        // Ajout / traitement données évènements
+        foreach ($surveys as $key => $value) {
+            $getContent = 'getSurContent' . ucFirst($locale);
+
+            $datas['cards'][$key] = [
                 'id' => $value->getId(),
                 'createdAt' => $value->getSurCreatedAt(),
                 'begining' => $value->getSurBegining(),
                 'end' => $value->getSurEnd(),
-                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)), 58),
+                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$getContent(), ENT_QUOTES)), 58),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getSurContentFr(), ENT_QUOTES)),
+                'image' => $imagine->toSquareFourHundreds($regex->findFirstImage(htmlspecialchars_decode($value->getSurContentFr(), ENT_QUOTES))),
+                'url' => 'enquete',
             ];
         }
         
         return $this->render('surveys/index.html.twig', [
-            'surveys' => $surveysDatas,
-            'page' => $page,
-            'pages' => $pages,
-            'paginationPath' => 'enquetes',
+            'datas' => $datas,
         ]);
     }
 

@@ -9,20 +9,21 @@ use App\Service\Regex;
 use App\Entity\Ballots;
 use App\Form\VotesType;
 use App\Form\EventsType;
+use App\Service\Imagine;
 use App\Form\BallotsType;
-use App\Repository\BallotsRepository;
 use App\Repository\VotesRepository;
 use App\Repository\EventsRepository;
+use App\Repository\BallotsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class VotesController extends AbstractController
 {
@@ -38,7 +39,7 @@ class VotesController extends AbstractController
     /**
      * @Route("/{locale}/votes/{page<\d+>}", name="votes_index", methods={"GET"})
      */
-    public function index(string $locale, int $page = 1, Request $request, Regex $regex): Response
+    public function index(string $locale, int $page = 1, Request $request, Regex $regex, Imagine $imagine): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -46,32 +47,47 @@ class VotesController extends AbstractController
             return $this->redirect("/");
         }
 
-        // Recherche des evenements dans la bdd
+        // Liste des votes
         $votes = $this->votesRepo->findByPage($page, self::VOTES_PER_PAGE);
 
-        // Calcul du nombres de pages en fonction du nombre d'éléments par page
-        $pages = (int) ceil($this->votesRepo->getnumber() / self::VOTES_PER_PAGE);
+        // Si liste vide retour avec flash message
+        if (empty($votes)) {
+            $this->addFlash('notice', $this->translator->trans('La page que vous essayez de consulter n\'existe pas.'));
+            return $this->redirectToRoute('votes_index', [
+                'locale' => $locale,
+                'page' => 1,
+            ]);
+        }
 
         // Le tableau datas contient toutes les données des votes
-        $votesDatas = [];
-        foreach ($votes as $key => $value) {
-            $content = 'getVotContent' . ucFirst($locale);
+        $datas = [];
 
-            $votesDatas[$key] = [
+        // Pagination : calcul du nombres de pages en fonction du nombre d'éléments par page
+        $datas['pagination']['pages'] = (int) ceil($this->votesRepo->getnumber() / self::VOTES_PER_PAGE);
+
+        // Pagination : ajout numéro page courante pour la pagination
+        $datas['pagination']['page'] = $page;
+
+        // Pagination : ajout d'url
+        $datas['pagination']['url'] = 'votes';
+
+        // Ajout / traitement données votes
+        foreach ($votes as $key => $value) {
+            $getContent = 'getVotContent' . ucFirst($locale);
+
+            $datas['cards'][$key] = [
                 'id' => $value->getId(),
                 'createdAt' => $value->getVotCreatedAt(),
                 'begining' => $value->getVotBegining(),
                 'end' => $value->getVotEnd(),
-                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)), 58),
-                'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getVotContentFr(), ENT_QUOTES)),
+                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$getContent(), ENT_QUOTES)), 58),
+                'image' => $imagine->toSquareFourHundreds($regex->findFirstImage(htmlspecialchars_decode($value->getVotContentFr(), ENT_QUOTES))),
+                'url' => 'vote',
             ];
         }
         
         return $this->render('votes/index.html.twig', [
-            'votes' => $votesDatas,
-            'page' => $page,
-            'pages' => $pages,
-            'paginationPath' => 'votes',
+            'datas' => $datas,
         ]);
     }
 

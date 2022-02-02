@@ -10,6 +10,7 @@ use App\Repository\VotesRepository;
 use App\Repository\EventsRepository;
 use App\Repository\SurveysRepository;
 use App\Repository\NewsletterRepository;
+use App\Service\Imagine;
 use Liip\ImagineBundle\Service\FilterService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,8 +20,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class HomeController extends AbstractController
 {
-    public const NUMBER_OF_NEWSLETTERS = 6;
-    public const NUMBER_OF_ACTIVITIES = 6;
+    public const NUMBER_OF_NEWSLETTERS = 4;
+    public const NUMBER_OF_ACTIVITIES = 4;
     private $newsletterRepo;
     private $eventsRepo;
     private $surveysRepo;
@@ -56,7 +57,7 @@ class HomeController extends AbstractController
     /**
      * @Route("/{locale}", name="home")
      */
-    public function home(string $locale, Request $request, Regex $regex, ArraySort $arraySort, UserRepository $userRepo, FilterService $imagine): Response
+    public function home(string $locale, Request $request, Regex $regex, ArraySort $arraySort, UserRepository $userRepo, Imagine $imagine): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -64,8 +65,7 @@ class HomeController extends AbstractController
             return $this->redirect("/");
         }
         
-        // Recherche des "x" dernieres newsletters dans la bdd
-        $newsletters = $this->newsletterRepo->findLast(self::NUMBER_OF_NEWSLETTERS);
+        
 
         // Le tableau datas contient toutes les données des newsletters
         // Utilité :
@@ -79,26 +79,16 @@ class HomeController extends AbstractController
             'newslettersButtonAlt' => $this->translator->trans('Lien vers la liste des actualités'),
             'newslettersButtonPath' => "/" . $locale . "/actualites/1",
         ];
-        foreach ($newsletters as $key => $value) {
-            $content = 'getNewContent' . ucFirst($locale);
 
-            // Config pour thumbnail
-            $resourcePath = $imagine->getUrlOfFilteredImageWithRuntimeFilters(
-                $regex->findFirstImage(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES)),
-                'my_thumb',
-                [
-                    'thumbnail' => [
-                        'size' => [400, 400],
-                        'mode' => 'outbound',
-                    ]
-                ]
-            );
+        // Recherche des "x" dernieres newsletters dans la bdd
+        foreach ($this->newsletterRepo->findLast(self::NUMBER_OF_NEWSLETTERS) as $key => $value) {
+            $getContent = 'getNewContent' . ucFirst($locale);
             
             $newslettersDatas['newslettersList'][$key] = [
                 'id' => $value->getId(),
                 'createdAt' => $this->translator->trans('Le ') . $value->getNewCreatedAt()->format('d-m-Y'),
-                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)), 58),
-                'thumb' => $resourcePath,
+                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$getContent(), ENT_QUOTES)), 58),
+                'thumb' => $imagine->toSquareFourHundreds($regex->findFirstImage(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES))),
                 'alt' => $this->translator->trans('Image introductive relative à la nouvelle'),
                 'button' => $this->translator->trans('Voir'),
                 'link' => "/" . $locale . "/actualite/" . $value->getId(),
@@ -107,64 +97,60 @@ class HomeController extends AbstractController
 
 
         // Recherche des "x" derniers evenements dans la bdd
-        $events = $this->eventsRepo->findLast(self::NUMBER_OF_ACTIVITIES);
         $eventsDatas = [];
-        foreach ($events as $key => $value) {
-            $content = 'getEveContent' . ucFirst($locale);
+        foreach ($this->eventsRepo->findLast(self::NUMBER_OF_ACTIVITIES) as $key => $value) {
+            $getContent = 'getEveContent' . ucFirst($locale);
 
             $eventsDatas[$key] = [
                 'id' => $value->getId(),
                 'createdAt' => $value->getEveCreatedAt(),
                 'begining' => $value->getEveBegining(),
                 'end' => $value->getEveEnd(),
-                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
-                'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getEveContentFr(), ENT_QUOTES)),
-                'type' => 'evenement'
+                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$getContent(), ENT_QUOTES)),
+                'image' => $imagine->toSquareFourHundreds($regex->findFirstImage(htmlspecialchars_decode($value->getEveContentFr(), ENT_QUOTES))),
+                'url' => 'evenement'
             ];
         }
         
         // Recherche des "x" dernieres enquetes dans la bdd
-        $surveys = $this->surveysRepo->findLast(self::NUMBER_OF_ACTIVITIES);
         $surveysDatas = [];
-        foreach ($surveys as $key => $value) {
-            $content = 'getSurContent' . ucFirst($locale);
+        foreach ($this->surveysRepo->findLast(self::NUMBER_OF_ACTIVITIES) as $key => $value) {
+            $getContent = 'getSurContent' . ucFirst($locale);
 
             $surveysDatas[$key] = [
                 'id' => $value->getId(),
                 'createdAt' => $value->getSurCreatedAt(),
                 'begining' => $value->getSurBegining(),
                 'end' => $value->getSurEnd(),
-                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
-                'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getSurContentFr(), ENT_QUOTES)),
-                'type' => 'enquete'
+                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$getContent(), ENT_QUOTES)),
+                'image' => $imagine->toSquareFourHundreds($regex->findFirstImage(htmlspecialchars_decode($value->getSurContentFr(), ENT_QUOTES))),
+                'url' => 'enquete'
             ];
         }
 
         // Recherche des "x" dernieres votes dans la bdd
-        $votes = $this->votesRepo->findLast(self::NUMBER_OF_ACTIVITIES);
         $votesDatas = [];
-        foreach ($votes as $key => $value) {
-            $content = 'getVotContent' . ucFirst($locale);
+        foreach ($this->votesRepo->findLast(self::NUMBER_OF_ACTIVITIES) as $key => $value) {
+            $getContent = 'getVotContent' . ucFirst($locale);
 
             $votesDatas[$key] = [
                 'id' => $value->getId(),
                 'createdAt' => $value->getVotCreatedAt(),
                 'begining' => $value->getVotBegining(),
                 'end' => $value->getVotEnd(),
-                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
-                'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getVotContentFr(), ENT_QUOTES)),
-                'type' => 'vote'
+                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$getContent(), ENT_QUOTES)),
+                'image' => $imagine->toSquareFourHundreds($regex->findFirstImage(htmlspecialchars_decode($value->getVotContentFr(), ENT_QUOTES))),
+                'url' => 'vote'
             ];
         }
 
-        $activitiesDatas = $arraySort->sortLastsByDatetime(array_merge($eventsDatas, $surveysDatas, $votesDatas), self::NUMBER_OF_ACTIVITIES);
+        $datas['activitiesCards'] = $arraySort->sortLastsByDatetime(array_merge($eventsDatas, $surveysDatas, $votesDatas), self::NUMBER_OF_ACTIVITIES);
 
         return $this->render('home/home.html.twig', [
-            'newsletters' => $newslettersDatas,
-            'activities' => $activitiesDatas,
+            //'newsletters' => $newslettersDatas,
+            'datas' => $datas,
             'jsonnewsletters' => json_encode($newslettersDatas),
             'newslettersTitle' => $this->translator->trans('Dernières actualités'),
-            ''
         ]);
     }
 

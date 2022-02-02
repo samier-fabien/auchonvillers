@@ -9,6 +9,7 @@ use App\Entity\Attends;
 use App\Form\EventsType;
 use App\Repository\AttendsRepository;
 use App\Repository\EventsRepository;
+use App\Service\Imagine;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,7 +37,7 @@ class EventsController extends AbstractController
     /**
      * @Route("/{locale}/evenements/{page<\d+>}", name="events_index", methods={"GET"})
      */
-    public function index(string $locale, int $page = 1, Request $request, Regex $regex): Response
+    public function index(string $locale, int $page = 1, Request $request, Regex $regex, Imagine $imagine): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -44,32 +45,47 @@ class EventsController extends AbstractController
             return $this->redirect("/");
         }
 
-        // Recherche des evenements dans la bdd
+        // Liste des events
         $events = $this->eventsRepo->findByPage($page, self::EVENTS_PER_PAGE);
 
-        // Calcul du nombres de pages en fonction du nombre d'éléments par page
-        $pages = (int) ceil($this->eventsRepo->getnumber() / self::EVENTS_PER_PAGE);
-        
-        // Le tableau datas contient toutes les données des events
-        $eventsDatas = [];
-        foreach ($events as $key => $value) {
-            $content = 'getEveContent' . ucFirst($locale);
+        // Si liste vide retour avec flash message
+        if (empty($events)) {
+            $this->addFlash('notice', $this->translator->trans('La page que vous essayez de consulter n\'existe pas.'));
+            return $this->redirectToRoute('events_index', [
+                'locale' => $locale,
+                'page' => 1,
+            ]);
+        }
 
-            $eventsDatas[$key] = [
+        // Le tableau datas contient toutes les données envoyées à twig
+        $datas = [];
+
+        // Pagination : calcul du nombres de pages en fonction du nombre d'éléments par page
+        $datas['pagination']['pages'] = (int) ceil($this->eventsRepo->getnumber() / self::EVENTS_PER_PAGE);
+
+        // Pagination : ajout numéro page courante pour la pagination
+        $datas['pagination']['page'] = $page;
+
+        // Pagination : ajout d'url
+        $datas['pagination']['url'] = 'evenements';
+
+        // Ajout / traitement données évènements
+        foreach ($events as $key => $value) {
+            $getContent = 'getEveContent' . ucFirst($locale);
+
+            $datas['cards'][$key] = [
                 'id' => $value->getId(),
                 'createdAt' => $value->getEveCreatedAt(),
                 'begining' => $value->getEveBegining(),
                 'end' => $value->getEveEnd(),
-                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)), 58),
-                'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getEveContentFr(), ENT_QUOTES)),
+                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$getContent(), ENT_QUOTES)), 58),
+                'image' => $imagine->toSquareFourHundreds($regex->findFirstImage(htmlspecialchars_decode($value->getEveContentFr(), ENT_QUOTES))),
+                'url' => 'evenement',
             ];
         }
 
         return $this->render('events/index.html.twig', [
-            'events' => $eventsDatas,
-            'page' => $page,
-            'pages' => $pages,
-            'paginationPath' => 'evenements',
+            'datas' => $datas,
         ]);
     }
 

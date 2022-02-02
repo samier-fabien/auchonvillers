@@ -1,7 +1,7 @@
 <nav class="d-flex justify-content-center my-5" aria-label="Pagination">
-    {% set url = '/'~app.request.locale~'/'~paginationPath~'/' %}
-    {% set page = page %}
-    {% set pages = pages %}
+    {% set url = '/'~app.request.locale~'/'~datas.pagination.url~'/' %}
+    {% set page = datas.pagination.page %}
+    {% set pages = datas.pagination.pages %}
     {% set nearby = 3 %}
 
     {% apply spaceless %}

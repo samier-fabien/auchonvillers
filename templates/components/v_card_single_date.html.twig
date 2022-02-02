@@ -1,0 +1,16 @@
+<div class="col mb-4 d-flex">
+    <article class="col card bg-light text-dark shadow align-self-stretch">
+        <img class="card-img p-0" src="{{ card.image }}" alt="{% trans %}Image introductive.{% endtrans %}">
+
+        <div class="card-img-overlay p-4 d-flex flex-column flex-grow hidden-background">
+            <div class="mb-auto mt-auto text-center">
+                <a class="hidden-button btn btn-lg btn-outline-dark px-5 fs-2 fw-bolder" href="/{{ app.request.locale }}/{{ card.url }}/{{ card.id }}">{% trans %}Voir{% endtrans %}</a>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <h5 class="card-title fs-4">{% trans %}Le{% endtrans %} {{ card.createdAt | date('d-m-Y') }}</h5>
+            <p class="card-text fs-5">{{ card.content}}</p>
+        </div>
+    </article>
+</div>

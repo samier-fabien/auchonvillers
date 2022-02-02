@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Evènements{% endblock %}
+{% block title %}{% trans %}Evènements{% endtrans %}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-5">
@@ -9,23 +9,8 @@
 			<h1 class="text-center text-dark title-section">{% trans %}Evènements{% endtrans %}</h1>
 		</div>
 		<div class="row row-cols-1 row-cols-xs-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-4">
-			{% for event in events %}
-			<div class="col mb-4 d-flex">
-				<article class="col card bg-light text-dark shadow align-self-stretch">
-					<img class="card-img p-0" src="{{ asset(event.thumb) | imagine_filter('my_thumb') }}" alt="{% trans %}Image introductive relative à l'évènement.{% endtrans %}">
-
-					<div class="card-img-overlay p-4 d-flex flex-column flex-grow hidden-background">
-						<div class="mb-auto mt-auto text-center">
-							<a class="hidden-button btn btn-lg btn-outline-dark px-5 fs-2 fw-bolder" href="/{{ app.request.locale }}/enquete/{{ event.id }}">{% trans %}Voir{% endtrans %}</a>
-						</div>
-					</div>
-
-					<div class="card-body">
-						<h5 class="card-title fs-5">{% trans %}Du{% endtrans %} {{ event.begining|date('d-m-Y H\\hi') }}<br>{% trans %}au{% endtrans %} {{ event.end|date('d-m-Y H\\hi') }}</h5>
-						<p class="card-text fs-5">{{ event.content}}</p>
-					</div>
-				</article>
-			</div>
+			{% for card in datas.cards %}
+				{{ include('components/v_card_from_to.html.twig') }}
 			{% endfor %}
 		</div>
 	</section>
