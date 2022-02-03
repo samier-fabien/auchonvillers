@@ -98,3 +98,14 @@ article.card img {
     padding: 0.6rem;
   }
 }
+
+
+
+
+/* Effet sur titre */
+.title {
+  border-style: solid;
+  border-width: 0 0 0.2rem 0;
+  width:100%;
+  border-image: linear-gradient(45deg, rgba(246,144,0,1) 0%, rgba(172,66,255,1)) 1;
+}
