@@ -24,6 +24,20 @@ content: "";
 
   
 /* Relatif au composant carte verticale a supprimer quand tous le twig aura été converti en vue.js */
+.v-card, .v-card article {
+  transition: all 0.4s;
+}
+.v-card .card, .v-card article .card-img-overlay{
+  border-radius: 1rem;
+}
+.v-card article img {
+  border-radius: 1rem 1rem 0rem 0rem;
+}
+.v-card article .card-body {
+  z-index: 1;
+}
+
+/* Partie cachée */
 .hidden-button {
     border-radius: 30px;
     opacity: 0;
@@ -35,32 +49,29 @@ content: "";
     opacity: 0;
     transition: all 0.4s;
 }
-.card, .card-img-overlay{
-    border-radius: 1rem;
-}
-article.card img {
-    border-radius: 1rem 1rem 0rem 0rem;
-}
-.card-body {
-    z-index: 1;
-}
 
 /* Au survol */
-.card:hover .hidden-background {
+.v-card article:hover {
+  transform: scale(1.03);
+}
+.v-card .card:hover .hidden-background {
     opacity: 0.7;
     
 }
-.card:hover .hidden-button {
+.v-card .card:hover .hidden-button {
     opacity: 1;
     transform: translateY(0px);
 }
 
 /* Version mobile : au toucher */
-.card:active .hidden-button {
+.v-card article:active {
+  transform: scale(1.03);
+}
+.v-card .card:active .hidden-button {
     opacity: 1;
     transform: translateY(0px);
 }
-.card:active .hidden-background {
+.v-card .card:active .hidden-background {
     opacity: 0.7;
 }
 
@@ -69,8 +80,8 @@ article.card img {
 
 /* Relatif au composant carte horizontale a supprimer quand tous le twig aura été converti en vue.js */
 .h-card {
-  /* border-radius: 1rem 0rem 0rem 1rem; */
-  transition: all 0.3s;
+  border-radius: 1rem 1rem 1rem 1rem;
+  transition: all 0.4s;
   /* scale: 0.95; */
 }
 
@@ -78,11 +89,29 @@ article.card img {
   transform: scale(1.03);
 }
 
-@media only screen and (max-width: 576px) {
-  .h-car-img {
-    /* max-height: 100px; */
-    --bs-aspect-ratio: 50%;
-  }
+/* Au survol */
+.v-card article:hover {
+  transform: scale(1.03);
+}
+.v-card .card:hover .hidden-background {
+    opacity: 0.7;
+    
+}
+.v-card .card:hover .hidden-button {
+    opacity: 1;
+    transform: translateY(0px);
+}
+
+/* Version mobile : au toucher */
+.v-card article:active {
+  transform: scale(1.03);
+}
+.v-card .card:active .hidden-button {
+    opacity: 1;
+    transform: translateY(0px);
+}
+.v-card .card:active .hidden-background {
+    opacity: 0.7;
 }
 
 
@@ -98,6 +127,7 @@ article.card img {
     padding: 0.6rem;
   }
 }
+
 
 
 

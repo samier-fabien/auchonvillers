@@ -89,7 +89,7 @@ class HomeController extends AbstractController
                 'createdAt' => $this->translator->trans('Le ') . $value->getNewCreatedAt()->format('d-m-Y'),
                 'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$getContent(), ENT_QUOTES)), 58),
                 'thumb' => $imagine->toSquareFourHundreds($regex->findFirstImage(htmlspecialchars_decode($value->getNewContentFr(), ENT_QUOTES))),
-                'alt' => $this->translator->trans('Image introductive relative à la nouvelle'),
+                'alt' => $this->translator->trans('Image introductive'),
                 'button' => $this->translator->trans('Voir'),
                 'link' => "/" . $locale . "/actualite/" . $value->getId(),
             ];

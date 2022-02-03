@@ -1,5 +1,5 @@
 <template>
-<div class="col mb-4 d-flex">
+<div class="v-card col mb-4 d-flex">
     <article class="col card bg-white shadow text-dark border-0 align-self-stretch">
         <img class="card-img p-0" :src="image" :alt="alt">
 

@@ -177,7 +177,7 @@ class CategoryController extends AbstractController
                 'id' => $value->getId(),
                 'createdAt' => $value->getArtCreatedAt(),
                 'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$getContent(), ENT_QUOTES)),
-                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$getContent(), ENT_QUOTES)), 200),
+                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$getContent(), ENT_QUOTES)), 250),
                 'title' => $title = $regex->removeHtmlTags(htmlspecialchars_decode($value->$getTitle(), ENT_QUOTES)),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getArtContentFr(), ENT_QUOTES)),
                 'image' => $imagine->toSquareTwoHundreds($regex->findFirstImage(htmlspecialchars_decode($value->getArtContentFr(), ENT_QUOTES))),
