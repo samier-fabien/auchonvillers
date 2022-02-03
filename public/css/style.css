@@ -114,6 +114,15 @@ content: "";
     opacity: 0.7;
 }
 
+/* Effet sur titre */
+.title {
+  border-style: solid;
+  border-width: 0 0 0.3rem 0;
+  width:100%;
+  border-image: linear-gradient(45deg, rgba(172,66,255,1) 0%, rgba(246,144,0,1)) 1;
+}
+
+
 
 
 
@@ -132,10 +141,6 @@ content: "";
 
 
 
-/* Effet sur titre */
-.title {
-  border-style: solid;
-  border-width: 0 0 0.2rem 0;
-  width:100%;
-  border-image: linear-gradient(45deg, rgba(246,144,0,1) 0%, rgba(172,66,255,1)) 1;
+.ckeditor {
+  border-radius: 1rem;
 }

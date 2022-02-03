@@ -4,28 +4,15 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use DateTime;
-use App\Entity\Votes;
-use App\Entity\Events;
 use App\Service\Regex;
-use App\Entity\Ballots;
-use App\Entity\Category;
 use App\Form\ArticleType;
-use App\Form\VotesType;
-use App\Form\EventsType;
-use App\Form\BallotsType;
-use App\Form\CategoryType;
 use App\Repository\ArticleRepository;
-use App\Repository\BallotsRepository;
 use App\Repository\CategoryRepository;
-use App\Repository\VotesRepository;
-use App\Repository\EventsRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -115,27 +102,28 @@ class ArticleController extends AbstractController
 
         // Si l'article n'est pas trouvée
         if (is_null($article)) {
-            $message = $this->translator->trans('L\'article que vous essayez de consulter n\'existe pas.');
-            $this->addFlash('warning', $message);
+            $this->addFlash('warning', $this->translator->trans('L\'article que vous essayez de consulter n\'existe pas.'));
             return $this->redirectToRoute('home', [
                 'locale' => $locale,
             ]);
         }
 
+        // Le tableau datas contient toutes les données envoyées au template
+        $datas = [];
+
         $title = 'getArtTitle' . ucFirst($locale);
         $content = 'getArtContent' . ucFirst($locale);
 
         // On organise les données
-            $articleDatas = [
+            $datas['article'] = [
                 'id' => $article->getId(),
                 'createdAt' => $article->getArtCreatedAt(),
                 'title' => htmlspecialchars_decode($article->$title(), ENT_QUOTES),
                 'content' => htmlspecialchars_decode($article->$content(), ENT_QUOTES),
-                'thumb' => $regex->findFirstImage(htmlspecialchars_decode($article->getArtContentFr(), ENT_QUOTES)),
             ];
 
         return $this->render('article/show.html.twig', [
-            'article' => $articleDatas,
+            'datas' => $datas,
         ]);
     }
 

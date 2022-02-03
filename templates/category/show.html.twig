@@ -8,7 +8,7 @@
 <div class="container-fluid py-5">
 	<section class="container">
         <div class="d-flex flex-row flex-wrap mb-5">
-            <h1 class="flex-grow-1 text-center text-dark title-section">{{ datas.category.name | trans }}</h1>
+            <h1 class="flex-grow-1 text-center text-dark title-section">{{ datas.category.name }}</h1>
             <div class="d-flex flex-row justify-content-end me-auto ms-auto">
             {% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
                 <a class="d-flex pe-4 text-light text-decoration-none" href="/{{ app.request.locale }}/theme/{{ datas.category.id }}/agent/editer"><button class="btn btn-outline-warning">{% trans %}Editer{% endtrans %}</button></a>
