@@ -1,45 +1,28 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    {{ category.name|capitalize }}
+    {{ datas.category.name }}
 {% endblock %}
 
 {% block body %}
-<section>
-    <article class="my-5">
-        <div class="d-flex flex-row flex-wrap">
-            <h1 class="flex-grow-1">
-                {{ category.name|capitalize }}
-            </h1>
+<div class="container-fluid py-5">
+	<section class="container">
+        <div class="d-flex flex-row flex-wrap mb-5">
+            <h1 class="flex-grow-1 text-center text-dark title-section">{{ datas.category.name | trans }}</h1>
             <div class="d-flex flex-row justify-content-end me-auto ms-auto">
             {% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
-                <a class="d-flex pe-4 text-light text-decoration-none" href="/{{ app.request.locale }}/theme/{{ category.id }}/agent/editer"><button class="btn btn-outline-warning">{% trans %}Editer{% endtrans %}</button></a>
+                <a class="d-flex pe-4 text-light text-decoration-none" href="/{{ app.request.locale }}/theme/{{ datas.category.id }}/agent/editer"><button class="btn btn-outline-warning">{% trans %}Editer{% endtrans %}</button></a>
                 {{ include('category/_delete_form.html.twig') }}
             {% endif %}            
             </div>
+            <p class="mt-5 h4">{{ datas.category.description }}</p>
         </div>
 
-        <p>
-            {{ category.description|capitalize }}
-        </p>
-
-    </article>
-
-    {% for article in articles %}
-    <article class="my-5">
-        <img src="{{ asset(article.thumb) | imagine_filter('my_little_thumb') }}" alt="{% trans %}Image introductive relative à l'article.{% endtrans %}">
-        <h2>
-            {{ article.title|capitalize }}
-        </h2>
-        <p>
-            {{ article.content|capitalize|length > 200 ? article.content|capitalize|slice(0,200) ~ '...' : article.content|capitalize }}
-        </p>
-        <a href="/{{ app.request.locale }}/article/{{ article.id }}" class="text-light text-decoration-none"><button class="btn btn-primary">{% trans %}Voir{% endtrans %}</button></a>
-
-    </article>
-    {% endfor %}
-
-</section>
-
-    
+        <div class="row g-0">
+            {% for card in datas.cards %}
+                {{ include('components/h_card.html.twig') }}
+            {% endfor %}
+        </div>
+    </section>
+</div>
 {% endblock %}

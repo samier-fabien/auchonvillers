@@ -18,6 +18,7 @@ use App\Repository\BallotsRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\VotesRepository;
 use App\Repository\EventsRepository;
+use App\Service\Imagine;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -130,9 +131,9 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/{locale}/theme/{id<\d+>}", name="category_show", methods={"GET", "POST"})
+     * @Route("/{locale}/theme/{id<\d+>}", name="category_show", methods={"GET"})
      */
-    public function show(string $locale, int $id, Request $request, ManagerRegistry $doctrine, Regex $regex, ArticleRepository $articleRepo): Response
+    public function show(string $locale, int $id, Request $request, ManagerRegistry $doctrine, Regex $regex, Imagine $imagine, ArticleRepository $articleRepo): Response
     {
         // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
         if (!in_array($locale, $this->getParameter('app.locales'), true)) {
@@ -145,26 +146,21 @@ class CategoryController extends AbstractController
 
         // Si la catégorie n'est pas trouvée
         if (is_null($category)) {
-            $message = $this->translator->trans('Le thème que vous essayez de consulter n\'existe pas.');
-            $this->addFlash('notice', $message);
+            $this->addFlash('notice', $this->translator->trans('Le thème que vous essayez de consulter n\'existe pas.'));
             return $this->redirectToRoute('home', [
                 'locale' => $locale,
             ]);
         }
 
-        // // Décodage des données
-        // $category->setCatNameFr(htmlspecialchars_decode($category->getCatNameFr(), ENT_QUOTES))
-        //     ->setCatNameEn(htmlspecialchars_decode($category->getCatNameEn(), ENT_QUOTES))
-        //     ->setCatDescriptionFr(htmlspecialchars_decode($category->getCatDescriptionFr(), ENT_QUOTES))
-        //     ->setCatDescriptionEn(htmlspecialchars_decode($category->getCatDescriptionEn(), ENT_QUOTES))
-        // ;
+        // Le tableau datas contient toutes les données envoyées au template
+        $datas = [];
 
-        $name = 'getCatName' . ucfirst($locale);
+        $getName = 'getCatName' . ucfirst($locale);
         $description = 'getCatDescription' . ucfirst($locale);
 
-        $categoryDatas = [
+        $datas['category'] = [
             'id' => $category->getId(),
-            'name' => htmlspecialchars_decode($category->$name(), ENT_QUOTES),
+            'name' => htmlspecialchars_decode($category->$getName(), ENT_QUOTES),
             'description' => htmlspecialchars_decode($category->$description(), ENT_QUOTES),
             'number' => $category->getCatOrderOfAppearance(),
         ];
@@ -172,24 +168,25 @@ class CategoryController extends AbstractController
         // Recherche des articles par rapport a la catégorie
         $articles = $articleRepo->findBy(["category" => $category], ["art_order_of_appearance" => 'ASC']);
 
-        // On organise les données
-        $articlesDatas = [];
+        // Ajout / traitement données articles
         foreach ($articles as $key => $value) {
-            $content = 'getArtContent' . ucfirst($locale);
-            $title = 'getArtTitle' . ucfirst($locale);
+            $getContent = 'getArtContent' . ucfirst($locale);
+            $getTitle = 'getArtTitle' . ucfirst($locale);
 
-            $articlesDatas[$key] = [
+            $datas['cards'][$key] = [
                 'id' => $value->getId(),
                 'createdAt' => $value->getArtCreatedAt(),
-                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$content(), ENT_QUOTES)),
-                'title' => $title = $regex->removeHtmlTags(htmlspecialchars_decode($value->$title(), ENT_QUOTES)),
+                'content' => $regex->removeHtmlTags(htmlspecialchars_decode($value->$getContent(), ENT_QUOTES)),
+                'content' => $regex->textTruncate($regex->removeHtmlTags(htmlspecialchars_decode($value->$getContent(), ENT_QUOTES)), 200),
+                'title' => $title = $regex->removeHtmlTags(htmlspecialchars_decode($value->$getTitle(), ENT_QUOTES)),
                 'thumb' => $regex->findFirstImage(htmlspecialchars_decode($value->getArtContentFr(), ENT_QUOTES)),
+                'image' => $imagine->toSquareTwoHundreds($regex->findFirstImage(htmlspecialchars_decode($value->getArtContentFr(), ENT_QUOTES))),
+                'url' => 'article',
             ];
         }
 
         return $this->render('category/show.html.twig', [
-            'category' => $categoryDatas,
-            'articles' => $articlesDatas,
+            'datas' => $datas,
         ]);
     }
 

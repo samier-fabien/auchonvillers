@@ -23,7 +23,7 @@ content: "";
 
 
   
-/* Relatif au composant carte a supprimer quand tous le twig aura été converti en vue.js */
+/* Relatif au composant carte verticale a supprimer quand tous le twig aura été converti en vue.js */
 .hidden-button {
     border-radius: 30px;
     opacity: 0;
@@ -31,8 +31,9 @@ content: "";
     transition: all 0.4s;
 }
 .hidden-background {
-    background-color: rgba(247, 132, 39, 0);
-    --bs-bg-opacity: 0;
+  background: linear-gradient(145deg, #ef8c00, #f6be00);
+    opacity: 0;
+    transition: all 0.4s;
 }
 .card, .card-img-overlay{
     border-radius: 1rem;
@@ -45,14 +46,13 @@ article.card img {
 }
 
 /* Au survol */
+.card:hover .hidden-background {
+    opacity: 0.7;
+    
+}
 .card:hover .hidden-button {
     opacity: 1;
     transform: translateY(0px);
-}
-.card:hover .hidden-background {
-    background-color: rgba(246,144,0,0.7);
-    --bs-bg-opacity: 0.5;
-    transition: all 0.8s;
 }
 
 /* Version mobile : au toucher */
@@ -61,10 +61,31 @@ article.card img {
     transform: translateY(0px);
 }
 .card:active .hidden-background {
-    background-color: rgba(246,144,0,0.7);
-    --bs-bg-opacity: 0.5;
-    transition: all 0.8s;
+    opacity: 0.7;
 }
+
+
+
+
+/* Relatif au composant carte horizontale a supprimer quand tous le twig aura été converti en vue.js */
+.h-card {
+  /* border-radius: 1rem 0rem 0rem 1rem; */
+  transition: all 0.3s;
+  /* scale: 0.95; */
+}
+
+.h-card:hover {
+  transform: scale(1.03);
+}
+
+@media only screen and (max-width: 576px) {
+  .h-car-img {
+    /* max-height: 100px; */
+    --bs-aspect-ratio: 50%;
+  }
+}
+
+
 
 
 

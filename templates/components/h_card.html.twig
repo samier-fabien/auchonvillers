@@ -1,0 +1,15 @@
+<a href="/{{ app.request.locale }}/{{ card.url }}/{{ card.id }}/agent/editer" class="text-decoration-none">
+    <div class="col-12 card h-card bg-white text-dark shadow my-3">
+        <div class="row g-0 justify-content-center">
+            <div class="col-auto col-sm-auto p-3">
+                <img class="h-car-img text-center card-img p-0" src="{{ card.image }}" alt="{% trans %}Image introductive.{% endtrans %}">
+            </div>
+            <div class="col-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ card.title }}</h5>
+                <p class="card-text">{{ card.content }}</p>
+            </div>
+            </div>
+        </div>
+    </div>
+</a>

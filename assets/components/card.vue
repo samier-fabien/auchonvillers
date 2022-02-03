@@ -1,6 +1,6 @@
 <template>
 <div class="col mb-4 d-flex">
-    <article class="col card bg-light text-dark shadow align-self-stretch">
+    <article class="col card bg-white shadow text-dark border-0 align-self-stretch">
         <img class="card-img p-0" :src="image" :alt="alt">
 
         <div class="card-img-overlay p-4 d-flex flex-column flex-grow hidden-background">
@@ -25,8 +25,9 @@
     transition: all 0.4s;
 }
 .hidden-background {
-    background-color: rgba(247, 132, 39, 0);
-    --bs-bg-opacity: 0;
+  background: linear-gradient(145deg, #ef8c00, #f6be00);
+    opacity: 0;
+    transition: all 0.4s;
 }
 .card, .card-img-overlay{
     border-radius: 1rem;
@@ -39,14 +40,13 @@ article.card img {
 }
 
 /* Au survol */
+.card:hover .hidden-background {
+    opacity: 0.7;
+    
+}
 .card:hover .hidden-button {
     opacity: 1;
     transform: translateY(0px);
-}
-.card:hover .hidden-background {
-    background-color: rgba(246,144,0,0.7);
-    --bs-bg-opacity: 0.5;
-    transition: all 0.8s;
 }
 
 /* Version mobile : au toucher */
@@ -55,9 +55,7 @@ article.card img {
     transform: translateY(0px);
 }
 .card:active .hidden-background {
-    background-color: rgba(246,144,0,0.7);
-    --bs-bg-opacity: 0.5;
-    transition: all 0.8s;
+    opacity: 0.7;
 }
 </style>
 

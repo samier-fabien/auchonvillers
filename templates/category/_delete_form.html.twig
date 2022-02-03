@@ -1,4 +1,4 @@
-<form class="d-flex" method="post" action="{{ path('category_delete', {'locale': app.request.locale, 'id': category.id}) }}" onsubmit="return confirm('{% trans %}Etes-vous sure de vouloir supprimer ce thème et tous les articles associés ?{% endtrans %}');">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+<form class="d-flex" method="post" action="{{ path('category_delete', {'locale': app.request.locale, 'id': datas.category.id}) }}" onsubmit="return confirm('{% trans %}Etes-vous sure de vouloir supprimer ce thème et tous les articles associés ?{% endtrans %}');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ datas.category.id) }}">
     <button class="btn btn-outline-danger">{% trans %}Supprimer{% endtrans %}</button>
 </form>
