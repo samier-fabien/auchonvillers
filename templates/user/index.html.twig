@@ -1,23 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ title|trans }}{% endblock %}
+{% block title %}Liste des utilisateurs: {{ datas.title}}{% endblock %}
 
 {% block body %}
-<section>
-    
-    <h1>{{ title|trans }}</h1>
+<section class="container-fluid">
+	<div class="mb-5">
+		<h1 class="text-center text-dark title-section">Liste des utilisateurs: {{ datas.title }}</h1>
+	</div>
+</section>
 
-    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'my-5'}}) }}
+<div class="container-fluid bg-white py-5">
+    {{ form_start(datas.form, {'attr': {'novalidate': 'novalidate', 'class': 'mb-5'}}) }}
         <div class="row d-flex justify-content-center">
-            <div class="col-auto p-1">{{ form_label(form.type) }}</div>
-            <div class="col-auto">{{ form_widget(form.type) }}</div>
+            <div class="col-auto p-1">{{ form_label(datas.form.type) }}</div>
+            <div class="col-auto">{{ form_widget(datas.form.type) }}</div>
             <div class="col-auto"><button type="submit" class="btn btn-primary">Ok</button></div>
         </div>
         <input type="hidden" name="token" value="{{ csrf_token('user-item' ~ app.user.id) }}"/>
-        {{ form_errors(form) }}
-    {{ form_end(form) }}
+        {{ form_errors(datas.form) }}
+    {{ form_end(datas.form) }}
 
-    <div class="table-responsive">
+    <div class="table-responsive bg-white">
         <table class="table align-middle">
             <thead>
                 <th scope="col">#</th>
@@ -33,7 +36,7 @@
                 <th scope="col">{% trans %}Actions possibles{% endtrans %}</th>
             </thead>
             <tbody>
-                {% for user in users %}
+                {% for user in datas.users %}
                     <tr>
                         <th scope="row">{{ loop.index }}</th>
                         <td>{{ user.email }}</td>
@@ -58,50 +61,6 @@
             </tbody>
         </table>
     </div>
-</section>
-<div>
-    {% set url = '/'~app.request.locale~'/agent/inscrits/utilisateurs/' %}
-    {% set page = page %}
-    {% set pages = pages %}
-    {% set nearby = 4 %}
-
-    {% apply spaceless %}
-        {% if pages > 1 %}
-            {% if page > 1 %}
-                <a href="{{ (url ~ (page-1))|e }}/">&laquo;</a>
-            {% endif %}
-
-            {% for i in 1..pages %}
-                {% if 0 == (page - nearby) - loop.index %}
-                    <a href="{{ (url ~ 1)|e }}/">1</a>
-                    {% if 1 != loop.index %}
-                        <a href="#">...</a>
-                    {% endif %}
-                {% elseif 0 == (page + nearby) - loop.index  and (page + nearby) < pages %}
-                    <a href="#">...</a>
-                {% elseif 0 < (page - nearby) - loop.index %}
-                    <!-- #1 -->
-                {% elseif 0 > (page + nearby) - loop.index %}
-                    <!-- #2 -->
-                {% else %}
-                        {% if page == loop.index  %}
-                            <strong><a href="#">{{ loop.index }}</a></strong>
-                        {% else %}
-                            {% if loop.index == 1 %}
-                                <a href="{{ (url ~ 1)|e }}">{{ loop.index }}</a>
-                            {% else %}
-                                <a href="{{ url ~ loop.index }}/">{{ loop.index }}</a>
-                            {% endif %}
-                        {% endif %}
-                {% endif %}
-            {% endfor %}
-            {% if page != pages  and (page + nearby) < pages %}
-                <a href="{{ (url ~ pages)|e }}/">{{ pages }}</a>
-            {% endif %}
-            {% if page < pages %}
-                <a href="{{ (url ~ (page+1))|e }}/">&raquo;</a>
-            {% endif %}
-        {% endif %}
-    {% endapply %}
 </div>
+{{ include('components/pagination.html.twig') }}
 {% endblock %}

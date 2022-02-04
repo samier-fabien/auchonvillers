@@ -2,15 +2,6 @@
 
 namespace App\Controller;
 
-use DateTime;
-use App\Entity\Votes;
-use App\Entity\Events;
-use App\Service\Regex;
-use App\Service\Roles;
-use App\Entity\Ballots;
-use App\Form\VotesType;
-use App\Form\EventsType;
-use App\Form\BallotsType;
 use App\Service\RolesChecker;
 use App\Repository\ChatRepository;
 use App\Repository\UserRepository;
@@ -23,7 +14,6 @@ use App\Repository\MessageRepository;
 use App\Repository\SurveysRepository;
 use App\Repository\OpinionsRepository;
 use App\Repository\NewsletterRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
@@ -85,6 +75,14 @@ class UserController extends AbstractController
                 'locale'=> $request->getSession()->get('_locale'),
             ]);
         }
+
+        // Le tableau datas contient toutes les données des surveys
+        $datas = [];
+
+        // Page demandée
+        $datas['pagination']['page'] = $page;
+
+        $datas['pagination']['url'] = 'agent/inscrits/'.$type;
 
         $user = $this->userRepo->findOneBy(['id' => $this->getUser()->getId()]);
         $askedRole = null;
@@ -169,7 +167,7 @@ class UserController extends AbstractController
 
         $userDatas = [];
         foreach ($users as $key => $userFromList) {
-            $userDatas[$key] = [
+            $datas['users'][$key] = [
                 'id' => $userFromList->getId(),
                 'email' => $userFromList->getEmail(),
                 'firstName' => $firstName = ($userFromList->getFirstName() == "") ? '?' : $userFromList->getFirstName(),
@@ -182,18 +180,22 @@ class UserController extends AbstractController
             ];
 
             $listRoleChecker = new RolesChecker($userFromList->getRoles());
-            $userDatas[$key]['roles'] = $listRoleChecker->getRoles();
+            $datas['users'][$key]['roles'] = $listRoleChecker->getRoles();
         }
 
         // Calcul du nombres de pages en fonction du nombre d'evenements par page
-        $pages = (int) ceil($this->userRepo->countByRole($askedRole) / self::ACCOUNTS_PER_PAGE);
+        $datas['pagination']['pages'] = (int) ceil($this->userRepo->countByRole($askedRole) / self::ACCOUNTS_PER_PAGE);
+
+
+
+        // Vue du formulaire
+        $datas['form'] = $form->createView();
+
+        // Titre de la page en fonction du role recherché
+        $datas['title'] = $this->translator->trans(RolesChecker::urlToTitle($type));
 
         return $this->render('user/index.html.twig', [
-            'form' => $form->createView(),
-            'users' => $userDatas,
-            'page' => $page,
-            'pages' => $pages,
-            'title' => RolesChecker::urlToTitle($type),
+            'datas' => $datas,
         ]);
     }
 
