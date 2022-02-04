@@ -3,22 +3,20 @@
 {% block title %}{{ datas.article.title }}{% endblock %}
 
 {% block body %}  
-<div class="container-fluid py-5">
-    <div class="container">
-        <div class="d-flex flex-row flex-wrap mb-5">
-            <h1 class="flex-grow-1 text-center text-dark title-section">{{ datas.article.title }}</h1>
-            <div class="d-flex flex-row justify-content-end me-auto ms-auto">
-            {% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
-                <a class="d-flex pe-4 text-light text-decoration-none" href="/{{ app.request.locale }}/article/{{ datas.article.id }}/agent/editer"><button class="btn btn-outline-warning">{% trans %}Editer{% endtrans %}</button></a>
-                {{ include('article/_delete_form.html.twig') }}
-            {% endif %}
-            </div>
+<div class="container">
+    <div class="d-flex flex-row flex-wrap mb-5">
+        <h1 class="flex-grow-1 text-center text-dark title-section">{{ datas.article.title }}</h1>
+        <div class="d-flex flex-row justify-content-end me-auto ms-auto">
+        {% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
+            <a class="d-flex pe-4 text-light text-decoration-none" href="/{{ app.request.locale }}/article/{{ datas.article.id }}/agent/editer"><button class="btn btn-outline-warning">{% trans %}Editer{% endtrans %}</button></a>
+            {{ include('article/_delete_form.html.twig') }}
+        {% endif %}
         </div>
     </div>
-	<section class="container bg-white shadow p-5 ckeditor">
-        <article>
-            {{ datas.article.content|raw }}
-        </article>
-	</section>
 </div>
+<section class="container bg-white shadow p-5 ckeditor">
+    <article>
+        {{ datas.article.content|raw }}
+    </article>
+</section>
 {% endblock %}

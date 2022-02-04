@@ -5,24 +5,22 @@
 {% endblock %}
 
 {% block body %}
-<div class="container-fluid py-5">
-	<section class="container">
-        <div class="d-flex flex-row flex-wrap mb-5">
-            <h1 class="flex-grow-1 text-center text-dark title-section">{{ datas.category.name }}</h1>
-            <div class="d-flex flex-row justify-content-end me-auto ms-auto">
-            {% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
-                <a class="d-flex pe-4 text-light text-decoration-none" href="/{{ app.request.locale }}/theme/{{ datas.category.id }}/agent/editer"><button class="btn btn-outline-warning">{% trans %}Editer{% endtrans %}</button></a>
-                {{ include('category/_delete_form.html.twig') }}
-            {% endif %}            
-            </div>
-            <p class="mt-5 h4">{{ datas.category.description }}</p>
+<section class="container">
+    <div class="d-flex flex-row flex-wrap mb-5">
+        <h1 class="flex-grow-1 text-center text-dark title-section">{{ datas.category.name }}</h1>
+        <div class="d-flex flex-row justify-content-end me-auto ms-auto">
+        {% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
+            <a class="d-flex pe-4 text-light text-decoration-none" href="/{{ app.request.locale }}/theme/{{ datas.category.id }}/agent/editer"><button class="btn btn-outline-warning">{% trans %}Editer{% endtrans %}</button></a>
+            {{ include('category/_delete_form.html.twig') }}
+        {% endif %}            
         </div>
+        <p class="mt-5 h4">{{ datas.category.description }}</p>
+    </div>
 
-        <div class="row g-0">
-            {% for card in datas.cards %}
-                {{ include('components/h_card.html.twig') }}
-            {% endfor %}
-        </div>
-    </section>
-</div>
+    <div class="row g-0">
+        {% for card in datas.cards %}
+            {{ include('components/h_card.html.twig') }}
+        {% endfor %}
+    </div>
+</section>
 {% endblock %}
