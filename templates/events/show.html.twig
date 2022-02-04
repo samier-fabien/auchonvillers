@@ -3,28 +3,27 @@
 {% block title %}Evenement{% endblock %}
 
 {% block body %}
-<section>
-    <h1>{% trans %}Evenement{% endtrans %}</h1>
-    <div>
-        <p>{% trans %}Du{% endtrans %} {{ event.begining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ event.end|date('Y-m-d') }}</p>
-        <p>
-            {{ event.content|raw }}
-        </p>
+<div class="container">
+    <div class="d-flex flex-row flex-wrap mb-5">
+        <h1 class="flex-grow-1 text-center text-dark title-section">{% trans %}Evenement{% endtrans %}</h1>
+        <div class="d-flex flex-row justify-content-end me-auto ms-auto">
+        {% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
+            <a class="d-flex pe-4 text-light text-decoration-none" href="/{{ app.request.locale }}/evenement/{{ datas.event.id }}/agent/editer"><button class="btn btn-outline-warning">{% trans %}Editer{% endtrans %}</button></a>
+            {{ include('events/_delete_form.html.twig') }}
+        {% endif %}
+        </div>
     </div>
+</div>
+<section class="container bg-white shadow p-5 ckeditor my-5">
+    <article>
+        {{ datas.event.content|raw }}
+    </article>
     <div>
-        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-            {{ form_row(form.save) }}
-            {{ form_errors(form) }}
-            <input type="hidden" name="token" value="{{ csrf_token('participate-item' ~ event.id) }}"/>
-        {{ form_end(form) }}
+        <p>{% trans %}Du{% endtrans %} {{ datas.event.begining|date('d-m-Y H\\hi') }} {% trans %}au{% endtrans %} {{ datas.event.end|date('d-m-Y H\\hi') }}.</p>
     </div>
-    participations : {{ participations }}
+    <div class="d-flex justify-content-center align-items-center">
+        {{ include('events/_form_new_attend.html.twig') }}
+        {{ include('events/_delete_attend_form.html.twig') }}
+    </div>
 </section>
-
-{% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
-    <a href="/{{ app.request.locale }}/evenement/{{ event.id }}/agent/editer" class="text-light text-decoration-none"><button class="btn btn-primary">{% trans %}Editer{% endtrans %}</button></a>
-    {{ include('events/_delete_form.html.twig') }}
-{% endif %}
-
-    
 {% endblock %}

@@ -1,0 +1,6 @@
+{{ form_start(datas.form, {'attr': {'novalidate': 'novalidate', 'class': 'd-flex flex-column align-items-center py-3'}}) }}
+    {{ form_row(datas.form.opi_opinion) }}
+    {{ form_errors(datas.form) }}
+    <input type="hidden" name="token" value="{{ csrf_token('opinion-item' ~ datas.survey.id) }}"/>
+    <button type="submit" class="btn btn-primary">{% trans %}Donner son opinion{% endtrans %}</button>
+{{ form_end(datas.form) }}

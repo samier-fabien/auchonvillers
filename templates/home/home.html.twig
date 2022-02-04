@@ -13,15 +13,10 @@
 {% endblock %}
 
 {% block body %}
-{# {% verbatim %} #}
-	<div id="app"
-		data-newsletters="{{ jsonnewsletters }}"
-		{# data-newsletters-title="{{ newslettersTitle }}" #}
-	></div>
-{# {% endverbatim %} #}
+<div id="app"data-newsletters="{{ jsonnewsletters }}"></div>
 
 <div class="container-fluid py-5" style="background-color: #F1F3F8;">
-	<section class="container">
+	<section class="container mb-5">
 		<div class="my-5">
 			<h1 class="text-center text-dark title-section">{% trans %}Dernières activités{% endtrans %}</h1>
 		</div>

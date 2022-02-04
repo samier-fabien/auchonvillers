@@ -21,9 +21,9 @@ class BallotsRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Ballots[] Returns an array of Votes objects
+     * @return Ballots Returns a Ballots object
      */
-    public function findPerVoteAndUser(int $vote, int $user)
+    public function findPerVoteAndUser(int $vote, int $user): ?Ballots
     {
         return $this->createQueryBuilder('b')
             ->andWhere('b.vote = :vote')
@@ -31,20 +31,23 @@ class BallotsRepository extends ServiceEntityRepository
             ->setParameter('vote', $vote)
             ->setParameter('user', $user)
             ->getQuery()
-            ->getResult()
+            ->getOneOrNullResult()
         ;
     }
 
     /**
-     * @return Ballots[] Returns an array of Votes objects
+     * @return int
      */
-    public function findResults(int $vote)
+    public function findResults(int $vote, bool $result)
     {
         return $this->createQueryBuilder('b')
+            ->select('count(b.id)')
             ->andWhere('b.vote = :vote')
+            ->andWhere('b.bal_vote = :result')
             ->setParameter('vote', $vote)
+            ->setParameter('result', $result)
             ->getQuery()
-            ->getResult()
+            ->getSingleScalarResult()
         ;
     }
 

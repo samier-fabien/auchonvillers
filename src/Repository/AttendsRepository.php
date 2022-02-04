@@ -20,9 +20,9 @@ class AttendsRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Events[] Returns an array of Events objects
+     * @return Attends Returns an Events object
      */
-    public function findPerEventAndUser(int $event, int $user)
+    public function findPerEventAndUser(int $event, int $user): ?Attends
     {
         return $this->createQueryBuilder('b')
             ->andWhere('b.event = :event')
@@ -30,7 +30,21 @@ class AttendsRepository extends ServiceEntityRepository
             ->setParameter('event', $event)
             ->setParameter('user', $user)
             ->getQuery()
-            ->getResult()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    /**
+     * @return int
+     */
+    public function findParticipations(int $event)
+    {
+        return $this->createQueryBuilder('b')
+            ->select('count(b.id)')
+            ->andWhere('b.event = :event')
+            ->setParameter('event', $event)
+            ->getQuery()
+            ->getSingleScalarResult()
         ;
     }
 

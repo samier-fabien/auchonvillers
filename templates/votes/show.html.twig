@@ -3,30 +3,25 @@
 {% block title %}Vote{% endblock %}
 
 {% block body %}
-<section>
-    <h1>{% trans %}Vote{% endtrans %}</h1>
-    <div>
-        <p>{% trans %}Du{% endtrans %} {{ vote.begining|date('Y-m-d') }} {% trans %}au{% endtrans %} {{ vote.end|date('Y-m-d') }}</p>
-        <p>
-            {{ vote.content|raw }}
-        </p>
+<div class="container">
+    <div class="d-flex flex-row flex-wrap mb-5">
+        <h1 class="flex-grow-1 text-center text-dark title-section">{% trans %}Vote{% endtrans %}</h1>
+        <div class="d-flex flex-row justify-content-end me-auto ms-auto">
+        {% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
+            <a class="d-flex pe-4 text-light text-decoration-none" href="/{{ app.request.locale }}/vote/{{ datas.vote.id }}/agent/editer"><button class="btn btn-outline-warning">{% trans %}Editer{% endtrans %}</button></a>
+            {{ include('votes/_delete_form.html.twig') }}
+        {% endif %}
+        </div>
     </div>
+</div>
+<section class="container bg-white shadow p-5 ckeditor my-5">
+    <article>
+        {{ datas.vote.content|raw }}
+    </article>
     <div>
-        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-            {{ form_label(form.bal_vote) }}
-            {{ form_errors(form.bal_vote) }}
-            {{ form_widget(form.bal_vote) }}
-            {{ form_errors(form) }}
-            <input type="hidden" name="token" value="{{ csrf_token('referendum-item' ~ vote.id) }}"/>
-            <button type="submit" class="btn btn-primary">{% trans %}Donner son avis{% endtrans %}</button>
-        {{ form_end(form) }}
+        <p>{% trans %}Du{% endtrans %} {{ datas.vote.begining|date('d-m-Y H\\hi') }} {% trans %}au{% endtrans %} {{ datas.vote.end|date('d-m-Y H\\hi') }}.</p>
     </div>
+    {{ include('votes/_form_new_ballot.html.twig') }}
+    {{ include('votes/_delete_ballot_form.html.twig') }}
 </section>
-
-{% if is_granted('ROLE_AGENT') or is_granted('ROLE_MAYOR') or is_granted('ROLE_ADMIN') %}
-    <a href="/{{ app.request.locale }}/vote/{{ vote.id }}/agent/editer" class="text-light text-decoration-none"><button class="btn btn-primary">{% trans %}Editer{% endtrans %}</button></a>
-    {{ include('votes/_delete_form.html.twig') }}
-{% endif %}
-
-    
 {% endblock %}

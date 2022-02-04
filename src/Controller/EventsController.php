@@ -10,18 +10,14 @@ use App\Form\EventsType;
 use App\Repository\AttendsRepository;
 use App\Repository\EventsRepository;
 use App\Service\Imagine;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Translation\Translator;
 
 class EventsController extends AbstractController
 {
@@ -167,20 +163,26 @@ class EventsController extends AbstractController
             ]);
         }  
 
-        $participations = count($attendsRepo->findBy(['event' => $event->getId()]));
+        // Le tableau datas contient toutes les données envoyées au template
+        $datas = [];
 
-        $content = 'getEveContent' . ucFirst($locale);
+        // Nombre de participations à l'évènement
+        $datas['participations'] = $attendsRepo->findParticipations($event->getId());
 
-        $eventsDatas = [
+        // Détails de l'évènement
+        $getContent = 'getEveContent' . ucFirst($locale);
+        $datas['event'] = [
             'id' => $event->getId(),
             'createdAt' => $event->getEveCreatedAt(),
             'begining' => $event->getEveBegining(),
             'end' => $event->getEveEnd(),
-            'content' => htmlspecialchars_decode($event->$content(), ENT_QUOTES),
+            'content' => htmlspecialchars_decode($event->$getContent(), ENT_QUOTES),
         ];
 
+        // Création de la participation (resultat formulaire)
         $attend = new Attends();
         $attend->setEvent($event);
+        $attend->setUser($this->getUser());
 
         $form = $this->createFormBuilder($attend)
             ->add('save', SubmitType::class, [
@@ -223,11 +225,8 @@ class EventsController extends AbstractController
                 ]);
             }
 
-            // Ajout de l'utilisateur
-            $attend->setUser($this->getUser());
-
             // Si l'utilisateur participe déja
-            if (count($attendsRepo->findPerEventAndUser($id, $this->getUser()->getId())) >= 1) {
+            if (!is_null($attendsRepo->findPerEventAndUser($id, $this->getUser()->getId()))) {
                 $this->addFlash('notice', 'Vous participez déja à l\'évènement.');
 
                 return $this->redirectToRoute('events_show', [
@@ -249,10 +248,10 @@ class EventsController extends AbstractController
             ]);
         }
 
+        $datas['form'] = $form->createView();
+
         return $this->render('events/show.html.twig', [
-            'event' => $eventsDatas,
-            'form' => $form->createView(),
-            'participations' => $participations,
+            'datas' => $datas,
         ]);
     }
 
@@ -374,6 +373,54 @@ class EventsController extends AbstractController
         return $this->redirectToRoute('events_index', [
             'locale' => $request->getSession()->get('_locale'),
             'page' => 1,
+        ], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * @IsGranted("ROLE_USER")
+     * @Route("/{locale}/evenement/{id<\d+>}/membre/supprimer", name="attends_delete", methods={"POST"})
+     */
+    public function attend_delete(string $locale, int $id, Request $request, ManagerRegistry $doctrine, AttendsRepository $attendsRepo): Response
+    {
+        // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
+        if (!in_array($locale, $this->getParameter('app.locales'), true)) {
+            $request->getSession()->set('_locale', 'fr'); 
+            return $this->redirect("/");
+        }
+
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('events_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
+        }
+
+        // On va chercher la participation a supprimer
+        $attend = $attendsRepo->findPerEventAndUser($id, $this->getUser()->getId());
+
+        // Si l'utilisateur participe déja
+        if (empty($attend)) {
+            $this->addFlash('notice', 'Vous ne participez pas à l\'évènement.');
+
+            return $this->redirectToRoute('events_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
+        }
+
+
+        if ($this->isCsrfTokenValid('delete'.$id, $request->request->get('_token'))) {
+            // Suppression
+            $doctrine->getManager()->remove($attend);
+            $doctrine->getManager()->flush();
+            $this->addFlash('success', 'Vous ne participez plus à l\'évènement.');
+        }
+
+        return $this->redirectToRoute('events_show', [
+            'locale' => $request->getSession()->get('_locale'),
+            'id' => $id,
         ], Response::HTTP_SEE_OTHER);
     }
 }

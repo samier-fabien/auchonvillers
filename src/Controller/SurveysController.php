@@ -165,9 +165,12 @@ class SurveysController extends AbstractController
             ]);
         }
 
-        $content = 'getSurContent' . $locale;
+        // Le tableau datas contient toutes les données envoyées au template
+        $datas = [];
 
-        $surveysDatas = [
+        // Détails de l'enquête
+        $content = 'getSurContent' . $locale;
+        $datas['survey'] = [
             'id' => $survey->getId(),
             'createdAt' => $survey->getSurCreatedAt(),
             'begining' => $survey->getSurBegining(),
@@ -175,7 +178,7 @@ class SurveysController extends AbstractController
             'content' => htmlspecialchars_decode($survey->$content(), ENT_QUOTES),
         ];
 
-        // Création de l'enquête
+        // Création de l'enquête (resultat formulaire)
         $opinion = new Opinions();
         $opinion->setUser($this->getUser());
         $opinion->setSurvey($survey);
@@ -227,7 +230,7 @@ class SurveysController extends AbstractController
             }
 
             // Si l'utilisateur a déja voté
-            if (count($opinionsRepo->findPerSurveyAndUser($id, $this->getUser()->getId())) >= 1) {
+            if (!is_null($opinionsRepo->findPerSurveyAndUser($id, $this->getUser()->getId()))) {
                 $this->addFlash('notice', 'Vous avez déja donné votre opinion');
 
                 return $this->redirectToRoute('surveys_show', [
@@ -249,9 +252,10 @@ class SurveysController extends AbstractController
             ]);
         }
 
+        $datas['form'] = $form->createView();
+
         return $this->render('surveys/show.html.twig', [
-            'survey' => $surveysDatas,
-            'form' => $form->createView(),
+            'datas' => $datas,
         ]);
     }
 
@@ -375,4 +379,53 @@ class SurveysController extends AbstractController
             'page' => 1,
         ], Response::HTTP_SEE_OTHER);
     }
+
+    /**
+     * @IsGranted("ROLE_USER")
+     * @Route("/{locale}/enquete/{id<\d+>}/membre/supprimer", name="opinion_delete", methods={"POST"})
+     */
+    public function opinion_delete(string $locale, int $id, Request $request, ManagerRegistry $doctrine, OpinionsRepository $opinionsRepo): Response
+    {
+        // Vérification que la locales est bien dans la liste des langues sinon retour accueil en langue française
+        if (!in_array($locale, $this->getParameter('app.locales'), true)) {
+            $request->getSession()->set('_locale', 'fr'); 
+            return $this->redirect("/");
+        }
+
+        // Si l'utilisateur n'est pas vérifié
+        if (!$this->getUser()->isVerified()) {
+            $this->addFlash('warning', $this->translator->trans('Vous devez avoir confirmé votre email pour accéder à cette fonctionnalité.'));
+            return $this->redirectToRoute('surveys_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
+        }
+
+        // On va chercher la newsletter a supprimer
+        $opinion = $opinionsRepo->findPerSurveyAndUser($id, $this->getUser()->getId());
+
+        // Si l'utilisateur a déja donné son opinion
+        if (empty($opinion)) {
+            $this->addFlash('notice', 'Vous n\'avez pas donné votre opinion');
+
+            return $this->redirectToRoute('surveys_show', [
+                'locale'=> $request->getSession()->get('_locale'),
+                'id' => $id,
+            ]);
+        }
+
+
+        if ($this->isCsrfTokenValid('delete'.$id, $request->request->get('_token'))) {
+            // Suppression
+            $doctrine->getManager()->remove($opinion);
+            $doctrine->getManager()->flush();
+            $this->addFlash('success', 'Votre opinion a bien été supprimée.');
+        }
+
+        return $this->redirectToRoute('surveys_show', [
+            'locale'=> $request->getSession()->get('_locale'),
+            'id' => $id,
+        ], Response::HTTP_SEE_OTHER);
+    }
+
 }

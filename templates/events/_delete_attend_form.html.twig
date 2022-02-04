@@ -1,0 +1,4 @@
+<form class="text-center" method="post" action="{{ path('attends_delete', {'locale': app.request.locale, 'id': datas.event.id}) }}" onsubmit="return confirm('{% trans %}Etes-vous sure de vouloir annuler votre participation ?{% endtrans %}');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ datas.event.id) }}">
+    <button class="btn btn-outline-primary">{% trans %}Ne plus participer{% endtrans %}</button>
+</form>

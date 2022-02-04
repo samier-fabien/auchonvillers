@@ -141,6 +141,8 @@ content: "";
 
 
 
-.ckeditor {
-  border-radius: 1rem;
+@media screen and (min-width: 576px) {
+  .ckeditor {
+    border-radius: 1rem;
+  }
 }

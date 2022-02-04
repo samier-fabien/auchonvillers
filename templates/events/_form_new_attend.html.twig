@@ -1,0 +1,6 @@
+{{ form_start(datas.form, {'attr': {'novalidate': 'novalidate', 'class': 'pe-2'}}) }}
+    {{ form_label(datas.form.save) }}
+    {{ form_widget(datas.form.save) }}
+    {{ form_errors(datas.form) }}
+    <input type="hidden" name="token" value="{{ csrf_token('participate-item' ~ datas.event.id) }}"/>
+{{ form_end(datas.form) }}

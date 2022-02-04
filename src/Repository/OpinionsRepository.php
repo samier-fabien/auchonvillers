@@ -21,9 +21,9 @@ class OpinionsRepository extends ServiceEntityRepository
 
 
     /**
-     * @return Opinions[] Returns an array of Opinions objects
+     * @return Opinions Returns an Opinions object
      */
-    public function findPerSurveyAndUser(int $survey, int $user)
+    public function findPerSurveyAndUser(int $survey, int $user): ?Opinions
     {
         return $this->createQueryBuilder('b')
             ->andWhere('b.survey = :survey')
@@ -31,7 +31,7 @@ class OpinionsRepository extends ServiceEntityRepository
             ->setParameter('survey', $survey)
             ->setParameter('user', $user)
             ->getQuery()
-            ->getResult()
+            ->getOneOrNullResult()
         ;
     }
 
